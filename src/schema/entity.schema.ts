@@ -89,6 +89,12 @@ export const TerrainConfigSchema = z.object({
   hachureSlopeMinDeg: z.number().min(1.5).max(25).default(3.5),
   terrainNoiseAmpM: z.number().min(0).max(12).default(1.6),
   terrainSeed: z.number().int().default(7719),
+  /** 长波宏观起伏振幅（m）：未显式设置且 terrainNoiseAmpM<=1e-9 时解析为 0，否则默认 12 */
+  macroReliefAmpM: z.number().min(0).max(60).optional(),
+  /** 宽河谷扩展倍比：未显式设置且 terrainNoiseAmpM<=1e-9 时解析为 0，否则默认 5.5 */
+  valleyCarveRatio: z.number().min(0).max(12).optional(),
+  showSupplementaryContours: z.boolean().default(true),
+  supplementaryMaxSlopeDeg: z.number().min(1).max(20).default(6.5),
   shapes: z.array(TerrainShapeSchema).default([]),
   sculptDeltaB64: z.string().default(''),
 });
@@ -166,6 +172,8 @@ const ZoneSchema = z.object({
   exclusionStyle: z.enum(ZoneExclusionStyles).default('plague_stones'),
   ribbonSpine: z.array(PointSchema).default([]),
   corridorWidthM: z.number().min(24).max(260).default(110),
+  /** 建筑尺度倍率：0.45–1.6，未设时生成器语义默认 1.0（旧工程零破坏） */
+  buildingScale: z.number().min(0.45).max(1.6).optional(),
 });
 const LandmarkSchema = z.object({
   id: z.string(),

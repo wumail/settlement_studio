@@ -181,6 +181,7 @@ function placeZone(draft: MutableProject, op: Op<'place_zone'>, scene: CompiledS
     exclusionStyle: op.exclusionStyle ?? 'plague_stones',
     ribbonSpine: [],
     corridorWidthM: 110,
+    buildingScale: op.buildingScale,
   }), (target) => {
     target.points = (points ?? []).map(([x, y]) => [x, y] as [number, number]);
     applyDefined(target, zoneFields);

@@ -51,6 +51,7 @@ export function ZonePanel() {
             />
             <NumberField label="种子" value={zone.seed} onChange={(value) => patch((target) => { target.seed = Math.round(value); })} />
             <RangeField label="密度" value={zone.density} min={0.2} max={1} step={0.01} digits={2} onChange={(value) => patch((target) => { target.density = value; }, false)} />
+            <RangeField label="建筑尺度" value={zone.buildingScale ?? 1} min={0.45} max={1.6} step={0.05} digits={2} suffix="×" onChange={(value) => patch((target) => { target.buildingScale = value; }, false)} />
             <RangeField label="最大坡度" value={zone.maxSlopeDeg} min={4} max={60} step={0.5} suffix="°" onChange={(value) => patch((target) => { target.maxSlopeDeg = value; }, false)} />
             <RangeField label="街宽" value={zone.streetWidthM} min={3} max={24} step={0.5} suffix="m" onChange={(value) => patch((target) => { target.streetWidthM = value; }, false)} />
             <RangeField label="墙厚" value={zone.wallThicknessM} min={1.5} max={16} step={0.5} suffix="m" onChange={(value) => patch((target) => { target.wallThicknessM = value; }, false)} />

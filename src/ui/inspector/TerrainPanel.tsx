@@ -1,4 +1,8 @@
 import { useStudioStore } from '../../store/useStudioStore';
+import {
+  resolveMacroReliefAmp,
+  resolveValleyCarveRatio,
+} from '../../core/terrain/terrainNoise';
 import { NumberField, PanelSection, RangeField, ToggleField } from './FormControls';
 
 /** 地形与等高线属性卡：全局坡面/等高距/截断区间/齿线开关/选中图元参数（笔刷参数已归顶部选项栏） */
@@ -20,6 +24,8 @@ export function TerrainPanel() {
         <NumberField label="基准高程" value={terrain.baseElev} step={1} onChange={(value) => patch((t) => { t.baseElev = value; })} />
         <RangeField label="坡降" value={terrain.slopeMagM} min={0} max={120} step={0.5} suffix="m" onChange={(value) => patch((t) => { t.slopeMagM = value; })} />
         <RangeField label="坡向" value={terrain.slopeDirDeg} min={0} max={359} step={1} digits={0} suffix="°" onChange={(value) => patch((t) => { t.slopeDirDeg = value; })} />
+        <RangeField label="宏观起伏" value={resolveMacroReliefAmp(terrain)} min={0} max={60} step={0.5} suffix="m" onChange={(value) => patch((t) => { t.macroReliefAmpM = value; })} />
+        <RangeField label="河谷宽比" value={resolveValleyCarveRatio(terrain)} min={0} max={12} step={0.5} suffix="×" onChange={(value) => patch((t) => { t.valleyCarveRatio = value; })} />
       </PanelSection>
 
       <PanelSection title="等高线">
@@ -28,6 +34,8 @@ export function TerrainPanel() {
         <NumberField label="最低截断" value={terrain.minContourElev} step={1} onChange={(value) => patch((t) => { t.minContourElev = value; })} />
         <NumberField label="最高截断" value={terrain.maxContourElev} step={1} onChange={(value) => patch((t) => { t.maxContourElev = value; })} />
         <ToggleField label="显示等高线" checked={terrain.showContours} onChange={(value) => mutateProject((draft) => { draft.terrain.showContours = value; })} />
+        <ToggleField label="缓坡间曲线" checked={terrain.showSupplementaryContours} onChange={(value) => mutateProject((draft) => { draft.terrain.showSupplementaryContours = value; })} />
+        <RangeField label="间曲线最大坡度" value={terrain.supplementaryMaxSlopeDeg} min={1} max={20} step={0.5} suffix="°" onChange={(value) => patch((t) => { t.supplementaryMaxSlopeDeg = value; })} />
         <RangeField label="线条透明度" value={terrain.contourOpacity} min={0.05} max={1} step={0.01} digits={2} onChange={(value) => patch((t) => { t.contourOpacity = value; })} />
         <p className="text-[10px] leading-4 text-ink-muted">等高线恒在最上层（等效 z=9999），只以低透明度覆于聚落之上。</p>
         <ToggleField label="陡坎短齿线 (4.0m)" checked={terrain.showScarpTicks} onChange={(value) => mutateProject((draft) => { draft.terrain.showScarpTicks = value; })} />

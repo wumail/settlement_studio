@@ -115,19 +115,32 @@ export function paintStructures(ctx: PaintContext, withLabels: boolean, onlyId?:
         { stroke: pal.inkDark, lineWidth: ctx.px(0.8), opacity: 0.65 },
       );
     }
-    if (!withLabels || ctx.labelOpacity <= 0) continue;
-    // 缩放过小时不标注，避免全图视角下核心建筑名互相压盖（放大到足印 >= 46px 才出字）
-    if (ctx.px(item.widthM) < 46) continue;
-    const c = ctx.pt([item.x, item.y]);
-    backend.drawText(item.name, c[0], c[1] + ctx.px(item.depthM * 0.5) + 10, {
-      fontFamily: SERIF_FONT,
-      fontSizePx: 10,
-      fill: pal.inkSecondary,
-      baseline: 'middle',
-      align: 'center',
-      haloColor: pal.paperBg,
-      haloWidthPx: 2.2,
-      opacity: ctx.labelOpacity,
-    });
+    if (!withLabels) continue;
+    paintSingleStructureLabel(ctx, item);
   }
+}
+
+function paintSingleStructureLabel(ctx: PaintContext, item: BuiltStructure): void {
+  if (ctx.labelOpacity <= 0) return;
+  // 缩放过小时不标注，避免全图视角下核心建筑名互相压盖（放大到足印 >= 46px 才出字）
+  if (ctx.px(item.widthM) < 46) return;
+  const c = ctx.pt([item.x, item.y]);
+  ctx.backend.drawText(item.name, c[0], c[1] + ctx.px(item.depthM * 0.5) + 10, {
+    fontFamily: SERIF_FONT,
+    fontSizePx: 10,
+    fill: ctx.pal.inkSecondary,
+    baseline: 'middle',
+    align: 'center',
+    haloColor: ctx.pal.paperBg,
+    haloWidthPx: 2.2,
+    opacity: ctx.labelOpacity,
+  });
+}
+
+/** 独立结构文字标注层：延后至 trees-canopy 之上绘制，避免树冠压盖建筑字标 */
+export function paintStructureLabels(ctx: PaintContext, withLabels: boolean): void {
+  if (!withLabels) return;
+  const all = ctx.scene?.structures;
+  if (!all || all.length === 0) return;
+  for (const item of all) paintSingleStructureLabel(ctx, item);
 }

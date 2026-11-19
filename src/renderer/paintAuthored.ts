@@ -143,8 +143,9 @@ export function paintAuthored(ctx: PaintContext, withLabels: boolean): void {
   }
   for (const item of project.structures) {
     const id = item.id;
-    push(zOf(Z_BASE.structure, item.zIndex), () => paintStructures(ctx, withLabels, id));
+    push(zOf(Z_BASE.structure, item.zIndex), () => paintStructures(ctx, false, id));
   }
+  void withLabels;
   push(Z_BASE.trees, () => paintTrees(ctx, PAINTED_TREE_ZONE));
 
   items.sort((a, b) => a.z - b.z || a.seq - b.seq).forEach((item) => item.draw());

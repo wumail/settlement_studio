@@ -166,6 +166,7 @@ const PlaceZone = z.object({
   frayOuter: z.boolean().optional(),
   marketMode: z.enum(ZoneMarketModes).optional(),
   exclusionStyle: z.enum(ZoneExclusionStyles).optional(),
+  buildingScale: z.number().min(0.45).max(1.6).optional(),
   ...base,
 }).strict().refine((value) => Boolean(value.points) !== Boolean(value.relative), {
   message: 'place_zone 必须且只能提供 points 或 relative 之一',

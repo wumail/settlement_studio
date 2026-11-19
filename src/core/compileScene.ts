@@ -9,6 +9,7 @@ import { buildLegend, terrainSignature } from './compileSupport';
 import {
   type CompileExtras,
   compileExtras,
+  extractSceneContours,
   makeInput,
   prepareTwoPhase,
 } from './compilePipeline';
@@ -33,7 +34,6 @@ import { type ElevationFieldData, buildElevationField } from './terrain/elevatio
 import {
   type ContourLine,
   type ScarpTickSegment,
-  extractContours,
   extractScarpTicks,
 } from './terrain/marchingSquares';
 import { type TerrainShadingData, buildTerrainShading } from './terrain/terrainShading';
@@ -96,6 +96,7 @@ function assembleScene(
   project: TownProject,
   terrainData: ElevationFieldData,
   contours: ReadonlyArray<ContourLine>,
+  baseContours: ReadonlyArray<ContourLine>,
   scarpTicks: ReadonlyArray<ScarpTickSegment>,
   hydro: HydroRoadPackage,
   zones: ReadonlyArray<CompiledZoneResult>,
@@ -108,7 +109,7 @@ function assembleScene(
   const walls = zones.flatMap((z) => z.walls);
   const trees = [...zones.flatMap((z) => z.trees), ...extras.painting];
   const report = reportOverride ?? verifyZeroCollisions(project, terrainData, hydro, zones);
-  const shading = shadingOverride ?? buildTerrainShading(terrainData, project, contours);
+  const shading = shadingOverride ?? buildTerrainShading(terrainData, project, baseContours);
   const base: CompiledScene = {
     schemaVersion: project.schemaVersion, worldSizeM: project.meta.worldSizeM,
     terrainSignature: terrainSignature(project),
@@ -152,8 +153,8 @@ export function compileSettlementScene(project: TownProject): CompiledScene {
   const started = performance.now();
   const { terrainData, hydro, hydraulic, structures, ctx, wallSystems, rigidPolys } =
     prepareTwoPhase(project);
-  const contours = extractContours(terrainData, project.terrain);
-  const scarpTicks = extractScarpTicks(contours, terrainData, project.terrain);
+  const { baseContours, contours } = extractSceneContours(terrainData, project.terrain);
+  const scarpTicks = extractScarpTicks(baseContours, terrainData, project.terrain);
   const results: CompiledZoneResult[] = [];
   for (const zone of project.zones) {
     const target = createEmptyZoneTarget();
@@ -170,7 +171,9 @@ export function compileSettlementScene(project: TownProject): CompiledScene {
     project, terrainData, hydro, hydraulic, structures, walls, rigidPolys,
     results.flatMap((z) => z.buildings),
   );
-  return assembleScene(project, terrainData, contours, scarpTicks, hydro, results, extras, started);
+  return assembleScene(
+    project, terrainData, contours, baseContours, scarpTicks, hydro, results, extras, started,
+  );
 }
 
 /**
@@ -225,10 +228,12 @@ export function rerollZoneScene(
     return prior ?? toZoneResult(z, createEmptyZoneTarget());
   });
   const reuseScene = reuseTerrain ? prevScene : null;
-  const contours = reuseScene ? reuseScene.terrain.contours : extractContours(terrainData, nextProject.terrain);
+  const sceneContours = reuseScene
+    ? { baseContours: reuseScene.terrain.contours, contours: reuseScene.terrain.contours }
+    : extractSceneContours(terrainData, nextProject.terrain);
   const scarpTicks = reuseScene
     ? reuseScene.terrain.scarpTicks
-    : extractScarpTicks(contours, terrainData, nextProject.terrain);
+    : extractScarpTicks(sceneContours.baseContours, terrainData, nextProject.terrain);
   const targetReport = verifyZeroCollisions(nextProject, terrainData, hydro, [rebuilt]);
   const neighborBuildings = prevScene.zones.filter((z) => z.id !== zoneId).flatMap((z) => z.buildings);
   const crossHits = countCrossZoneBuildingHits(rebuilt.buildings, neighborBuildings);
@@ -244,8 +249,8 @@ export function rerollZoneScene(
     merged.flatMap((z) => z.walls), rigidPolys, merged.flatMap((z) => z.buildings),
   );
   const scene = assembleScene(
-    nextProject, terrainData, contours, scarpTicks, hydro, merged, extras, started, report,
-    reuseScene ? reuseScene.shading : undefined,
+    nextProject, terrainData, sceneContours.contours, sceneContours.baseContours, scarpTicks,
+    hydro, merged, extras, started, report, reuseScene ? reuseScene.shading : undefined,
   );
   return { scene, updatedSeed };
 }

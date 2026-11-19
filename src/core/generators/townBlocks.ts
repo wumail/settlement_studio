@@ -1,5 +1,6 @@
-import type { Polygon, Vec2 } from '../../schema/geometry.types';
+import type { BBox, Polygon, Vec2 } from '../../schema/geometry.types';
 import {
+  clipPolygonHalfPlane,
   computePolygonAreaSigned,
   computePolygonBBox,
   computePolygonCentroid,
@@ -8,17 +9,23 @@ import {
 import type { RngFn } from '../math/rng';
 import { computeVoronoiCells, insetPolygonSafe } from '../math/voronoi';
 import { orientedRect } from '../math/oriented';
-import { clearsPolygon, pointToPolylineDist } from '../obstacles/collisionAudit';
+import {
+  clearsPolygon,
+  clearsPolyline,
+  pointToPolylineDist,
+  polygonRadiusOf,
+} from '../obstacles/collisionAudit';
 import {
   type BuildingRoofKind,
   type ZoneGeneratorInput,
   guardSafeBuilding,
   guardSafeTree,
 } from '../obstacles/guardSafe';
+import type { BuiltRoad } from '../hydro/reefRoadBridge';
 import { splitByRoadSkeleton } from './streetSkeleton';
 import { collectInnerHoles } from './zoneHoles';
 
-const MAX_EDGE_ROWS = 6;
+const MAX_EDGE_ROWS = 9;
 
 function clamp01(v: number): number {
   return v < 0 ? 0 : v > 1 ? 1 : v;
@@ -74,27 +81,100 @@ interface FacadeContext {
   readonly rng: RngFn;
 }
 
-/** 沿单条临街边排布定向矩形/曲尺屋宇：面宽 14–28m、进深 12–24m，中庭自然留白 */
+interface PreppedRoadSeg {
+  readonly a: Vec2;
+  readonly b: Vec2;
+  readonly nx: number;
+  readonly ny: number;
+  readonly c: number;
+  readonly halfW: number;
+  readonly box: BBox;
+}
+
+function boxesOverlap(a: BBox, b: BBox, pad: number): boolean {
+  return !(a[2] + pad < b[0] || b[2] + pad < a[0] || a[3] + pad < b[1] || b[3] + pad < a[1]);
+}
+
+function prepRoadSegs(roads: ReadonlyArray<BuiltRoad>, regionBox: BBox): PreppedRoadSeg[] {
+  const segs: PreppedRoadSeg[] = [];
+  for (const road of roads) {
+    const halfW = 0.5 * road.widthM + 2.5;
+    if (!boxesOverlap(regionBox, computePolygonBBox(road.centerline), halfW)) continue;
+    for (let i = 0; i < road.centerline.length - 1; i += 1) {
+      const a = road.centerline[i];
+      const b = road.centerline[i + 1];
+      if (!a || !b) continue;
+      const box: BBox = [
+        Math.min(a[0], b[0]),
+        Math.min(a[1], b[1]),
+        Math.max(a[0], b[0]),
+        Math.max(a[1], b[1]),
+      ];
+      if (!boxesOverlap(regionBox, box, halfW)) continue;
+      const dx = b[0] - a[0];
+      const dy = b[1] - a[1];
+      const len = Math.hypot(dx, dy);
+      if (len < 1e-6) continue;
+      const nx = -dy / len;
+      const ny = dx / len;
+      segs.push({ a, b, nx, ny, c: nx * a[0] + ny * a[1], halfW, box });
+    }
+  }
+  return segs;
+}
+
+/**
+ * 街坊按道路廊道切分：仅对真实接触街坊的线段执行切分（预计算法向与 BBox 粗筛，
+ * 避免无限直线误裁非接触块且兼顾单区重抽 < 80ms）；整块落入路廊则直接舍弃。
+ */
+function splitBlockByRoads(block: Polygon, segs: ReadonlyArray<PreppedRoadSeg>): Polygon[] {
+  if (segs.length === 0) return [block];
+  let parts: Polygon[] = [block];
+  for (const seg of segs) {
+    if (parts.length === 0 || parts.length > 6) break;
+    const next: Polygon[] = [];
+    for (const part of parts) {
+      if (!boxesOverlap(computePolygonBBox(part), seg.box, seg.halfW)) {
+        next.push(part);
+        continue;
+      }
+      const pc = computePolygonCentroid(part);
+      if (clearsPolyline(part, pc, polygonRadiusOf(part, pc), [seg.a, seg.b], seg.halfW)) {
+        next.push(part);
+        continue;
+      }
+      const near = clipPolygonHalfPlane(part, seg.nx, seg.ny, seg.c - seg.halfW);
+      const off = clipPolygonHalfPlane(part, -seg.nx, -seg.ny, -(seg.c + seg.halfW));
+      if (near.length >= 3) next.push(near);
+      if (off.length >= 3) next.push(off);
+    }
+    parts = next;
+  }
+  return parts;
+}
+
+/** 沿单条临街边排布定向矩形/曲尺屋宇：面宽 9.5–17.5m、进深 8.0–14.5m（乘建筑尺度） */
 function placeFacadeRow(ctx: FacadeContext, a: Vec2, b: Vec2): void {
   const { input, block, roofKind, holes, rng } = ctx;
   const zone = input.zone;
+  const scale = Math.max(0.45, Math.min(1.6, zone.buildingScale ?? 1));
   const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
-  if (len < 15) return;
+  if (len < 10.5 * scale) return;
   const angle = (Math.atan2(b[1] - a[1], b[0] - a[0]) * 180) / Math.PI;
   const nrm = inwardNormal(a, b, block);
   const ux = (b[0] - a[0]) / len;
   const uy = (b[1] - a[1]) / len;
-  let cursor = 1.4 + rng() * 2.2;
+  let cursor = 0.9 + rng() * 1.2;
   let placed = 0;
   while (cursor < len - 5 && placed < MAX_EDGE_ROWS) {
-    const widthM = 14 + rng() * 14;
+    const widthM = (9.5 + rng() * 8.0) * scale;
     if (cursor + widthM > len - 1.2) break;
-    const depthM = 12 + rng() * 12;
+    const depthM = (8.0 + rng() * 6.5) * scale;
     const mid = cursor + widthM * 0.5;
-    const setback = 1.4 + rng() * 0.8;
+    const setback = (1.1 + rng() * 0.7) * scale;
     const cx = a[0] + ux * mid + nrm[0] * (depthM * 0.5 + setback);
     const cy = a[1] + uy * mid + nrm[1] * (depthM * 0.5 + setback);
-    cursor += widthM + 1.2 + rng() * 1.4;
+    cursor += widthM + (0.45 + rng() * 0.65) * scale;
     if (keepProbability(input, cx, cy, ctx.radius) < rng()) continue;
     const footprint = orientedRect(cx, cy, widthM, depthM, angle);
     if (overlapsAny(footprint, holes)) continue;
@@ -112,13 +192,18 @@ function placeFacadeRow(ctx: FacadeContext, a: Vec2, b: Vec2): void {
       const side = rng() < 0.5 ? -1 : 1;
       const wingCx = cx + ux * (widthM * 0.42) * side + nrm[0] * (depthM * 0.45);
       const wingCy = cy + uy * (widthM * 0.42) * side + nrm[1] * (depthM * 0.45);
-      const wing = guardSafeBuilding(
-        orientedRect(wingCx, wingCy, widthM * 0.46, depthM * 0.72, angle + 90),
-        zone,
-        { roofKind, kind: 'wing', label: `${zone.name} 厢房` },
-        input.obstacleCtx,
-      );
-      if (wing && !overlapsAny(wing.points, holes)) input.targetResult.buildings.push(wing);
+      const wingW = Math.max(8.6 * scale, widthM * 0.6);
+      const wingD = Math.max(9.2 * scale, depthM * 0.85);
+      const wingRect = orientedRect(wingCx, wingCy, wingW, wingD, angle + 90);
+      if (!overlapsAny(wingRect, holes)) {
+        const wing = guardSafeBuilding(
+          wingRect,
+          zone,
+          { roofKind, kind: 'wing', label: `${zone.name} 厢房` },
+          input.obstacleCtx,
+        );
+        if (wing) input.targetResult.buildings.push(wing);
+      }
     }
   }
 }
@@ -160,6 +245,7 @@ export function generateObbStreetBlocks(
   holes: ReadonlyArray<Polygon> = [],
 ): void {
   const { zone, rng, targetResult, obstacleCtx } = input;
+  const scale = Math.max(0.45, Math.min(1.6, zone.buildingScale ?? 1));
   const parts = splitByRoadSkeleton(innerPoly, obstacleCtx.roadsBuilt);
   const c0 = computePolygonCentroid(innerPoly);
   let radius = 0;
@@ -167,10 +253,11 @@ export function generateObbStreetBlocks(
   for (const part of parts) {
     const areaM2 = Math.abs(computePolygonAreaSigned(part));
     if (areaM2 < 200) continue;
-    // 目标街坊块 ~2.0–2.6k m²：按面积定站点数，绝不因 k 上限把整片大城直接跳空
-    const targetCellM2 = 1850 + (1 - zone.density) * 1500;
-    const k = Math.max(3, Math.min(240, Math.round(areaM2 / targetCellM2)));
+    // 目标街坊块 ~1.25–2.4k m²（乘建筑尺度平方）：按面积定站点数，绝不因 k 上限跳空
+    const targetCellM2 = (1250 + (1 - zone.density) * 1150) * scale * scale;
+    const k = Math.max(3, Math.min(280, Math.round(areaM2 / targetCellM2)));
     const bbox = computePolygonBBox(part);
+    const roadSegs = prepRoadSegs(obstacleCtx.roadsBuilt, bbox);
     const sites: Vec2[] = [];
     let attempts = 0;
     while (sites.length < k && attempts < k * 45) {
@@ -182,7 +269,8 @@ export function generateObbStreetBlocks(
     }
     if (sites.length < 3) continue;
     const cells = computeVoronoiCells(sites, bbox, 2, part);
-    const insetDist = 0.5 * zone.streetWidthM + 1.2;
+    // 街坊退界 = 半街宽 + 0.2m：对街两排屋宇间自然留出 8–11m 街面（细密肌理的关键）
+    const insetDist = 0.5 * zone.streetWidthM + 0.2;
     for (const cell of cells) {
       if (cell.length < 3) continue;
       const cellCenter = computePolygonCentroid(cell);
@@ -193,15 +281,17 @@ export function generateObbStreetBlocks(
       }
       const block = insetPolygonSafe(cell, insetDist);
       if (block.length < 3) continue;
-      const blockArea = Math.abs(computePolygonAreaSigned(block));
-      if (blockArea < lotMinM2 * 0.8 || blockArea > lotMaxM2 * 26) continue;
-      const ctx: FacadeContext = { input, block, roofKind, holes, radius, rng };
-      for (let i = 0; i < block.length; i += 1) {
-        const a = block[i];
-        const b = block[(i + 1) % block.length];
-        if (a && b) placeFacadeRow(ctx, a, b);
+      for (const piece of splitBlockByRoads(block, roadSegs)) {
+        const blockArea = Math.abs(computePolygonAreaSigned(piece));
+        if (blockArea < lotMinM2 * 0.65 * scale * scale || blockArea > lotMaxM2 * 26) continue;
+        const ctx: FacadeContext = { input, block: piece, roofKind, holes, radius, rng };
+        for (let i = 0; i < piece.length; i += 1) {
+          const a = piece[i];
+          const b = piece[(i + 1) % piece.length];
+          if (a && b) placeFacadeRow(ctx, a, b);
+        }
+        plantCourtyard(ctx, piece);
       }
-      plantCourtyard(ctx, block);
     }
   }
 }

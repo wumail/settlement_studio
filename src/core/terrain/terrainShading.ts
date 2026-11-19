@@ -4,14 +4,23 @@ import { type ElevationFieldData, sampleGradient } from './elevationField';
 
 /** 分层设色带数（0 低漫滩 → 6 高处砂褐） */
 export const TINT_BAND_COUNT = 7;
-/** 淡彩网格边长（世界格数）：88 格把色块压到 ~18m 级，肉眼读作水彩晕染而非马赛克 */
-const TINT_LATTICE = 88;
+/** 淡彩网格边长（世界格数）：按等值线斜插边界生成梯形带，彻底消除锯齿方块感 */
+const TINT_LATTICE = 96;
 
-/** 角点确定性抖动哈希：同一工程逐帧同值，打散轴对齐方块感 */
-function cornerJitter(ix: number, iy: number, salt: number): number {
-  let h = Math.imul(ix * 374761393 + iy * 668265263 + salt * 1442695041, 1274126177);
-  h ^= h >>> 15;
-  return ((h >>> 0) / 4294967296 - 0.5) * 2;
+/** 在水平线段 (gx0 -> gx1) 上线性插值等高线交点，使淡彩左右端缘贴合等高线斜率 */
+function interpCrossingX(
+  elevation: Float32Array,
+  gx0: number,
+  gx1: number,
+  gy: number,
+  threshold: number,
+  cellSizeM: number,
+): number {
+  const v0 = elevation[gy * GRID_N + gx0] ?? threshold;
+  const v1 = elevation[gy * GRID_N + gx1] ?? threshold;
+  const denom = v1 - v0;
+  const t = Math.abs(denom) > 1e-6 ? Math.max(0, Math.min(1, (threshold - v0) / denom)) : 0.5;
+  return (gx0 + (gx1 - gx0) * t) * cellSizeM;
 }
 
 export interface TerrainTintBand {
@@ -32,8 +41,8 @@ const EMPTY: TerrainShadingData = { bands: [], hachures: [], minElev: 0, maxElev
 const LIGHT: Vec2 = [-0.7071, -0.7071];
 
 /**
- * 高程分层淡彩带：56×56 网格按均值海拔归入 7 段，同段合并为单批多边形；
- * 每格外扩 4% 消除 Canvas 抗锯齿接缝，低饱和半透明叠加绝不压死等高线。
+ * 高程分层淡彩带：沿每行水平 Run-Length 合并并在色带切换处按等值线线性插值左右斜边，
+ * 生成顺等高线贴合的平滑梯形带（无随机方块毛刺），低饱和半透明叠加绝不压死等高线。
  */
 export function buildHypsometricTint(
   field: ElevationFieldData,
@@ -44,7 +53,8 @@ export function buildHypsometricTint(
   const steps = GRID_N - 1;
   const stride = Math.max(1, Math.round(steps / TINT_LATTICE));
   const cell = field.cellSizeM * stride;
-  const grow = cell * 0.12;
+  const growY = cell * 0.08;
+  const growX = cell * 0.06;
   const buckets: Polygon[][] = Array.from({ length: TINT_BAND_COUNT }, () => []);
   const bandAt = (gx: number, gy: number): number => {
     const i00 = gy * GRID_N + gx;
@@ -60,28 +70,58 @@ export function buildHypsometricTint(
     const t = Math.max(0, Math.min(0.9999, (avg - field.minElev) / span));
     return Math.floor(t * TINT_BAND_COUNT);
   };
-  const amp = cell * 0.16;
-  let runSeq = 0;
-  const flush = (band: number, gx0: number, gx1: number, gy: number): void => {
+  const edgeThreshold = (b1: number, b2: number): number =>
+    field.minElev + (Math.max(b1, b2) / TINT_BAND_COUNT) * span;
+  const flush = (
+    band: number,
+    prevBand: number,
+    nextBand: number,
+    gx0: number,
+    gx1: number,
+    gy: number,
+  ): void => {
     const bucket = buckets[band];
     if (!bucket) return;
-    runSeq += 1;
-    const jx = (k: number): number => cornerJitter(runSeq, gy, k) * amp;
-    const x0 = gx0 * field.cellSizeM - grow;
-    const y0 = gy * field.cellSizeM - grow;
-    const x1 = gx1 * field.cellSizeM + cell + grow;
-    const y1 = y0 + cell + grow * 2;
+    const y0 = gy * field.cellSizeM - growY;
+    const y1 = (gy + stride) * field.cellSizeM + growY;
+    let xLT = gx0 * field.cellSizeM;
+    let xLB = xLT;
+    if (prevBand >= 0 && gx0 >= stride) {
+      const th = edgeThreshold(prevBand, band);
+      xLT = interpCrossingX(field.elevation, gx0 - stride, gx0 + stride, gy, th, field.cellSizeM);
+      xLB = interpCrossingX(
+        field.elevation,
+        gx0 - stride,
+        gx0 + stride,
+        gy + stride,
+        th,
+        field.cellSizeM,
+      );
+    }
+    let xRT = (gx1 + stride) * field.cellSizeM;
+    let xRB = xRT;
+    if (nextBand >= 0 && gx1 + stride * 2 <= steps) {
+      const th = edgeThreshold(band, nextBand);
+      xRT = interpCrossingX(field.elevation, gx1, gx1 + stride * 2, gy, th, field.cellSizeM);
+      xRB = interpCrossingX(
+        field.elevation,
+        gx1,
+        gx1 + stride * 2,
+        gy + stride,
+        th,
+        field.cellSizeM,
+      );
+    }
     bucket.push([
-      [x0 + jx(1), y0 + jx(2)],
-      [x1 + jx(3), y0 + jx(4)],
-      [x1 + jx(5), y1 + jx(6)],
-      [x0 + jx(7), y1 + jx(8)],
+      [xLT - growX, y0],
+      [xRT + growX, y0],
+      [xRB + growX, y1],
+      [xLB - growX, y1],
     ]);
   };
-  // 水平 Run-Length 合并：同一行连续同 band 的格并成一条长多边形，
-  // 7744 个碎方块压到 ~600 条，SVG/Canvas 指令量与视觉噪点同时骤降。
   for (let gy = 0; gy + stride <= steps; gy += stride) {
     let runBand = -1;
+    let prevBand = -1;
     let runStart = 0;
     for (let gx = 0; gx + stride <= steps; gx += stride) {
       const band = bandAt(gx, gy);
@@ -91,12 +131,13 @@ export function buildHypsometricTint(
         continue;
       }
       if (band !== runBand) {
-        flush(runBand, runStart, gx - stride, gy);
+        flush(runBand, prevBand, band, runStart, gx - stride, gy);
+        prevBand = runBand;
         runBand = band;
         runStart = gx;
       }
     }
-    if (runBand >= 0) flush(runBand, runStart, steps - stride, gy);
+    if (runBand >= 0) flush(runBand, prevBand, -1, runStart, steps - stride, gy);
   }
   const out: TerrainTintBand[] = [];
   for (let band = 0; band < TINT_BAND_COUNT; band += 1) {

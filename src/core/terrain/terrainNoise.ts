@@ -1,3 +1,5 @@
+import type { TerrainConfig } from '../../schema/entity.schema';
+
 /** 确定性平滑值噪声：2–3 八度，零 Math.random，同一 seed 逐字复现 */
 const HASH_A = 374761393;
 const HASH_B = 668265263;
@@ -58,4 +60,71 @@ export function createNoiseEvaluator(
     }
     return (sum / Math.max(1e-9, norm)) * amp;
   };
+}
+
+export type TerrainReliefPick = Pick<
+  TerrainConfig,
+  'macroReliefAmpM' | 'valleyCarveRatio' | 'terrainNoiseAmpM'
+>;
+
+/** 宏观起伏振幅解析：显式优先；未显式配置且 terrainNoiseAmpM <= 1e-9 时归 0，100% 保护纯解析单测 */
+export function resolveMacroReliefAmp(
+  terrain: Pick<TerrainConfig, 'macroReliefAmpM' | 'terrainNoiseAmpM'>,
+): number {
+  if (terrain.macroReliefAmpM !== undefined) {
+    return Number.isFinite(terrain.macroReliefAmpM)
+      ? Math.max(0, Math.min(60, terrain.macroReliefAmpM))
+      : 0;
+  }
+  return terrain.terrainNoiseAmpM <= 1e-9 ? 0 : 12;
+}
+
+/** 宽河谷扩展倍比解析：显式优先；未显式配置且 terrainNoiseAmpM <= 1e-9 时归 0 */
+export function resolveValleyCarveRatio(
+  terrain: Pick<TerrainConfig, 'valleyCarveRatio' | 'terrainNoiseAmpM'>,
+): number {
+  if (terrain.valleyCarveRatio !== undefined) {
+    return Number.isFinite(terrain.valleyCarveRatio)
+      ? Math.max(0, Math.min(12, terrain.valleyCarveRatio))
+      : 0;
+  }
+  return terrain.terrainNoiseAmpM <= 1e-9 ? 0 : 5.5;
+}
+
+/**
+ * 长波宏观起伏求值器：2 个与图幅联动的长波八度 + 温和 domain warp。
+ * 典型参数 (ampM=12, worldSizeM=2400) 下平原最大附加坡度 < 2°，零破坏建筑与农田可建性。
+ */
+export function createMacroReliefEvaluator(
+  ampM: number,
+  worldSizeM: number,
+  seed: number,
+): (wx: number, wy: number) => number {
+  const amp = Number.isFinite(ampM) ? Math.max(0, Math.min(60, ampM)) : 0;
+  if (amp <= 1e-9 || !(worldSizeM > 0)) return () => 0;
+  const s = Math.round(Number.isFinite(seed) ? seed : 7719) | 0;
+  const span = Math.max(600, worldSizeM);
+  const warpFreq = 1 / (0.55 * span);
+  const warpAmp = 0.1 * span;
+  const f1 = 1 / (0.48 * span);
+  const f2 = 1 / (0.23 * span);
+  return (wx: number, wy: number): number => {
+    const ux = wx + (valueNoise(wx * warpFreq, wy * warpFreq, s + 313) - 0.5) * 2 * warpAmp;
+    const uy = wy + (valueNoise(wx * warpFreq, wy * warpFreq, s + 617) - 0.5) * 2 * warpAmp;
+    const raw =
+      ((valueNoise(ux * f1, uy * f1, s + 1009) - 0.5) * 1.0 +
+        (valueNoise(ux * f2, uy * f2, s + 2027) - 0.5) * 0.45) /
+      1.45;
+    return raw * amp;
+  };
+}
+
+/**
+ * 山体有机形态强度：当 terrainNoiseAmpM <= 1e-9 时严格返回 0（保护纯解析单测零漂移）；
+ * 否则映射到 (0, 1]，驱动山丘放射山嘴/冲沟与山脊起伏鞍部，消除同心椭圆与香肠山脊感。
+ */
+export function resolveOrganicStrength(noiseAmpM: number): number {
+  const amp = Number.isFinite(noiseAmpM) ? Math.max(0, Math.min(12, noiseAmpM)) : 0;
+  if (amp <= 1e-9) return 0;
+  return Math.min(1, amp / 1.5);
 }

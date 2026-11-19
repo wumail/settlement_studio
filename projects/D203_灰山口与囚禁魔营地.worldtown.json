@@ -1,0 +1,3876 @@
+{
+  "schemaVersion": "3.0.0",
+  "meta": {
+    "id": "proj_blank",
+    "name": "灰山口边镇与深山猎人营地",
+    "subtitle": "D2-03《小神龛》案发勘测图 · 班佐营地符号与山麓边镇（图幅 2.6 km）",
+    "worldSizeM": 2600,
+    "terraxAnchor": {
+      "lon": 18.99,
+      "lat": 19.53,
+      "elevM": 497.4,
+      "regionNote": "D2-03 内盆外缘灰山口 · 距F1-05山结北麓"
+    },
+    "updatedAt": "2026-11-19T10:40:41.132Z"
+  },
+  "palette": {
+    "themeId": "nordic_fjord",
+    "overrides": {}
+  },
+  "terrain": {
+    "baseElev": 498,
+    "slopeMagM": 22,
+    "slopeDirDeg": 130,
+    "contourStep": 4,
+    "indexEvery": 5,
+    "minContourElev": 460,
+    "maxContourElev": 690,
+    "showContours": true,
+    "contourOpacity": 0.36,
+    "showScarpTicks": true,
+    "scarpSlopeThresholdDeg": 22,
+    "showHypsometricTint": true,
+    "showHachures": true,
+    "hachureSlopeMinDeg": 5.5,
+    "terrainNoiseAmpM": 2,
+    "terrainSeed": 1123,
+    "macroReliefAmpM": 14,
+    "valleyCarveRatio": 7,
+    "showSupplementaryContours": true,
+    "supplementaryMaxSlopeDeg": 6.5,
+    "shapes": [
+      {
+        "id": "ridge_west_pass",
+        "type": "ridge",
+        "points": [
+          [
+            -80,
+            440
+          ],
+          [
+            110,
+            560
+          ],
+          [
+            190,
+            880
+          ],
+          [
+            140,
+            1290
+          ],
+          [
+            95,
+            1740
+          ],
+          [
+            230,
+            2180
+          ]
+        ],
+        "deltaElev": 86,
+        "widthLeft": 260,
+        "widthRight": 280
+      },
+      {
+        "id": "ridge_ambush_spur",
+        "type": "ridge",
+        "points": [
+          [
+            165,
+            1060
+          ],
+          [
+            450,
+            1130
+          ],
+          [
+            740,
+            1215
+          ]
+        ],
+        "deltaElev": 38,
+        "widthLeft": 170,
+        "widthRight": 115
+      },
+      {
+        "id": "hill_sw_spur",
+        "type": "hill",
+        "cx": 380,
+        "cy": 2350,
+        "rx": 410,
+        "ry": 250,
+        "angleDeg": 20,
+        "deltaElev": 42,
+        "focusX": 0.18,
+        "focusY": -0.15
+      },
+      {
+        "id": "ridge_north_east",
+        "type": "ridge",
+        "points": [
+          [
+            640,
+            -60
+          ],
+          [
+            980,
+            105
+          ],
+          [
+            1440,
+            185
+          ],
+          [
+            1910,
+            270
+          ],
+          [
+            2340,
+            410
+          ],
+          [
+            2680,
+            650
+          ]
+        ],
+        "deltaElev": 92,
+        "widthLeft": 260,
+        "widthRight": 300
+      },
+      {
+        "id": "ridge_ne_spur",
+        "type": "ridge",
+        "points": [
+          [
+            1380,
+            200
+          ],
+          [
+            1430,
+            470
+          ],
+          [
+            1345,
+            700
+          ]
+        ],
+        "deltaElev": 36,
+        "widthLeft": 175,
+        "widthRight": 175
+      },
+      {
+        "id": "hill_ne_peak",
+        "type": "hill",
+        "cx": 2150,
+        "cy": 340,
+        "rx": 420,
+        "ry": 290,
+        "angleDeg": -16,
+        "deltaElev": 40,
+        "focusX": -0.22,
+        "focusY": 0.14
+      },
+      {
+        "id": "valley_huishan_pass",
+        "type": "valley",
+        "points": [
+          [
+            170,
+            0
+          ],
+          [
+            450,
+            270
+          ],
+          [
+            810,
+            480
+          ],
+          [
+            1040,
+            790
+          ],
+          [
+            1135,
+            1140
+          ]
+        ],
+        "deltaElev": -12,
+        "widthLeft": 230,
+        "widthRight": 230
+      }
+    ],
+    "sculptDeltaB64": ""
+  },
+  "rivers": [
+    {
+      "id": "riv_huishan",
+      "zIndex": 0,
+      "name": "灰山冷溪（R2912 支流）",
+      "points": [
+        [
+          170,
+          0
+        ],
+        [
+          450,
+          270
+        ],
+        [
+          810,
+          480
+        ],
+        [
+          1040,
+          790
+        ],
+        [
+          1135,
+          1140
+        ],
+        [
+          1290,
+          1490
+        ],
+        [
+          1425,
+          1820
+        ],
+        [
+          1365,
+          2190
+        ],
+        [
+          1560,
+          2600
+        ]
+      ],
+      "widthStartM": 22,
+      "widthEndM": 50,
+      "widthsM": [
+        22,
+        25,
+        29,
+        33,
+        37,
+        41,
+        44,
+        47,
+        50
+      ],
+      "carveDepthM": 9,
+      "rippleLines": 3
+    }
+  ],
+  "waterBodies": [
+    {
+      "id": "wb_spring_pool",
+      "zIndex": 0,
+      "name": "东坡泉泽",
+      "kind": "lake",
+      "points": [
+        [
+          2190,
+          990
+        ],
+        [
+          2310,
+          975
+        ],
+        [
+          2375,
+          1045
+        ],
+        [
+          2345,
+          1130
+        ],
+        [
+          2235,
+          1145
+        ],
+        [
+          2165,
+          1075
+        ]
+      ],
+      "rippleLines": 3
+    }
+  ],
+  "canals": [
+    {
+      "id": "cn_qanat_east",
+      "zIndex": 0,
+      "name": "百日泉道暗渠支线",
+      "style": "qanat",
+      "points": [
+        [
+          2600,
+          960
+        ],
+        [
+          2360,
+          1040
+        ]
+      ],
+      "widthM": 5.5
+    },
+    {
+      "id": "cn_town_clean",
+      "zIndex": 0,
+      "name": "边镇引泉石渠",
+      "style": "stone_clean",
+      "points": [
+        [
+          2185,
+          1110
+        ],
+        [
+          2040,
+          1280
+        ],
+        [
+          1940,
+          1470
+        ],
+        [
+          1830,
+          1690
+        ],
+        [
+          1650,
+          1875
+        ],
+        [
+          1445,
+          1855
+        ]
+      ],
+      "widthM": 6.5
+    },
+    {
+      "id": "cn_irr_south",
+      "zIndex": 0,
+      "name": "西坡引水农渠",
+      "style": "irrigation",
+      "points": [
+        [
+          1408,
+          1865
+        ],
+        [
+          1160,
+          2000
+        ],
+        [
+          945,
+          2210
+        ],
+        [
+          820,
+          2540
+        ]
+      ],
+      "widthM": 4.5
+    }
+  ],
+  "reefs": [],
+  "roads": [
+    {
+      "id": "rd_mountain_trail",
+      "zIndex": 0,
+      "name": "深山猎道（通F1-05山隘）",
+      "tier": "street",
+      "points": [
+        [
+          0,
+          490
+        ],
+        [
+          270,
+          540
+        ],
+        [
+          530,
+          745
+        ],
+        [
+          785,
+          920
+        ],
+        [
+          990,
+          1185
+        ],
+        [
+          1135,
+          1455
+        ],
+        [
+          1235,
+          1585
+        ],
+        [
+          1540,
+          1595
+        ],
+        [
+          1820,
+          1610
+        ]
+      ],
+      "widthM": 8
+    },
+    {
+      "id": "rd_caravan_east",
+      "zIndex": 0,
+      "name": "百日泉道东廊驿路",
+      "tier": "highway",
+      "points": [
+        [
+          1820,
+          1610
+        ],
+        [
+          2120,
+          1620
+        ],
+        [
+          2350,
+          1520
+        ],
+        [
+          2600,
+          1460
+        ]
+      ],
+      "widthM": 11
+    },
+    {
+      "id": "rd_basin_south",
+      "zIndex": 0,
+      "name": "南出内盆商道",
+      "tier": "highway",
+      "points": [
+        [
+          1820,
+          1610
+        ],
+        [
+          1855,
+          1980
+        ],
+        [
+          1910,
+          2310
+        ],
+        [
+          1960,
+          2600
+        ]
+      ],
+      "widthM": 11
+    },
+    {
+      "id": "rd_north_pass",
+      "zIndex": 0,
+      "name": "北岭护商哨道",
+      "tier": "street",
+      "points": [
+        [
+          1820,
+          1610
+        ],
+        [
+          1960,
+          1310
+        ],
+        [
+          2020,
+          950
+        ],
+        [
+          1850,
+          560
+        ],
+        [
+          1760,
+          0
+        ]
+      ],
+      "widthM": 8.5
+    },
+    {
+      "id": "rd_west_farm",
+      "zIndex": 0,
+      "name": "西坡田径",
+      "tier": "lane",
+      "points": [
+        [
+          1135,
+          1650
+        ],
+        [
+          980,
+          1940
+        ],
+        [
+          810,
+          2260
+        ],
+        [
+          640,
+          2600
+        ]
+      ],
+      "widthM": 5.5
+    },
+    {
+      "id": "rd_camp_spur",
+      "zIndex": 0,
+      "name": "营地小径",
+      "tier": "lane",
+      "points": [
+        [
+          530,
+          745
+        ],
+        [
+          548,
+          724
+        ]
+      ],
+      "widthM": 4.5
+    }
+  ],
+  "fords": [],
+  "zones": [
+    {
+      "id": "zone_town_wall",
+      "zIndex": 0,
+      "name": "灰山口边镇",
+      "contentType": "walled_city",
+      "points": [
+        [
+          2092.7,
+          1541.7
+        ],
+        [
+          2090.1,
+          1657.2
+        ],
+        [
+          2043.1,
+          1776.9
+        ],
+        [
+          1907.1,
+          1823.4
+        ],
+        [
+          1773.5,
+          1870.9
+        ],
+        [
+          1653.2,
+          1815.1
+        ],
+        [
+          1578.3,
+          1726.6
+        ],
+        [
+          1515.6,
+          1621.4
+        ],
+        [
+          1575.2,
+          1506.4
+        ],
+        [
+          1656.3,
+          1401
+        ],
+        [
+          1793.9,
+          1354.4
+        ],
+        [
+          1935,
+          1365
+        ],
+        [
+          2056.1,
+          1425.4
+        ]
+      ],
+      "seed": 112321,
+      "locked": false,
+      "density": 0.9,
+      "maxSlopeDeg": 24,
+      "streetWidthM": 8,
+      "wallThicknessM": 5.5,
+      "towerIntervalM": 110,
+      "frayOuter": true,
+      "marketMode": "stalls",
+      "exclusionStyle": "plague_stones",
+      "ribbonSpine": [],
+      "corridorWidthM": 110
+    },
+    {
+      "id": "zone_garrison_citadel",
+      "zIndex": 0,
+      "name": "镇守堡寨",
+      "contentType": "citadel",
+      "points": [
+        [
+          1767.9,
+          1503
+        ],
+        [
+          1737.5,
+          1547.7
+        ],
+        [
+          1682.2,
+          1561.5
+        ],
+        [
+          1634.4,
+          1536.3
+        ],
+        [
+          1622.1,
+          1487
+        ],
+        [
+          1652.5,
+          1442.3
+        ],
+        [
+          1707.8,
+          1428.5
+        ],
+        [
+          1755.6,
+          1453.7
+        ]
+      ],
+      "seed": 112322,
+      "locked": false,
+      "density": 0.78,
+      "maxSlopeDeg": 26,
+      "streetWidthM": 7.5,
+      "wallThicknessM": 4.2,
+      "towerIntervalM": 64,
+      "frayOuter": true,
+      "marketMode": "stalls",
+      "exclusionStyle": "plague_stones",
+      "ribbonSpine": [],
+      "corridorWidthM": 110
+    },
+    {
+      "id": "zone_market_bazaar",
+      "zIndex": 0,
+      "name": "东门旧物与山货集场",
+      "contentType": "market",
+      "points": [
+        [
+          2354.0167364643157,
+          1719.8767222154977
+        ],
+        [
+          2293.0305661835355,
+          1788.2776834468782
+        ],
+        [
+          2195.1219450764947,
+          1802.0378427818218
+        ],
+        [
+          2117.64441551445,
+          1753.0966855023332
+        ],
+        [
+          2105.9832635356843,
+          1670.1232777845023
+        ],
+        [
+          2166.9694338164645,
+          1601.722316553122
+        ],
+        [
+          2264.8780549235053,
+          1587.9621572181782
+        ],
+        [
+          2342.35558448555,
+          1636.9033144976665
+        ]
+      ],
+      "seed": 112323,
+      "locked": false,
+      "density": 0.84,
+      "maxSlopeDeg": 18,
+      "streetWidthM": 7.5,
+      "wallThicknessM": 5.5,
+      "towerIntervalM": 110,
+      "frayOuter": true,
+      "marketMode": "stalls",
+      "exclusionStyle": "plague_stones",
+      "ribbonSpine": [],
+      "corridorWidthM": 110
+    },
+    {
+      "id": "zone_caravan_yard",
+      "zIndex": 0,
+      "name": "护商驼驿转运场",
+      "contentType": "market",
+      "points": [
+        [
+          1855,
+          1095
+        ],
+        [
+          2025,
+          1045
+        ],
+        [
+          2065,
+          1165
+        ],
+        [
+          1895,
+          1225
+        ]
+      ],
+      "seed": 112324,
+      "locked": false,
+      "density": 0.78,
+      "maxSlopeDeg": 18,
+      "streetWidthM": 7.5,
+      "wallThicknessM": 5.5,
+      "towerIntervalM": 110,
+      "frayOuter": true,
+      "marketMode": "timber_yard",
+      "exclusionStyle": "plague_stones",
+      "ribbonSpine": [],
+      "corridorWidthM": 110
+    },
+    {
+      "id": "zone_suburb_south",
+      "zIndex": 0,
+      "name": "南关厢坊",
+      "contentType": "town_blocks",
+      "points": [
+        [
+          2031.8200288246785,
+          2001.5549739039027
+        ],
+        [
+          2011.6406443138621,
+          2062.6806844278226
+        ],
+        [
+          1963.9549894031504,
+          2117.4441763912555
+        ],
+        [
+          1884.4008128908367,
+          2163.0439566331015
+        ],
+        [
+          1794.6896403288008,
+          2142.255733178043
+        ],
+        [
+          1714.6365981055965,
+          2113.25617693708
+        ],
+        [
+          1661.5693113783664,
+          2053.5903187829667
+        ],
+        [
+          1685.3754391546004,
+          1978.8437898689601
+        ],
+        [
+          1745.6392353788015,
+          1913.4926606996748
+        ],
+        [
+          1844.6059017075145,
+          1879.8884504943212
+        ],
+        [
+          1936.1257326717164,
+          1906.3844791685253
+        ],
+        [
+          2041.3496958798883,
+          1921.4911024472174
+        ]
+      ],
+      "seed": 112305,
+      "locked": false,
+      "density": 0.68,
+      "maxSlopeDeg": 18,
+      "streetWidthM": 7.5,
+      "wallThicknessM": 5.5,
+      "towerIntervalM": 110,
+      "frayOuter": true,
+      "marketMode": "stalls",
+      "exclusionStyle": "plague_stones",
+      "ribbonSpine": [],
+      "corridorWidthM": 110
+    },
+    {
+      "id": "zone_bridgehead_west",
+      "zIndex": 0,
+      "name": "西溪桥头聚落",
+      "contentType": "town_blocks",
+      "points": [
+        [
+          1258.306792917316,
+          1676.209667933062
+        ],
+        [
+          1221.7957049265956,
+          1719.4336900377436
+        ],
+        [
+          1180.7975813652024,
+          1765.7760636641192
+        ],
+        [
+          1111.0061158162487,
+          1762.8823499742157
+        ],
+        [
+          1063.406821332739,
+          1720.1525990238015
+        ],
+        [
+          1022.5563240494246,
+          1679.4123305840217
+        ],
+        [
+          1003.2149795499234,
+          1621.9882291735182
+        ],
+        [
+          1038.5863641944597,
+          1572.8722837196228
+        ],
+        [
+          1096.918871969823,
+          1553.7310929573855
+        ],
+        [
+          1154.5541481582595,
+          1558.00496580945
+        ],
+        [
+          1203.3161892335088,
+          1583.0584516660933
+        ],
+        [
+          1242.130517578198,
+          1621.977452960251
+        ]
+      ],
+      "seed": 112306,
+      "locked": false,
+      "density": 0.62,
+      "maxSlopeDeg": 20,
+      "streetWidthM": 7.5,
+      "wallThicknessM": 5.5,
+      "towerIntervalM": 110,
+      "frayOuter": true,
+      "marketMode": "stalls",
+      "exclusionStyle": "plague_stones",
+      "ribbonSpine": [],
+      "corridorWidthM": 110
+    },
+    {
+      "id": "zone_camp_symbol",
+      "zIndex": 0,
+      "name": "营地空地工整符号",
+      "contentType": "exclusion",
+      "points": [
+        [
+          582.2,
+          709.2
+        ],
+        [
+          569.2,
+          722.2
+        ],
+        [
+          550.8,
+          722.2
+        ],
+        [
+          537.8,
+          709.2
+        ],
+        [
+          537.8,
+          690.8
+        ],
+        [
+          550.8,
+          677.8
+        ],
+        [
+          569.2,
+          677.8
+        ],
+        [
+          582.2,
+          690.8
+        ]
+      ],
+      "seed": 112307,
+      "locked": false,
+      "density": 0.72,
+      "maxSlopeDeg": 24,
+      "streetWidthM": 7.5,
+      "wallThicknessM": 5.5,
+      "towerIntervalM": 110,
+      "frayOuter": true,
+      "marketMode": "stalls",
+      "exclusionStyle": "plague_stones",
+      "ribbonSpine": [],
+      "corridorWidthM": 110
+    },
+    {
+      "id": "zone_hunter_camp",
+      "zIndex": 0,
+      "name": "深山猎人营舍",
+      "contentType": "village",
+      "points": [
+        [
+          604.2,
+          714.9
+        ],
+        [
+          583.5,
+          737.9
+        ],
+        [
+          551.8,
+          743
+        ],
+        [
+          524,
+          728.1
+        ],
+        [
+          513,
+          700
+        ],
+        [
+          524,
+          671.9
+        ],
+        [
+          551.8,
+          657
+        ],
+        [
+          583.5,
+          662.1
+        ],
+        [
+          604.2,
+          685.1
+        ]
+      ],
+      "seed": 112328,
+      "locked": false,
+      "density": 0.9,
+      "maxSlopeDeg": 28,
+      "streetWidthM": 4.5,
+      "wallThicknessM": 5.5,
+      "towerIntervalM": 110,
+      "frayOuter": true,
+      "marketMode": "stalls",
+      "exclusionStyle": "plague_stones",
+      "ribbonSpine": [],
+      "corridorWidthM": 110,
+      "buildingScale": 0.72
+    },
+    {
+      "id": "zone_wood_nw_camp",
+      "zIndex": 0,
+      "name": "秋霜冷杉密林",
+      "contentType": "woodland",
+      "points": [
+        [
+          145,
+          455
+        ],
+        [
+          255,
+          375
+        ],
+        [
+          395,
+          360
+        ],
+        [
+          485,
+          425
+        ],
+        [
+          460,
+          505
+        ],
+        [
+          365,
+          560
+        ],
+        [
+          345,
+          685
+        ],
+        [
+          385,
+          815
+        ],
+        [
+          310,
+          905
+        ],
+        [
+          195,
+          865
+        ],
+        [
+          125,
+          690
+        ]
+      ],
+      "seed": 112309,
+      "locked": false,
+      "density": 0.84,
+      "maxSlopeDeg": 42,
+      "streetWidthM": 7.5,
+      "wallThicknessM": 5.5,
+      "towerIntervalM": 110,
+      "frayOuter": true,
+      "marketMode": "stalls",
+      "exclusionStyle": "plague_stones",
+      "ribbonSpine": [],
+      "corridorWidthM": 110
+    },
+    {
+      "id": "zone_wood_gorge_east",
+      "zIndex": 0,
+      "name": "溪北松林",
+      "contentType": "woodland",
+      "points": [
+        [
+          675,
+          535
+        ],
+        [
+          785,
+          495
+        ],
+        [
+          915,
+          560
+        ],
+        [
+          995,
+          685
+        ],
+        [
+          975,
+          810
+        ],
+        [
+          865,
+          880
+        ],
+        [
+          755,
+          845
+        ],
+        [
+          695,
+          745
+        ],
+        [
+          685,
+          635
+        ]
+      ],
+      "seed": 112310,
+      "locked": false,
+      "density": 0.78,
+      "maxSlopeDeg": 36,
+      "streetWidthM": 7.5,
+      "wallThicknessM": 5.5,
+      "towerIntervalM": 110,
+      "frayOuter": true,
+      "marketMode": "stalls",
+      "exclusionStyle": "plague_stones",
+      "ribbonSpine": [],
+      "corridorWidthM": 110
+    },
+    {
+      "id": "zone_wood_ambush",
+      "zIndex": 0,
+      "name": "断坠斜坡老林",
+      "contentType": "woodland",
+      "points": [
+        [
+          375,
+          1020
+        ],
+        [
+          540,
+          975
+        ],
+        [
+          720,
+          1005
+        ],
+        [
+          875,
+          1095
+        ],
+        [
+          995,
+          1215
+        ],
+        [
+          955,
+          1365
+        ],
+        [
+          845,
+          1455
+        ],
+        [
+          670,
+          1435
+        ],
+        [
+          490,
+          1380
+        ],
+        [
+          365,
+          1245
+        ],
+        [
+          330,
+          1120
+        ]
+      ],
+      "seed": 112311,
+      "locked": false,
+      "density": 0.8,
+      "maxSlopeDeg": 40,
+      "streetWidthM": 7.5,
+      "wallThicknessM": 5.5,
+      "towerIntervalM": 110,
+      "frayOuter": true,
+      "marketMode": "stalls",
+      "exclusionStyle": "plague_stones",
+      "ribbonSpine": [],
+      "corridorWidthM": 110
+    },
+    {
+      "id": "zone_farm_sw",
+      "zIndex": 0,
+      "name": "西坡秋麦田",
+      "contentType": "farmland",
+      "points": [
+        [
+          560,
+          1690
+        ],
+        [
+          1020,
+          1780
+        ],
+        [
+          1045,
+          1809
+        ],
+        [
+          736,
+          2403
+        ],
+        [
+          510,
+          2040
+        ]
+      ],
+      "seed": 112312,
+      "locked": false,
+      "density": 0.82,
+      "maxSlopeDeg": 18,
+      "streetWidthM": 7.5,
+      "wallThicknessM": 5.5,
+      "towerIntervalM": 110,
+      "frayOuter": true,
+      "marketMode": "stalls",
+      "exclusionStyle": "plague_stones",
+      "ribbonSpine": [],
+      "corridorWidthM": 110
+    },
+    {
+      "id": "zone_farm_se",
+      "zIndex": 0,
+      "name": "南盆谷田",
+      "contentType": "farmland",
+      "points": [
+        [
+          1833,
+          2200
+        ],
+        [
+          2040,
+          1980
+        ],
+        [
+          2490,
+          1940
+        ],
+        [
+          2506,
+          2200
+        ]
+      ],
+      "seed": 112313,
+      "locked": false,
+      "density": 0.82,
+      "maxSlopeDeg": 16,
+      "streetWidthM": 7.5,
+      "wallThicknessM": 5.5,
+      "towerIntervalM": 110,
+      "frayOuter": true,
+      "marketMode": "stalls",
+      "exclusionStyle": "plague_stones",
+      "ribbonSpine": [],
+      "corridorWidthM": 110
+    },
+    {
+      "id": "zone_farm_east",
+      "zIndex": 0,
+      "name": "东泉坡田",
+      "contentType": "farmland",
+      "points": [
+        [
+          2345,
+          1210
+        ],
+        [
+          2565,
+          1200
+        ],
+        [
+          2565,
+          1880
+        ],
+        [
+          2375,
+          1875
+        ]
+      ],
+      "seed": 112314,
+      "locked": false,
+      "density": 0.82,
+      "maxSlopeDeg": 16,
+      "streetWidthM": 7.5,
+      "wallThicknessM": 5.5,
+      "towerIntervalM": 110,
+      "frayOuter": true,
+      "marketMode": "stalls",
+      "exclusionStyle": "plague_stones",
+      "ribbonSpine": [],
+      "corridorWidthM": 110
+    },
+    {
+      "id": "zone_farm_north",
+      "zIndex": 0,
+      "name": "北坪旱田",
+      "contentType": "farmland",
+      "points": [
+        [
+          1480,
+          860
+        ],
+        [
+          1940,
+          850
+        ],
+        [
+          1960,
+          1140
+        ],
+        [
+          1520,
+          1180
+        ]
+      ],
+      "seed": 112315,
+      "locked": false,
+      "density": 0.78,
+      "maxSlopeDeg": 16,
+      "streetWidthM": 7.5,
+      "wallThicknessM": 5.5,
+      "towerIntervalM": 110,
+      "frayOuter": true,
+      "marketMode": "stalls",
+      "exclusionStyle": "plague_stones",
+      "ribbonSpine": [],
+      "corridorWidthM": 110
+    },
+    {
+      "id": "zone_marsh_south",
+      "zIndex": 0,
+      "name": "南溪荒草滩",
+      "contentType": "exclusion",
+      "points": [
+        [
+          1557.412069201806,
+          2357.336899541223
+        ],
+        [
+          1540.5519444604213,
+          2403.0112355591764
+        ],
+        [
+          1488.217133788274,
+          2422.896901247498
+        ],
+        [
+          1425.6140072969406,
+          2417.4837527480927
+        ],
+        [
+          1384.4380272940011,
+          2372.889130482762
+        ],
+        [
+          1337.413578047738,
+          2328.235842851518
+        ],
+        [
+          1373.5777920505504,
+          2283.063030364667
+        ],
+        [
+          1395.1195881933486,
+          2243.2202510884013
+        ],
+        [
+          1440.5883641139856,
+          2211.809139320989
+        ],
+        [
+          1503.1696974690228,
+          2225.5266835955445
+        ],
+        [
+          1562.2466870482199,
+          2256.1573140831665
+        ],
+        [
+          1567.6684767956815,
+          2313.3726377168073
+        ]
+      ],
+      "seed": 112316,
+      "locked": false,
+      "density": 0.72,
+      "maxSlopeDeg": 24,
+      "streetWidthM": 7.5,
+      "wallThicknessM": 5.5,
+      "towerIntervalM": 110,
+      "frayOuter": true,
+      "marketMode": "stalls",
+      "exclusionStyle": "marsh",
+      "ribbonSpine": [],
+      "corridorWidthM": 110
+    },
+    {
+      "id": "zone_farm_sw_east",
+      "zIndex": 0,
+      "name": "西坡东麦田",
+      "contentType": "farmland",
+      "points": [
+        [
+          1052,
+          1818
+        ],
+        [
+          1260,
+          2060
+        ],
+        [
+          1180,
+          2440
+        ],
+        [
+          743,
+          2410
+        ]
+      ],
+      "seed": 112331,
+      "locked": false,
+      "density": 0.72,
+      "maxSlopeDeg": 18,
+      "streetWidthM": 7.5,
+      "wallThicknessM": 5.5,
+      "towerIntervalM": 110,
+      "frayOuter": true,
+      "marketMode": "stalls",
+      "exclusionStyle": "plague_stones",
+      "ribbonSpine": [],
+      "corridorWidthM": 110
+    },
+    {
+      "id": "zone_farm_se_south",
+      "zIndex": 0,
+      "name": "南盆南田",
+      "contentType": "farmland",
+      "points": [
+        [
+          1824,
+          2210
+        ],
+        [
+          2506,
+          2210
+        ],
+        [
+          2520,
+          2440
+        ],
+        [
+          2010,
+          2460
+        ],
+        [
+          1720,
+          2320
+        ]
+      ],
+      "seed": 112332,
+      "locked": false,
+      "density": 0.72,
+      "maxSlopeDeg": 16,
+      "streetWidthM": 7.5,
+      "wallThicknessM": 5.5,
+      "towerIntervalM": 110,
+      "frayOuter": true,
+      "marketMode": "stalls",
+      "exclusionStyle": "plague_stones",
+      "ribbonSpine": [],
+      "corridorWidthM": 110
+    }
+  ],
+  "landmarks": [
+    {
+      "id": "lm_01_camp",
+      "zIndex": 0,
+      "legendKey": "",
+      "glyphType": "star_fort",
+      "label": "深山猎人营地与空地符号",
+      "x": 575,
+      "y": 608,
+      "showLabel": true,
+      "sizePx": 15,
+      "badgeNum": 1,
+      "subtitle": "十五人猎队环石空地扎营"
+    },
+    {
+      "id": "lm_02_f105_pass",
+      "zIndex": 0,
+      "legendKey": "",
+      "glyphType": "gate_arch",
+      "label": "越岭通 F1-05 山隘秘径",
+      "x": 245,
+      "y": 525,
+      "showLabel": true,
+      "sizePx": 15,
+      "badgeNum": 2,
+      "subtitle": "西北入秋结霜山口 · 传言班佐离营后越岭入 F1-05 受封"
+    },
+    {
+      "id": "lm_03_horse_stop",
+      "zIndex": 0,
+      "legendKey": "",
+      "glyphType": "stele",
+      "label": "惊马止步处",
+      "x": 790,
+      "y": 915,
+      "showLabel": true,
+      "sizePx": 15,
+      "badgeNum": 3,
+      "subtitle": "距营地二三里 · 猎马至此惊骇不前，众人弃马步行入林"
+    },
+    {
+      "id": "lm_04_ambush",
+      "zIndex": 0,
+      "legendKey": "",
+      "glyphType": "stele",
+      "label": "断坠遇袭斜坡",
+      "x": 995,
+      "y": 1190,
+      "showLabel": true,
+      "sizePx": 15,
+      "badgeNum": 4,
+      "subtitle": "班佐刺伤领头猎人处 · 鸟风骤寂，旧吊坠挡灾震其滚落斜坡"
+    },
+    {
+      "id": "lm_05_bodies",
+      "zIndex": 0,
+      "legendKey": "",
+      "glyphType": "well_shrine",
+      "label": "路边同伴遗骸标位",
+      "x": 1135,
+      "y": 1445,
+      "showLabel": true,
+      "sizePx": 15,
+      "badgeNum": 5,
+      "subtitle": "测绘员补录路边遗骸点 · 皆齐整缺失左胸第五根肋骨"
+    },
+    {
+      "id": "lm_06_bridge",
+      "zIndex": 0,
+      "legendKey": "",
+      "glyphType": "ferry_anchor",
+      "label": "冷溪双堡石桥与盘查渡口",
+      "x": 1325,
+      "y": 1650,
+      "showLabel": true,
+      "sizePx": 15,
+      "badgeNum": 6,
+      "subtitle": "入镇咽喉双堡石桥 · 事发后治安所增派夜卫严查进出"
+    },
+    {
+      "id": "lm_07_clinic",
+      "zIndex": 0,
+      "legendKey": "",
+      "glyphType": "tower",
+      "label": "卫生所与治安所",
+      "x": 1645,
+      "y": 1615,
+      "showLabel": true,
+      "sizePx": 15,
+      "badgeNum": 7,
+      "subtitle": "猎人逃归昏倒包扎处 · 吊坠掌心自断，数日后伤裂身故"
+    },
+    {
+      "id": "lm_08_bazaar",
+      "zIndex": 0,
+      "legendKey": "",
+      "glyphType": "market_tent",
+      "label": "旧物地摊与山货集场",
+      "x": 2230,
+      "y": 1695,
+      "showLabel": true,
+      "sizePx": 15,
+      "badgeNum": 8,
+      "subtitle": "三日一集驮卖猎物处 · 猎人早年购得老吊坠之地摊"
+    },
+    {
+      "id": "lm_09_spring",
+      "zIndex": 0,
+      "legendKey": "",
+      "glyphType": "well_shrine",
+      "label": "东坡泉泽与百日泉暗渠",
+      "x": 2265,
+      "y": 1060,
+      "showLabel": true,
+      "sizePx": 15,
+      "badgeNum": 9,
+      "subtitle": "D2-03 井泉商站水源 · 暗渠引水入镇驱动水磨"
+    }
+  ],
+  "legend": {
+    "visible": true,
+    "title": "勘测图例 · D2-03",
+    "position": "bottom-right",
+    "columns": 2,
+    "displayMode": "guided",
+    "furnitureOpacity": 0.88,
+    "labelOpacity": 0.92,
+    "items": []
+  },
+  "weirs": [
+    {
+      "id": "weir_huishan",
+      "zIndex": 0,
+      "name": "冷溪分水石堰",
+      "pStart": [
+        1139.4270731629388,
+        1213.865663707774
+      ],
+      "pEnd": [
+        1186.7213341243685,
+        1192.921062424855
+      ],
+      "sluices": 3,
+      "widthM": 9
+    }
+  ],
+  "docks": [
+    {
+      "id": "dock_town_west",
+      "zIndex": 0,
+      "name": "西溪木栈渡口",
+      "x": 1401.1467221201913,
+      "y": 1814.3552048734757,
+      "angleDeg": -112.24902365721236,
+      "kind": "wooden_pier",
+      "slips": 2,
+      "spacingM": 16,
+      "lengthM": 26,
+      "widthM": 8
+    }
+  ],
+  "watermills": [
+    {
+      "id": "mill_creek_east",
+      "zIndex": 0,
+      "name": "堰下水磨坊",
+      "x": 1244.2952259127803,
+      "y": 1304.0278625550382,
+      "angleDeg": 156.11350007836526,
+      "wheelSide": "left",
+      "widthM": 20,
+      "depthM": 13
+    },
+    {
+      "id": "mill_canal_east",
+      "zIndex": 0,
+      "name": "泉渠水磨",
+      "x": 1997.7625058991266,
+      "y": 1329.6551912528023,
+      "angleDeg": 27.758540601060023,
+      "wheelSide": "left",
+      "widthM": 16,
+      "depthM": 11
+    }
+  ],
+  "structures": [
+    {
+      "id": "st_constabulary",
+      "zIndex": 0,
+      "name": "镇治安所正堂",
+      "x": 1695,
+      "y": 1478,
+      "angleDeg": -14,
+      "widthM": 42,
+      "depthM": 30,
+      "kind": "u_court",
+      "roofKind": "citadel",
+      "zoneId": "zone_garrison_citadel"
+    },
+    {
+      "id": "st_clinic",
+      "zIndex": 0,
+      "name": "边镇卫生所",
+      "x": 1605,
+      "y": 1648,
+      "angleDeg": -12,
+      "widthM": 36,
+      "depthM": 26,
+      "kind": "l_hall",
+      "roofKind": "inner",
+      "zoneId": "zone_town_wall"
+    },
+    {
+      "id": "st_symbol_altar",
+      "zIndex": 0,
+      "name": "营地符号中枢石堆",
+      "x": 560,
+      "y": 700,
+      "angleDeg": 18,
+      "widthM": 20,
+      "depthM": 20,
+      "kind": "round_altar",
+      "roofKind": "citadel"
+    },
+    {
+      "id": "st_barracks",
+      "zIndex": 0,
+      "name": "夜巡兵房",
+      "x": 1698,
+      "y": 1528,
+      "angleDeg": -14,
+      "widthM": 34,
+      "depthM": 14,
+      "kind": "rect",
+      "roofKind": "citadel",
+      "zoneId": "zone_garrison_citadel"
+    },
+    {
+      "id": "st_inn_caravan",
+      "zIndex": 0,
+      "name": "灰山口护商客舍",
+      "x": 1965,
+      "y": 1520,
+      "angleDeg": -14,
+      "widthM": 38,
+      "depthM": 26,
+      "kind": "l_hall",
+      "roofKind": "inner",
+      "zoneId": "zone_town_wall"
+    },
+    {
+      "id": "st_camp_lodge",
+      "zIndex": 0,
+      "name": "猎头主木屋",
+      "x": 598,
+      "y": 700,
+      "angleDeg": 8,
+      "widthM": 18,
+      "depthM": 12,
+      "kind": "l_hall",
+      "roofKind": "town"
+    },
+    {
+      "id": "st_camp_cabin_s",
+      "zIndex": 0,
+      "name": "晒皮木棚",
+      "x": 560,
+      "y": 736,
+      "angleDeg": -6,
+      "widthM": 20,
+      "depthM": 11,
+      "kind": "rect",
+      "roofKind": "town"
+    },
+    {
+      "id": "st_camp_cabin_n",
+      "zIndex": 0,
+      "name": "猎犬草棚",
+      "x": 560,
+      "y": 664,
+      "angleDeg": 4,
+      "widthM": 18,
+      "depthM": 10,
+      "kind": "rect",
+      "roofKind": "town"
+    }
+  ],
+  "bridgeOverrides": [
+    {
+      "id": "brov_creek_fort",
+      "zIndex": 0,
+      "x": 1342.3411551007682,
+      "y": 1597.3740423410256,
+      "style": "fortified_twin",
+      "widthM": 11,
+      "fortSizeM": 22
+    }
+  ],
+  "paintedTrees": [
+    {
+      "id": "pt_ai_1774832202_0",
+      "x": 676.4781881620345,
+      "y": 335.6526189854691,
+      "r": 7.429138514958321,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_1",
+      "x": 706.5706514492157,
+      "y": 63.887868568553245,
+      "r": 7.34276190008968,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_2",
+      "x": 939.5463193186185,
+      "y": 302.7454247659744,
+      "r": 5.138538901507855,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_3",
+      "x": 1059.1121821979898,
+      "y": 57.8732656306843,
+      "r": 5.050465223193169,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_4",
+      "x": 972.6964797738447,
+      "y": 155.42819744882763,
+      "r": 4.993701310642064,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_5",
+      "x": 952.8884915120418,
+      "y": 531.5036290685583,
+      "r": 7.92146148700267,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_6",
+      "x": 929.3051309512211,
+      "y": 308.8262889885848,
+      "r": 6.2824983464553945,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_7",
+      "x": 990.3269580966628,
+      "y": 120.93245718008124,
+      "r": 5.085527807287872,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_8",
+      "x": 940.8853235947903,
+      "y": 126.6586291707483,
+      "r": 4.479169959947467,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_9",
+      "x": 1205.4783556573375,
+      "y": 185.29646312660395,
+      "r": 5.760894788242876,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_10",
+      "x": 929.1432797569651,
+      "y": 5,
+      "r": 4.834080992080271,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_11",
+      "x": 982.3591456434854,
+      "y": 95.509658915101,
+      "r": 6.8978130275383585,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_12",
+      "x": 822.2312908701181,
+      "y": 5,
+      "r": 5.685123972408474,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_13",
+      "x": 797.8387544188167,
+      "y": 391.63277270358003,
+      "r": 8.139685053192078,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_14",
+      "x": 938.8423788176601,
+      "y": 28.120486967361103,
+      "r": 7.999795920029282,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_15",
+      "x": 1028.811510803951,
+      "y": 467.22050412816145,
+      "r": 5.647281629778445,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_16",
+      "x": 833.9757933503537,
+      "y": 489.8854852518369,
+      "r": 5.1834556821733715,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_17",
+      "x": 800.0386100326632,
+      "y": 423.7177192951287,
+      "r": 7.76881792936474,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_18",
+      "x": 921.8174477408539,
+      "y": 5,
+      "r": 5.308507729135454,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_19",
+      "x": 865.337462340886,
+      "y": 57.298934622129735,
+      "r": 6.144615365006029,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_20",
+      "x": 1210.120332417475,
+      "y": 81.46333730832211,
+      "r": 7.443191329762339,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_21",
+      "x": 723.4794504613964,
+      "y": 327.8601444562629,
+      "r": 5.263249924220145,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_22",
+      "x": 1089.604911964685,
+      "y": 5,
+      "r": 7.746477559953927,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_23",
+      "x": 1206.2315084689499,
+      "y": 8.057678725280425,
+      "r": 6.49779603332281,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_24",
+      "x": 957.7090860223068,
+      "y": 254.76685696869367,
+      "r": 7.914385248720645,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_25",
+      "x": 924.3443686819788,
+      "y": 5,
+      "r": 7.3278384514153,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_26",
+      "x": 778.0186463051593,
+      "y": 299.2215653715342,
+      "r": 4.8385128758847715,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_27",
+      "x": 862.6249677418073,
+      "y": 102.0142758621882,
+      "r": 4.2861720396205785,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_28",
+      "x": 786.2402444957537,
+      "y": 448.2316320970099,
+      "r": 4.409465298801661,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_29",
+      "x": 866.4002004068867,
+      "y": 161.44182161571618,
+      "r": 5.722849427536129,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_30",
+      "x": 1001.671770626713,
+      "y": 508.2766130697705,
+      "r": 6.6643416730687015,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_31",
+      "x": 1011.0491326878192,
+      "y": 397.2258355827878,
+      "r": 4.805640447698534,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_32",
+      "x": 772.5529971590622,
+      "y": 406.8847687165101,
+      "r": 7.444241492822766,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_33",
+      "x": 868.7155437218979,
+      "y": 381.0984883787655,
+      "r": 8.19336347170174,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_34",
+      "x": 845.06687619097,
+      "y": 163.6107111701349,
+      "r": 7.480791504308581,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_35",
+      "x": 888.7278062716142,
+      "y": 32.33665799727643,
+      "r": 7.324295333400368,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_36",
+      "x": 944.9891296989797,
+      "y": 40.93480053062132,
+      "r": 6.095773722790181,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_37",
+      "x": 1070.4160450542977,
+      "y": 487.47906032440824,
+      "r": 5.721454454399645,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_38",
+      "x": 956.9770878012869,
+      "y": 351.9746618511787,
+      "r": 5.737635040469467,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_39",
+      "x": 1005.1479865455559,
+      "y": 201.81423318724327,
+      "r": 5.803849541395902,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_40",
+      "x": 1114.3358579049595,
+      "y": 25.69785033330146,
+      "r": 6.791982199810445,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_41",
+      "x": 1249.7611864112612,
+      "y": 206.05167510658907,
+      "r": 6.590022319741546,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_42",
+      "x": 909.8755687016431,
+      "y": 424.1564754975908,
+      "r": 6.303527373634278,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_43",
+      "x": 828.3207323844989,
+      "y": 5,
+      "r": 6.892915433086454,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_44",
+      "x": 1123.3545604266544,
+      "y": 285.8541837499955,
+      "r": 4.474793801829219,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_45",
+      "x": 1293.9435337887714,
+      "y": 166.89359927561304,
+      "r": 4.823013088479638,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_46",
+      "x": 1010.7239356551156,
+      "y": 313.0872285795031,
+      "r": 4.499613571725786,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_47",
+      "x": 755.8127149358802,
+      "y": 94.06504346798033,
+      "r": 4.52397439237684,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_48",
+      "x": 849.4319091738728,
+      "y": 42.98893999927046,
+      "r": 4.404423610121012,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_49",
+      "x": 672.1462581725787,
+      "y": 124.6322831311009,
+      "r": 7.725723872706293,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_50",
+      "x": 966.7598227014299,
+      "y": 301.779122780996,
+      "r": 7.1210364436730735,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_51",
+      "x": 807.4322994914248,
+      "y": 186.03020772150597,
+      "r": 7.038547692634165,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_52",
+      "x": 1050.1118092783988,
+      "y": 5,
+      "r": 5.146556651964784,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_53",
+      "x": 1237.8967507843297,
+      "y": 194.980878972698,
+      "r": 7.499481987953185,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1774832202_54",
+      "x": 1034.9130590221482,
+      "y": 44.13417294497387,
+      "r": 7.417128358781337,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_0",
+      "x": 2437.8705838641777,
+      "y": 365.1776616907794,
+      "r": 5.621058000996709,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_1",
+      "x": 1970.1148579952467,
+      "y": 704.5877994198268,
+      "r": 7.775118504976854,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_2",
+      "x": 1963.3371610836516,
+      "y": 291.6247892314173,
+      "r": 6.270339242974297,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_3",
+      "x": 2239.0443132243167,
+      "y": 436.59607180435006,
+      "r": 5.374112840183079,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_4",
+      "x": 2252.8891604283817,
+      "y": 167.98633961832428,
+      "r": 4.067561087803915,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_5",
+      "x": 2214.823393264126,
+      "y": 204.52024395480012,
+      "r": 6.874409527005628,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_6",
+      "x": 2155.526159953452,
+      "y": 682.7668858420932,
+      "r": 6.1757644634693865,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_7",
+      "x": 2421.734385091605,
+      "y": 465.6057997135409,
+      "r": 6.4865078668110066,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_8",
+      "x": 2061.1801015771416,
+      "y": 332.7312069662348,
+      "r": 6.717059655021876,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_9",
+      "x": 2109.809698037957,
+      "y": 157.901407106732,
+      "r": 5.026054239179939,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_10",
+      "x": 2360.643371192034,
+      "y": 517.3493348410627,
+      "r": 6.323902846779674,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_11",
+      "x": 2164.223060281103,
+      "y": 471.5332648088105,
+      "r": 5.3094033498317,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_12",
+      "x": 2400.8340360492157,
+      "y": 507.62082099081186,
+      "r": 6.491195739107207,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_13",
+      "x": 1851.4611329660563,
+      "y": 599.1270987705932,
+      "r": 7.762453374825418,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_14",
+      "x": 2428.591683701003,
+      "y": 442.5293544066803,
+      "r": 5.089723682403564,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_15",
+      "x": 2303.6933329629837,
+      "y": 460.069200345938,
+      "r": 5.372404943499714,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_16",
+      "x": 2294.8371129518932,
+      "y": 557.8817494476025,
+      "r": 6.591977577004581,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_17",
+      "x": 2387.231340201288,
+      "y": 696.6705779546036,
+      "r": 7.4019723500590775,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_18",
+      "x": 2319.207216683003,
+      "y": 671.4140904353735,
+      "r": 5.156583939585834,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_19",
+      "x": 2204.2476125641033,
+      "y": 602.9239192067344,
+      "r": 7.594077107962221,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_20",
+      "x": 2515.7502687412157,
+      "y": 375.8423649123686,
+      "r": 6.4408950648736205,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_21",
+      "x": 2193.307793446624,
+      "y": 215.4385842311725,
+      "r": 6.012279001949355,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_22",
+      "x": 2231.2740256850043,
+      "y": 651.9238666133631,
+      "r": 7.345576045429334,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_23",
+      "x": 2067.321956742774,
+      "y": 375.79207161734564,
+      "r": 7.471682843053713,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_24",
+      "x": 2354.1013742859914,
+      "y": 435.32269961131243,
+      "r": 6.73655440597795,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_25",
+      "x": 2381.952127423779,
+      "y": 355.96682888033956,
+      "r": 7.074644825048745,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_26",
+      "x": 2072.2170963661406,
+      "y": 77.95282736182065,
+      "r": 4.7526870047207925,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_27",
+      "x": 2479.2914408008155,
+      "y": 445.78483293027546,
+      "r": 7.651869308762253,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_28",
+      "x": 1927.7442862509804,
+      "y": 168.97701436369684,
+      "r": 5.749646871350706,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_29",
+      "x": 2338.3555603065006,
+      "y": 374.4840587728323,
+      "r": 4.334772616904229,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_30",
+      "x": 2123.208221484771,
+      "y": 789.8947678541349,
+      "r": 4.991801763093099,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_31",
+      "x": 1804.4119046980318,
+      "y": 387.57835957070506,
+      "r": 6.966689962288365,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_32",
+      "x": 2000.3741227164726,
+      "y": 771.322998431976,
+      "r": 5.966005916008726,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_33",
+      "x": 1944.0578329885325,
+      "y": 299.6009832181443,
+      "r": 7.630166832124814,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_34",
+      "x": 1859.8021036015193,
+      "y": 583.227105595108,
+      "r": 6.053128467174247,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_35",
+      "x": 1960.826224439619,
+      "y": 508.97086991133,
+      "r": 6.605733193363994,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_36",
+      "x": 2299.202287186876,
+      "y": 90.4481214686586,
+      "r": 4.018326394679025,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_37",
+      "x": 2342.1734074647748,
+      "y": 702.3084616092558,
+      "r": 5.763332840567455,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_38",
+      "x": 2122.2464715956694,
+      "y": 791.1188254627791,
+      "r": 5.401808743691072,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_39",
+      "x": 2230.8959019283734,
+      "y": 85.32596141895829,
+      "r": 4.908879456901923,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_40",
+      "x": 2118.190867206565,
+      "y": 340.48568315208274,
+      "r": 6.302690490707755,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_41",
+      "x": 2383.8391308394325,
+      "y": 266.97616931372136,
+      "r": 4.87461057389155,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_42",
+      "x": 2390.2628695709723,
+      "y": 212.92434256042566,
+      "r": 4.031461034109816,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_43",
+      "x": 1889.717283494242,
+      "y": 297.75294834202657,
+      "r": 5.0373425131198015,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_44",
+      "x": 2295.661112789389,
+      "y": 596.4172210522939,
+      "r": 6.184876289637759,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_45",
+      "x": 2230.3166890339357,
+      "y": 492.13729668777233,
+      "r": 6.1857084021903574,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_46",
+      "x": 2416.0478973003515,
+      "y": 654.8200710298971,
+      "r": 6.995529842609539,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_47",
+      "x": 2290.5071724709137,
+      "y": 655.9726906748785,
+      "r": 5.386124560004101,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_48",
+      "x": 2079.5386017042783,
+      "y": 417.65710712884896,
+      "r": 4.233111478853971,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_49",
+      "x": 1851.0917489220894,
+      "y": 664.2561248906877,
+      "r": 6.820196307590232,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_50",
+      "x": 2080.8378579520145,
+      "y": 165.6832795812459,
+      "r": 4.789501722203568,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_51",
+      "x": 1930.0925989605146,
+      "y": 542.1920187818722,
+      "r": 7.471970528690145,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_52",
+      "x": 2378.8537923014,
+      "y": 267.5797887816192,
+      "r": 4.256361352931708,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_53",
+      "x": 2429.063384930181,
+      "y": 407.3924078882019,
+      "r": 4.893002295447514,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_54",
+      "x": 2161.2430043715804,
+      "y": 75.98204800290972,
+      "r": 5.819192044064403,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_55",
+      "x": 1957.5020933338621,
+      "y": 615.7733470845506,
+      "r": 4.305539367673918,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_56",
+      "x": 2359.961738547746,
+      "y": 549.8069191672607,
+      "r": 4.174835353437811,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_57",
+      "x": 2277.138026628125,
+      "y": 758.9583887924623,
+      "r": 7.40008848682046,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_58",
+      "x": 1956.696739781483,
+      "y": 637.8792376391051,
+      "r": 5.020826630946249,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_763124157_59",
+      "x": 2054.2483809965684,
+      "y": 224.19545619095928,
+      "r": 5.055698394961655,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_0",
+      "x": 1425.448542888234,
+      "y": 877.3592541917279,
+      "r": 3.990881254803389,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_1",
+      "x": 1407.8682711589963,
+      "y": 758.5214966118452,
+      "r": 4.579571196390316,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_2",
+      "x": 1416.4949683320706,
+      "y": 866.8605563323379,
+      "r": 4.6106734576635064,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_3",
+      "x": 1160.1708674300833,
+      "y": 562.5259902197489,
+      "r": 4.1173353746999055,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_4",
+      "x": 1453.5900466197952,
+      "y": 875.3868410775005,
+      "r": 4.5726314498577265,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_5",
+      "x": 1456.0510382807945,
+      "y": 703.5255833902675,
+      "r": 4.411447583045811,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_6",
+      "x": 1288.9804069435063,
+      "y": 821.6546836602039,
+      "r": 5.052725862013176,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_7",
+      "x": 1373.0101965520073,
+      "y": 732.2587935158278,
+      "r": 6.956209145346657,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_8",
+      "x": 1458.5679563635506,
+      "y": 483.899871295632,
+      "r": 7.137401334894822,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_9",
+      "x": 1381.4314165236094,
+      "y": 657.1130167822129,
+      "r": 4.218181724241004,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_10",
+      "x": 1270.1438920571811,
+      "y": 751.7499410266972,
+      "r": 3.998447335185483,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_11",
+      "x": 1414.5236169140749,
+      "y": 737.777181234008,
+      "r": 3.8280148026533425,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_12",
+      "x": 1462.9344946900796,
+      "y": 688.440704566998,
+      "r": 6.748658781917766,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_13",
+      "x": 1231.6196726675996,
+      "y": 813.5861858676303,
+      "r": 6.6282774320337925,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_14",
+      "x": 1339.0104891496542,
+      "y": 808.421296884441,
+      "r": 5.00356330126524,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_15",
+      "x": 1460.8328648207073,
+      "y": 809.213134827626,
+      "r": 4.234837994305416,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_16",
+      "x": 1406.4859678322098,
+      "y": 821.5231889793508,
+      "r": 4.176559389429166,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_17",
+      "x": 1165.0826916968151,
+      "y": 547.6059606958507,
+      "r": 5.621673686662689,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_18",
+      "x": 1199.080832816021,
+      "y": 593.3854341418551,
+      "r": 6.291115932445973,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_19",
+      "x": 1226.9283628523922,
+      "y": 556.1842538714608,
+      "r": 3.8358254466205834,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_20",
+      "x": 1447.903613110813,
+      "y": 777.3339188103544,
+      "r": 4.026921802340075,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_21",
+      "x": 1399.8711794823498,
+      "y": 698.9381671588169,
+      "r": 5.822579704457894,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_22",
+      "x": 1308.3623961680275,
+      "y": 663.3226219422265,
+      "r": 6.201172741595656,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_23",
+      "x": 1213.557465532928,
+      "y": 722.848805598868,
+      "r": 4.853846448846161,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_24",
+      "x": 1329.5957760144142,
+      "y": 841.1469957587461,
+      "r": 5.144940365152434,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_25",
+      "x": 1389.6773576915134,
+      "y": 537.043944978341,
+      "r": 5.526147021586075,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_26",
+      "x": 1413.155518543194,
+      "y": 596.1273611327377,
+      "r": 6.354454390145838,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_27",
+      "x": 1213.6408746756274,
+      "y": 513.8057478947376,
+      "r": 6.384937097830698,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_28",
+      "x": 1322.171710668951,
+      "y": 906.3741618434238,
+      "r": 4.0850579386111345,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_29",
+      "x": 1281.2594743448308,
+      "y": 842.2925999361661,
+      "r": 4.660362788895145,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_30",
+      "x": 1473.7986190112642,
+      "y": 667.2917903701252,
+      "r": 6.372158704139292,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2346923098_31",
+      "x": 1308.546915110047,
+      "y": 887.2785350891816,
+      "r": 5.055649545462802,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_0",
+      "x": 351.3484964175796,
+      "y": 2513.141429352765,
+      "r": 4.604990324238315,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_1",
+      "x": 458.73216761004306,
+      "y": 2241.3965186104747,
+      "r": 4.9841381610604,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_2",
+      "x": 458.04354908564665,
+      "y": 2544.7288776976256,
+      "r": 4.543005386018194,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_3",
+      "x": 359.51755501879,
+      "y": 2543.3685064807355,
+      "r": 6.922289906186052,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_4",
+      "x": 317.54658617894324,
+      "y": 2571.8836481734825,
+      "r": 4.9081612539011985,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_5",
+      "x": 490.9302749729789,
+      "y": 2299.3212869407134,
+      "r": 4.919803101220168,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_6",
+      "x": 223.84241707364382,
+      "y": 2032.323938878983,
+      "r": 7.213395465747453,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_7",
+      "x": 181.98952903561334,
+      "y": 2401.636347603485,
+      "r": 5.805010529235005,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_8",
+      "x": 413.7445405327642,
+      "y": 2271.2507614754427,
+      "r": 6.501686141826212,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_9",
+      "x": 651.9780574894576,
+      "y": 2379.7229742487593,
+      "r": 6.483280299464241,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_10",
+      "x": 375.58409889273827,
+      "y": 2457.4326284590356,
+      "r": 5.827766680624336,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_11",
+      "x": 460.5621083222434,
+      "y": 2268.976926949675,
+      "r": 6.4758963017957285,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_12",
+      "x": 166.265050839737,
+      "y": 2270.9358464710813,
+      "r": 6.898117698612623,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_13",
+      "x": 350.3785966191535,
+      "y": 2051.074254553369,
+      "r": 7.387641380075365,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_14",
+      "x": 239.75220126746623,
+      "y": 2270.0913832774513,
+      "r": 4.640567637979984,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_15",
+      "x": 362.73559521744704,
+      "y": 2317.6433773044196,
+      "r": 4.2144095244584605,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_16",
+      "x": 243.16874812677023,
+      "y": 2250.267107281622,
+      "r": 4.388033674331382,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_17",
+      "x": 643.8034705246778,
+      "y": 2408.0140640822956,
+      "r": 7.178969390224665,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_18",
+      "x": 258.0737982214144,
+      "y": 2330.5062316613544,
+      "r": 6.824284177622758,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_19",
+      "x": 583.739243859186,
+      "y": 2155.6534225806345,
+      "r": 5.1740008243359625,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_20",
+      "x": 271.65785164097144,
+      "y": 2406.4474858135045,
+      "r": 4.587935939547606,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_21",
+      "x": 213.41942261904774,
+      "y": 2361.4009843112526,
+      "r": 5.16507710586302,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_22",
+      "x": 296.28177502996704,
+      "y": 2516.7734746429146,
+      "r": 6.90798048034776,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_23",
+      "x": 386.257624063941,
+      "y": 2124.830105650051,
+      "r": 4.187446482828818,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_24",
+      "x": 403.2581091787193,
+      "y": 2113.293741803022,
+      "r": 7.327682378701866,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_25",
+      "x": 348.7683256152247,
+      "y": 2361.2884511604257,
+      "r": 5.904515174566768,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_26",
+      "x": 194.52187059217815,
+      "y": 2278.8599245030077,
+      "r": 4.477261389838532,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_27",
+      "x": 436.38579753797393,
+      "y": 2236.0906343896872,
+      "r": 6.097771303146146,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_28",
+      "x": 293.4574476680631,
+      "y": 2244.1550641292874,
+      "r": 7.363361480878666,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_29",
+      "x": 513.8515759474839,
+      "y": 2013.6531312713216,
+      "r": 7.428127796156332,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_30",
+      "x": 471.35909994431415,
+      "y": 2462.835455584323,
+      "r": 4.076597920269705,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_31",
+      "x": 230.6121285521113,
+      "y": 2488.2192119537103,
+      "r": 5.780040560057387,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_32",
+      "x": 630.2492285893411,
+      "y": 2293.473862297647,
+      "r": 6.815137750701979,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_33",
+      "x": 387.0550524112369,
+      "y": 2047.245000596497,
+      "r": 4.0629520285874605,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_34",
+      "x": 523.6602291095475,
+      "y": 2035.1379629238531,
+      "r": 4.115232726908289,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_35",
+      "x": 338.58190700786537,
+      "y": 2348.567466322471,
+      "r": 7.454944676021114,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_36",
+      "x": 84.38820253596407,
+      "y": 2303.6906851724243,
+      "r": 5.910099578322843,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_37",
+      "x": 202.2432636269618,
+      "y": 2353.2637107665587,
+      "r": 5.8425163951469585,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_38",
+      "x": 488.15971913331236,
+      "y": 2307.4183426601853,
+      "r": 4.399852555361576,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_39",
+      "x": 411.089532798744,
+      "y": 2114.6721625323935,
+      "r": 6.115082183969207,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_40",
+      "x": 419.3502773618656,
+      "y": 2394.366909296521,
+      "r": 7.286940860794857,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1558435435_41",
+      "x": 423.69699747433594,
+      "y": 2551.3378884129847,
+      "r": 4.204794756486081,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_0",
+      "x": 598.1680320076557,
+      "y": 417.6822303340871,
+      "r": 5.635351834911853,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_1",
+      "x": 752.9621192302887,
+      "y": 499.6292742846045,
+      "r": 5.188078988855705,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_2",
+      "x": 717.947085908685,
+      "y": 572.4292417753178,
+      "r": 5.785834787180647,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_3",
+      "x": 518.756354465482,
+      "y": 277.6570173612872,
+      "r": 6.392325654160231,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_4",
+      "x": 481.3331253267028,
+      "y": 560.4736362014213,
+      "r": 6.066833596769721,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_5",
+      "x": 564.988896628839,
+      "y": 307.5024738611114,
+      "r": 7.036506245099009,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_6",
+      "x": 572.882063117895,
+      "y": 520.1773776577461,
+      "r": 6.655130717810243,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_7",
+      "x": 676.2950844941091,
+      "y": 442.55734074110387,
+      "r": 5.600082102930173,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_8",
+      "x": 679.0863963974091,
+      "y": 605.850872865306,
+      "r": 7.2104352613445375,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_9",
+      "x": 566.4319318094115,
+      "y": 450.2995618798835,
+      "r": 5.011802755435928,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_10",
+      "x": 665.6917790772405,
+      "y": 445.5646013834662,
+      "r": 7.186603230703622,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_11",
+      "x": 625.8749582158281,
+      "y": 615.4002687159829,
+      "r": 6.647961803991348,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_12",
+      "x": 651.2706792633304,
+      "y": 418.70906303580784,
+      "r": 7.382298269076273,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_13",
+      "x": 542.1270324720306,
+      "y": 284.25863766159716,
+      "r": 7.114193470682949,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_14",
+      "x": 767.7732979132348,
+      "y": 408.6071486277405,
+      "r": 5.01733700488694,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_15",
+      "x": 704.5807847553599,
+      "y": 494.5152729723461,
+      "r": 4.411015740223229,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_16",
+      "x": 517.6833108209736,
+      "y": 604.3299657878299,
+      "r": 4.693938763393089,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_17",
+      "x": 485.49570856104305,
+      "y": 444.50764215349085,
+      "r": 7.0390873935539275,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_18",
+      "x": 594.1123051383861,
+      "y": 366.337232886172,
+      "r": 6.028571909293532,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_19",
+      "x": 488.6654950720186,
+      "y": 550.6543112386508,
+      "r": 6.275132926926017,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_20",
+      "x": 479.80296258315536,
+      "y": 565.894460565649,
+      "r": 7.149470782466233,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_21",
+      "x": 463.210171474774,
+      "y": 428.14053652274555,
+      "r": 6.989960986282677,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_22",
+      "x": 445.6508668243804,
+      "y": 523.8020684778393,
+      "r": 4.429033417068422,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_23",
+      "x": 549.492528612396,
+      "y": 382.8666205548656,
+      "r": 7.190062692528591,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_24",
+      "x": 600.0712750800889,
+      "y": 628.3403925929092,
+      "r": 4.565212591039017,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_25",
+      "x": 723.878543105163,
+      "y": 408.8766225247359,
+      "r": 4.703872533142567,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_26",
+      "x": 621.7854289563736,
+      "y": 337.14135312685636,
+      "r": 5.922422614973039,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_27",
+      "x": 734.2255439300058,
+      "y": 358.330013561498,
+      "r": 6.073689589463175,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_28",
+      "x": 486.4052046958333,
+      "y": 412.6085652665831,
+      "r": 4.2893863552249964,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_29",
+      "x": 593.2882384076593,
+      "y": 484.38684270795204,
+      "r": 7.133846921753139,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_30",
+      "x": 537.4429386152912,
+      "y": 375.03659489735674,
+      "r": 6.020966695761308,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_2446404182_31",
+      "x": 771.8946437807434,
+      "y": 491.17974448971404,
+      "r": 6.3798113581724465,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_0",
+      "x": 1220.4562854300805,
+      "y": 1166.356753547534,
+      "r": 4.014792696293443,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_1",
+      "x": 1022.4137071240128,
+      "y": 931.6217576146428,
+      "r": 4.253721642959863,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_2",
+      "x": 978.5655986204113,
+      "y": 992.5973016147339,
+      "r": 6.2737762440927325,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_3",
+      "x": 1226.9184793813556,
+      "y": 1168.727543744916,
+      "r": 4.014437198126688,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_4",
+      "x": 1075.5851096488109,
+      "y": 1098.0824801327415,
+      "r": 6.529906804161146,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_5",
+      "x": 1235.8250876311424,
+      "y": 1122.3606613884692,
+      "r": 6.08651775047183,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_6",
+      "x": 1017.2805288563411,
+      "y": 985.1709690223321,
+      "r": 6.2881535235326735,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_7",
+      "x": 1175.1635345031168,
+      "y": 910.2371710307671,
+      "r": 6.338711635163054,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_8",
+      "x": 1014.0135268236994,
+      "y": 995.2393591993828,
+      "r": 5.022659574588761,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_9",
+      "x": 1121.0427102222584,
+      "y": 942.7061415466535,
+      "r": 5.92830214202404,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_10",
+      "x": 1245.5622348101108,
+      "y": 1004.2492296109853,
+      "r": 5.2583938433788715,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_11",
+      "x": 1167.9536887836048,
+      "y": 939.338554402624,
+      "r": 6.38222399582155,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_12",
+      "x": 967.622787032325,
+      "y": 969.0404408130355,
+      "r": 5.604982915287837,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_13",
+      "x": 1106.2993811094307,
+      "y": 1205.1634239175864,
+      "r": 4.928387158503756,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_14",
+      "x": 1035.0936118143077,
+      "y": 1190.9690695670624,
+      "r": 6.170265589794144,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_15",
+      "x": 1066.8667967497029,
+      "y": 1177.0519489091143,
+      "r": 4.495891495095566,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_16",
+      "x": 1078.9852534528106,
+      "y": 881.7278581697062,
+      "r": 4.782446542009711,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_17",
+      "x": 987.4198324452866,
+      "y": 917.5950984989844,
+      "r": 5.524593767430633,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_18",
+      "x": 1128.0717245818848,
+      "y": 1053.457746845262,
+      "r": 5.937138502905145,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_19",
+      "x": 1077.754100797182,
+      "y": 1203.4406035253562,
+      "r": 5.69653843245469,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_20",
+      "x": 1065.3392423605835,
+      "y": 1109.4498663213599,
+      "r": 5.0554993962403385,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_21",
+      "x": 1158.784564728982,
+      "y": 959.2402931314825,
+      "r": 6.710076476400718,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_22",
+      "x": 1181.6418021317904,
+      "y": 1064.2879926006954,
+      "r": 5.303732116427272,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_23",
+      "x": 1038.723797655452,
+      "y": 1094.0974853345488,
+      "r": 5.174749983660877,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_24",
+      "x": 1024.1222199989854,
+      "y": 1153.374283629885,
+      "r": 5.275368370767683,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_25",
+      "x": 1037.2402969197544,
+      "y": 1020.2813108238291,
+      "r": 5.639850335381925,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_26",
+      "x": 1118.344514877629,
+      "y": 1043.5953522872987,
+      "r": 6.620525673683733,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_1975594805_27",
+      "x": 987.8172376798303,
+      "y": 1112.9915112212243,
+      "r": 4.5898709105793385,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_0",
+      "x": 2207.199128397503,
+      "y": 947.7599238655671,
+      "r": 4.514498225878924,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_1",
+      "x": 2246.9664207306346,
+      "y": 780.1931548511718,
+      "r": 5.952186073642224,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_2",
+      "x": 2219.4666785637787,
+      "y": 1071.9673473259136,
+      "r": 3.8185257196892053,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_3",
+      "x": 2182.974585339111,
+      "y": 1050.7580166547518,
+      "r": 3.5071986166294664,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_4",
+      "x": 2409.5016472045872,
+      "y": 919.8447497613206,
+      "r": 4.505557511700317,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_5",
+      "x": 2216.7377050136324,
+      "y": 1027.2153860124824,
+      "r": 4.274159830762073,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_6",
+      "x": 2131.87472936973,
+      "y": 969.4901411249627,
+      "r": 5.991184489568695,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_7",
+      "x": 2172.6494415260804,
+      "y": 976.3729178634809,
+      "r": 3.511512928875163,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_8",
+      "x": 2341.6000114955705,
+      "y": 851.5017800992795,
+      "r": 4.517921019345522,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_9",
+      "x": 2163.630740993764,
+      "y": 1016.4578996013506,
+      "r": 5.070205794181675,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_10",
+      "x": 2143.371836134412,
+      "y": 827.7690526947466,
+      "r": 3.9184745219536126,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_11",
+      "x": 2338.6649232844034,
+      "y": 856.7676425698854,
+      "r": 3.931590383639559,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_12",
+      "x": 2322.7810386425535,
+      "y": 1054.0546981521327,
+      "r": 4.646217645844445,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_13",
+      "x": 2143.467665797095,
+      "y": 949.6944478427364,
+      "r": 4.372776388190687,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_14",
+      "x": 2397.471278046805,
+      "y": 882.9236045865724,
+      "r": 5.1102507333271205,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_15",
+      "x": 2241.9132606043963,
+      "y": 845.0619062532263,
+      "r": 3.7542912485077977,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_16",
+      "x": 2348.748128679529,
+      "y": 1026.7133528928296,
+      "r": 5.119696130976081,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_17",
+      "x": 2283.4716880948745,
+      "y": 886.9916745094544,
+      "r": 4.99625053233467,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_18",
+      "x": 2118.6616015344707,
+      "y": 908.2879489348235,
+      "r": 4.124575608642772,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_19",
+      "x": 2130.3261759005554,
+      "y": 883.1381220143378,
+      "r": 4.395613289903849,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_20",
+      "x": 2207.6751550319036,
+      "y": 915.1185660241555,
+      "r": 4.986639308510348,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_21",
+      "x": 2149.3981036682912,
+      "y": 922.2386130763241,
+      "r": 4.790331022813916,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_22",
+      "x": 2278.001429542977,
+      "y": 893.9828440384399,
+      "r": 5.397671504411846,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_464642469_23",
+      "x": 2434.937385534981,
+      "y": 933.7860484831323,
+      "r": 4.3182507117744535,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_0",
+      "x": 1372.5634695145447,
+      "y": 2230.0027080793484,
+      "r": 6.509097447991371,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_1",
+      "x": 1562.6218869495322,
+      "y": 2066.5786187173812,
+      "r": 5.808756712079048,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_2",
+      "x": 1576.231068044517,
+      "y": 1945.1510006976137,
+      "r": 6.225739780813456,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_3",
+      "x": 1599.9761673725832,
+      "y": 2144.277304646079,
+      "r": 5.232824346423149,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_4",
+      "x": 1414.4057025789548,
+      "y": 2054.965628037483,
+      "r": 3.8335505105555057,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_5",
+      "x": 1664.4082242967402,
+      "y": 2052.8815923180405,
+      "r": 4.62624918743968,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_6",
+      "x": 1331.3524393477712,
+      "y": 2060.337105381618,
+      "r": 5.3748161241412165,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_7",
+      "x": 1341.1103205664162,
+      "y": 2134.095107960557,
+      "r": 4.93588847592473,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_8",
+      "x": 1406.9664008840537,
+      "y": 2068.7622045813173,
+      "r": 3.6620057187974453,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_9",
+      "x": 1622.6789400124028,
+      "y": 2179.374896474878,
+      "r": 5.952636703848839,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_10",
+      "x": 1400.9897924808292,
+      "y": 2128.7121151442425,
+      "r": 5.709453114122152,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_11",
+      "x": 1469.6053473279378,
+      "y": 2286.6729724524885,
+      "r": 4.478138251602649,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_12",
+      "x": 1555.1749118152982,
+      "y": 2022.3822164270118,
+      "r": 4.021119300276041,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_13",
+      "x": 1430.7434306204925,
+      "y": 2065.123966056271,
+      "r": 3.9925581485033037,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_14",
+      "x": 1705.180264315147,
+      "y": 2100.800583917902,
+      "r": 6.446428437530994,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_15",
+      "x": 1362.103150299363,
+      "y": 2075.8204874658463,
+      "r": 5.865741248428821,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_16",
+      "x": 1367.258231997612,
+      "y": 2235.0100581410466,
+      "r": 5.323076029121876,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_17",
+      "x": 1365.2196576948918,
+      "y": 2137.1687946224465,
+      "r": 4.374622417241335,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_18",
+      "x": 1649.4444867127318,
+      "y": 2000.2158889713469,
+      "r": 4.672011499106884,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_19",
+      "x": 1434.3888772778666,
+      "y": 2209.5187306255452,
+      "r": 4.421103722602129,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_20",
+      "x": 1562.119654850649,
+      "y": 2138.389384351865,
+      "r": 4.68241156488657,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_21",
+      "x": 1456.1264709998309,
+      "y": 2247.7713952555428,
+      "r": 4.895338507741689,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_22",
+      "x": 1568.6557408728836,
+      "y": 2045.3677347931616,
+      "r": 5.48809348270297,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_23",
+      "x": 1583.7799108033769,
+      "y": 2105.2736308516087,
+      "r": 4.963435468822718,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_24",
+      "x": 1539.9062497845878,
+      "y": 2080.51865417572,
+      "r": 4.266614793986082,
+      "kind": "woodland"
+    },
+    {
+      "id": "pt_ai_854442783_25",
+      "x": 1450.6281853434914,
+      "y": 2024.058950047045,
+      "r": 4.83571399524808,
+      "kind": "woodland"
+    }
+  ]
+}

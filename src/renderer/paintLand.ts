@@ -1,6 +1,7 @@
 import type { Polygon, Polyline, Vec2 } from '../schema/geometry.types';
 import type { ZoneExclusionStyle } from '../schema/entity.schema';
 import { mixHex, type PaintContext } from './paintContext';
+import type { ResolvedPalette } from '../schema/palette.schema';
 import { PAINTED_TREE_ZONE } from '../core/obstacles/guardSafe';
 
 function ringOf(poly: Polygon): Polyline {
@@ -88,27 +89,43 @@ export function paintExclusion(ctx: PaintContext, zoneId?: string): void {
   }
 }
 
-/** 条田：极淡田埂底色 + 柔和内块 + 平行耕垄（无深黑外框） */
+/** 四阶柔色：休耕浅麦 → 常态 → 麦金 → 熟褐/青苗，10%–22% 极轻混调不抢线稿 */
+function farmlandToneColor(pal: ResolvedPalette, toneShift: number): string {
+  if (toneShift < -0.35) {
+    const t = 0.16 + Math.min(1, (-0.35 - toneShift) / 0.65) * 0.06;
+    return mixHex(pal.farmlandFill, pal.paperBg, t);
+  }
+  if (toneShift < 0.15) return mixHex(pal.farmlandFill, pal.paperBg, 0.05);
+  if (toneShift < 0.55) {
+    const t = 0.12 + ((toneShift - 0.15) / 0.4) * 0.06;
+    return mixHex(pal.farmlandFill, pal.roofTown, t);
+  }
+  const t = 0.1 + Math.min(1, (toneShift - 0.55) / 0.45) * 0.06;
+  return mixHex(pal.farmlandFill, pal.treeFill, t);
+}
+
+/** 条田：极淡田埂底色 + 四阶柔色内块 + 柔和耕垄（无深黑外框） */
 export function paintFarmland(ctx: PaintContext, zoneId?: string): void {
   const { backend, pal, scene } = ctx;
   if (!scene) return;
   for (const plot of scene.farmlandPlots) {
     if (zoneId !== undefined && plot.zoneId !== zoneId) continue;
+    const fill = farmlandToneColor(pal, plot.toneShift ?? 0);
     backend.drawPolygon(plot.polygon.map(ctx.pt), {
-      fill: mixHex(pal.farmlandFill, pal.paperBg, 0.38),
-      opacity: 0.85,
+      fill: mixHex(pal.farmlandFill, pal.paperBg, 0.42),
+      opacity: 0.78,
     });
     backend.drawPolygon(plot.innerPolygon.map(ctx.pt), {
-      fill: pal.farmlandFill,
+      fill,
       opacity: 0.9,
-      stroke: mixHex(pal.farmlandFill, pal.paperBg, 0.2),
-      lineWidth: 0.5,
+      stroke: mixHex(pal.farmlandFill, pal.inkDark, 0.18),
+      lineWidth: 0.45,
     });
     for (const furrow of plot.furrows) {
       backend.drawPolyline(furrow.map(ctx.pt), {
-        stroke: mixHex(pal.farmlandFill, pal.inkDark, 0.28),
-        lineWidth: 0.42,
-        opacity: 0.4,
+        stroke: mixHex(fill, pal.inkDark, 0.24),
+        lineWidth: 0.38,
+        opacity: 0.34,
       });
     }
   }

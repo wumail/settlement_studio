@@ -54,7 +54,11 @@ Used in `place_zone.relative.anchor`, `connect_road.from/to/via`, `upsert_struct
     "showScarpTicks": true,
     "scarpSlopeThresholdDeg": 24,
     "terrainNoiseAmpM": 1.6,
-    "terrainSeed": 7719
+    "terrainSeed": 7719,
+    "macroReliefAmpM": 12,
+    "valleyCarveRatio": 5.5,
+    "showSupplementaryContours": true,
+    "supplementaryMaxSlopeDeg": 6.5
   },
   {
     "op": "upsert_terrain_shape",
@@ -73,6 +77,13 @@ Used in `place_zone.relative.anchor`, `connect_road.from/to/via`, `upsert_struct
 ```
 
 `TerrainShape.type`: `"hill"` (`deltaElev > 0`), `"basin"` (`deltaElev < 0`), `"ridge"`, `"valley"`, `"scarp"` (linear shapes take `points`, `deltaElev`, `widthLeft`, `widthRight`).
+
+V5 terrain fields (all optional, fully backward compatible):
+- `macroReliefAmpM` — `0–60`, long-wavelength relief tied to sheet size. When omitted: `12` if `terrainNoiseAmpM > 0`, otherwise `0` (pure analytic terrain stays untouched).
+- `valleyCarveRatio` — `0–12`, extra half-width of the gentle alluvial trough around every river (`5.5` default under the same rule). Makes contours bend upstream across valleys.
+- `showSupplementaryContours` — default `true`; half-interval dotted contours on gentle slopes only.
+- `supplementaryMaxSlopeDeg` — `1–20`, default `6.5`; slopes above it drop supplementary contours, so scarps never smear into black.
+- Set `macroReliefAmpM: 0` + `valleyCarveRatio: 0` to reproduce exact analytic elevation (useful for slope-critical layouts).
 
 ### 2. Hydrology & Snapped Hydraulic Works
 
@@ -158,7 +169,8 @@ Used in `place_zone.relative.anchor`, `connect_road.from/to/via`, `upsert_struct
     "maxSlopeDeg": 22,
     "streetWidthM": 8,
     "wallThicknessM": 6,
-    "towerIntervalM": 115
+    "towerIntervalM": 115,
+    "buildingScale": 1.0
   },
   {
     "op": "upsert_structure",
@@ -191,6 +203,7 @@ Used in `place_zone.relative.anchor`, `connect_road.from/to/via`, `upsert_struct
 ```
 
 - `contentType`: `"walled_city" | "town_blocks" | "village" | "citadel" | "market" | "farmland" | "saltpan" | "woodland" | "exclusion"`.
+- `buildingScale`: `0.45–1.6` (default `1.0`) — scales house width/depth and block density together. Keep `0.95–1.05` for towns and `1.0–1.1` for capitals; use `0.70–0.80` for `village` camps and watchposts (`areaHa < 1.5` or `buildingScale < 0.85` switches the hamlet into compact hut mode with ring-lane layout).
 - `marketMode`: `"stalls" | "timber_yard" | "port_apron"`.
 - `exclusionStyle`: `"plague_stones" | "meadow" | "marsh" | "plain"`.
 - `structure.kind`: `"rect" | "l_hall" | "u_court" | "round_altar"`; `roofKind`: `"inner" | "town" | "citadel"`.

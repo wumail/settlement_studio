@@ -1,13 +1,20 @@
 import { GRID_N, GRID_POINT_COUNT } from '../../schema/geometry.types';
 import type { TownProject } from '../../schema/project.schema';
 import { decodeSculptDelta } from '../math/sculptCodecs';
-import { createNoiseEvaluator } from './terrainNoise';
+import {
+  createMacroReliefEvaluator,
+  createNoiseEvaluator,
+  resolveMacroReliefAmp,
+  resolveOrganicStrength,
+  resolveValleyCarveRatio,
+} from './terrainNoise';
 import {
   createLinearEvaluator,
-  createRiverCarver,
+  createRiverValleyCarver,
   evalBaseSlope,
   evalHillOrBasin,
-  type RiverCarver,
+  type RiverValleyCarver,
+  type RiverValleySample,
   type ShapeEvaluator,
 } from './terrainPrimitives';
 
@@ -27,13 +34,20 @@ export function buildElevationField(project: TownProject): ElevationFieldData {
   const cellSizeM = worldSizeM / (GRID_N - 1);
   const elevation = new Float32Array(GRID_POINT_COUNT);
   const sculptDelta = decodeSculptDelta(terrain.sculptDeltaB64, GRID_POINT_COUNT);
+  const organic = resolveOrganicStrength(terrain.terrainNoiseAmpM);
   const shapeEvals: ShapeEvaluator[] = terrain.shapes.map((shape) =>
     shape.type === 'hill' || shape.type === 'basin'
-      ? (wx: number, wy: number) => evalHillOrBasin(shape, wx, wy)
-      : createLinearEvaluator(shape),
+      ? (wx: number, wy: number) => evalHillOrBasin(shape, wx, wy, organic, terrain.terrainSeed)
+      : createLinearEvaluator(shape, organic, terrain.terrainSeed),
   );
-  const carvers: RiverCarver[] = project.rivers.map(createRiverCarver);
+  const macroAmp = resolveMacroReliefAmp(terrain);
+  const valleyRatio = resolveValleyCarveRatio(terrain);
+  const carvers: RiverValleyCarver[] = project.rivers.map((river) =>
+    createRiverValleyCarver(river, valleyRatio),
+  );
+  const macro = createMacroReliefEvaluator(macroAmp, worldSizeM, terrain.terrainSeed);
   const noise = createNoiseEvaluator(terrain.terrainNoiseAmpM, terrain.terrainSeed);
+  const riverSample: RiverValleySample = { carve: 0, flatten: 0 };
 
   let minElev = Number.POSITIVE_INFINITY;
   let maxElev = Number.NEGATIVE_INFINITY;
@@ -45,13 +59,17 @@ export function buildElevationField(project: TownProject): ElevationFieldData {
       let h =
         terrain.baseElev +
         evalBaseSlope(wx, wy, worldSizeM, terrain.slopeMagM, terrain.slopeDirDeg);
-      for (const ev of shapeEvals) h += ev(wx, wy);
-      h += noise(wx, wy);
+      let shapeH = 0;
+      for (const ev of shapeEvals) shapeH += ev(wx, wy);
       let carve = 0;
+      let flatten = 0;
       for (const carver of carvers) {
-        const c = carver(wx, wy);
-        if (c > carve) carve = c;
+        carver(wx, wy, riverSample);
+        if (riverSample.carve > carve) carve = riverSample.carve;
+        if (riverSample.flatten > flatten) flatten = riverSample.flatten;
       }
+      if (flatten > 0 && shapeH > 0) shapeH *= 1 - flatten;
+      h += shapeH + macro(wx, wy) + noise(wx, wy);
       const idx = rowBase + gx;
       h += (sculptDelta[idx] ?? 0) - carve;
       elevation[idx] = h;

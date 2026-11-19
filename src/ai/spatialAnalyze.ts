@@ -20,8 +20,10 @@ export function pointInWater(px: number, py: number, polys: ReadonlyArray<Polygo
 }
 
 const SUB: ReadonlyArray<number> = [0.25, 0.5, 0.75];
+/** 最大坡度专用密采样：4×4 子点，避免 3×3 粗采样漏掉窄陡坎与峡壁 */
+const SLOPE_SUB: ReadonlyArray<number> = [0.125, 0.375, 0.625, 0.875];
 
-/** 8×8 选址雷达：每格 3×3 子点取平均海拔、最大坡度与水面占比 */
+/** 8×8 选址雷达：3×3 子点取平均海拔与水面占比，4×4 密采样取最大坡度 */
 export function buildTerrainGrid(
   project: TownProject,
   scene: CompiledScene,
@@ -41,8 +43,12 @@ export function buildTerrainGrid(
           const x = (col + fx) * cell;
           const y = (row + fy) * cell;
           sumElev += sampleElevation(field, x, y);
-          maxSlope = Math.max(maxSlope, sampleSlopeDeg(field, x, y));
           if (pointInWater(x, y, waterPolys)) water += 1;
+        }
+      }
+      for (const fy of SLOPE_SUB) {
+        for (const fx of SLOPE_SUB) {
+          maxSlope = Math.max(maxSlope, sampleSlopeDeg(field, (col + fx) * cell, (row + fy) * cell));
         }
       }
       const waterFraction = water / (SUB.length * SUB.length);
@@ -55,7 +61,7 @@ export function buildTerrainGrid(
         col,
         row,
         center: [(col + 0.5) * cell, (row + 0.5) * cell],
-        meanElevM: sumElev / 9,
+        meanElevM: sumElev / (SUB.length * SUB.length),
         maxSlopeDeg: maxSlope,
         waterFraction,
         buildability,
@@ -163,7 +169,8 @@ const EMPTY_REASON_LABEL: Readonly<Record<NonNullable<ZoneDiagnostic['emptyReaso
 };
 
 const NEST_INNER = new Set(['citadel', 'market', 'exclusion']);
-const NEST_OUTER = new Set(['walled_city', 'town_blocks']);
+/** 可合法容纳内嵌要素的外层选区：城垣/关厢，以及带环石空地或集场的村寨 */
+const NEST_OUTER = new Set(['walled_city', 'town_blocks', 'village']);
 
 function legalNesting(a: TownProject['zones'][number], b: TownProject['zones'][number]): boolean {
   return (NEST_INNER.has(a.contentType) && NEST_OUTER.has(b.contentType))
@@ -178,8 +185,23 @@ export function collectWarnings(
 ): string[] {
   const warnings: string[] = [];
   for (const zone of zones) {
-    if (zone.status !== 'empty_warning') continue;
-    warnings.push(`选区「${zone.name}」(${zone.id}) 无产出：${EMPTY_REASON_LABEL[zone.emptyReason ?? 'blocked_by_obstacles']}`);
+    if (zone.status === 'empty_warning') {
+      warnings.push(`选区「${zone.name}」(${zone.id}) 无产出：${EMPTY_REASON_LABEL[zone.emptyReason ?? 'blocked_by_obstacles']}`);
+    }
+    // 通用比例健康告警：只按面积/栋数/密度说话，不含任何特定设定词汇
+    if (zone.contentType === 'farmland' && zone.areaHa > 35) {
+      warnings.push(`农田选区「${zone.name}」(${zone.id}) 单片 ${zone.areaHa.toFixed(1)} ha 偏大，建议拆成多片 6–24 ha 沿河/沿路的中小型条田带，以获得自然田向与避障余量`);
+    }
+    if (zone.contentType === 'walled_city' && zone.areaHa < 4) {
+      warnings.push(`城垣选区「${zone.name}」(${zone.id}) 仅 ${zone.areaHa.toFixed(1)} ha，城垣退界后净面积不足，建议扩至 14–25 ha 或改用堡寨/村寨`);
+    }
+    if (zone.contentType === 'village' && zone.areaHa > 12) {
+      warnings.push(`村寨选区「${zone.name}」(${zone.id}) ${zone.areaHa.toFixed(1)} ha 偏大，建议拆成多处 1.5–4 ha 散村或改用关厢坊巷`);
+    }
+    const perHa = zone.buildingCount / Math.max(0.05, zone.areaHa);
+    if (zone.contentType !== 'exclusion' && zone.areaHa < 1.2 && zone.buildingCount > 0 && perHa > 45) {
+      warnings.push(`选区「${zone.name}」(${zone.id}) 迷你区偏挤（${zone.buildingCount} 栋 / ${zone.areaHa.toFixed(2)} ha，约 ${perHa.toFixed(0)} 栋每公顷），建议下调 density 或微调建筑尺度`);
+    }
   }
   for (let i = 0; i < project.zones.length; i += 1) {
     const a = project.zones[i];

@@ -104,6 +104,8 @@ export interface FarmlandPlot {
   readonly areaHa: number;
   readonly angleDeg: number;
   readonly furrows: ReadonlyArray<Polyline>;
+  /** 确定性色调偏移 [-1, 1]：供渲染层执行休耕/麦金/熟褐/青苗四阶柔色混调 */
+  readonly toneShift?: number;
 }
 
 export interface SaltpanCell {
@@ -163,6 +165,7 @@ export interface CompiledSceneBase<
       readonly id: string;
       readonly elev: number;
       readonly isIndex: boolean;
+      readonly isSupplementary?: boolean;
       readonly closed: boolean;
       readonly points: Polyline;
     }>;

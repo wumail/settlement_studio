@@ -17,6 +17,8 @@ import {
 import { guardedPaintedTrees } from './obstacles/paintedTrees';
 import { buildObstacleGrid } from './obstacles/obstacleSdf';
 import { type ElevationFieldData, buildElevationField } from './terrain/elevationField';
+import { type ContourLine, extractContours } from './terrain/marchingSquares';
+import { extractSupplementaryContours } from './terrain/supplementaryContours';
 import { type WallSystem, buildZoneWallSystem } from './generators/wallBuilder';
 
 export interface CompileExtras {
@@ -114,6 +116,22 @@ export function compileExtras(
     painting: audit.valid,
     rejectedTreeIds: audit.rejectedIds,
   };
+}
+
+/**
+ * 等高线唯一出口：主等高线（baseContours）驱动齿线与顺坡晕滃，
+ * 合并后的 contours（含缓坡半距间曲线）供渲染层与统计统一读取。
+ */
+export function extractSceneContours(
+  field: ElevationFieldData,
+  terrain: TownProject['terrain'],
+): {
+  readonly baseContours: ReadonlyArray<ContourLine>;
+  readonly contours: ReadonlyArray<ContourLine>;
+} {
+  const baseContours = extractContours(field, terrain);
+  const supplementary = extractSupplementaryContours(field, terrain);
+  return { baseContours, contours: [...baseContours, ...supplementary] };
 }
 
 /** 阶段一 + 全局 SDF：刚性足印先于任何民房生成注入 512² 障碍场 */

@@ -12,6 +12,7 @@ export interface ContourLine {
   readonly id: string;
   readonly elev: number;
   readonly isIndex: boolean;
+  readonly isSupplementary?: boolean;
   readonly closed: boolean;
   readonly points: Polyline;
 }
@@ -64,7 +65,7 @@ interface RawSegment {
   readonly pb: Vec2;
 }
 
-function buildCellRange(field: ElevationFieldData): { min: Float32Array; max: Float32Array } {
+export function buildCellRange(field: ElevationFieldData): { min: Float32Array; max: Float32Array } {
   const h = field.elevation;
   const min = new Float32Array(CELLS * CELLS);
   const max = new Float32Array(CELLS * CELLS);
@@ -91,7 +92,7 @@ function lerpEdge(level: number, va: number, vb: number): number {
 }
 
 /** 单层水平集追踪：边键哈希拼接为连续长折线（闭合环或图幅边界开折线） */
-function traceLevel(
+export function traceLevel(
   field: ElevationFieldData,
   level: number,
   cellMin: Float32Array,
@@ -206,7 +207,7 @@ function traceLevel(
   return chains;
 }
 
-function smoothChain(pts: Vec2[], closed: boolean): Vec2[] {
+export function smoothChain(pts: Vec2[], closed: boolean): Vec2[] {
   let cur = pts;
   for (let round = 0; round < 2; round += 1) {
     const n = cur.length;
@@ -310,11 +311,5 @@ export function buildTerrainPackage(project: TownProject): TerrainPackage {
   const terrainData = buildElevationField(project);
   const contours = extractContours(terrainData, project.terrain);
   const scarpTicks = extractScarpTicks(contours, terrainData, project.terrain);
-  return {
-    terrainData,
-    contours,
-    scarpTicks,
-    minElev: terrainData.minElev,
-    maxElev: terrainData.maxElev,
-  };
+  return { terrainData, contours, scarpTicks, minElev: terrainData.minElev, maxElev: terrainData.maxElev };
 }

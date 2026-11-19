@@ -10,7 +10,7 @@ import { hasCustomOrder } from './drawOrder';
 import { paintBuildings, paintWalls } from './paintBuildings';
 import { paintBridges, paintCanals, paintReefsFords, paintWater } from './paintHydro';
 import { paintAprons, paintExclusion, paintFarmland, paintLanes, paintRoads, paintSaltpan, paintTrees } from './paintLand';
-import { paintHydraulicWorks, paintStructures } from './paintStructures';
+import { paintHydraulicWorks, paintStructureLabels, paintStructures } from './paintStructures';
 import { paintAnnotations, paintGuidedDirectory } from './paintAnnotations';
 import { makeContext, type PaintContext, type PaintSceneData } from './paintContext';
 import { type BrushCursorInput, type OverlayInput, paintOverlay } from './paintOverlay';
@@ -123,7 +123,8 @@ export function paintScene(
   const paintContours = (): void => {
     if (!data) return;
     const opacity = Math.max(0.05, Math.min(1, project.terrain.contourOpacity));
-    const showLabels = withLabels && data.terrain.contours.length <= 90;
+    // 计曲线高程标字按屏幕最小间距疏朗落标（不因细步长总线条数超过 90 而全部静默关闭）
+    const placedLabels: Vec2[] = [];
     const waterMasks: Array<{ readonly box: BBox; readonly poly: Polygon }> = [];
     for (const river of data.hydro.rivers) {
       if (river.bankPolygon.length >= 3) {
@@ -143,11 +144,19 @@ export function paintScene(
       return false;
     };
     for (const contour of data.terrain.contours) {
-      const strokeStyle = {
-        stroke: pal.contourLine,
-        lineWidth: contour.isIndex ? 1.45 : 0.75,
-        opacity: contour.isIndex ? opacity : opacity * 0.72,
-      };
+      // 缓坡半距间曲线：细淡虚线，永不打高程字，同样自动裁断河湖水面
+      const strokeStyle = contour.isSupplementary
+        ? {
+            stroke: pal.contourLine,
+            lineWidth: 0.55,
+            dash: [5, 4] as const,
+            opacity: opacity * 0.52,
+          }
+        : {
+            stroke: pal.contourLine,
+            lineWidth: contour.isIndex ? 1.45 : 0.75,
+            opacity: contour.isIndex ? opacity : opacity * 0.72,
+          };
       if (waterMasks.length === 0) {
         backend.drawPolyline(contour.points.map(ctx.pt), strokeStyle);
       } else {
@@ -162,10 +171,13 @@ export function paintScene(
         }
         if (run.length >= 2) backend.drawPolyline(run.map(ctx.pt), strokeStyle);
       }
-      if (!showLabels || !contour.isIndex || contour.points.length <= 6) continue;
+      if (contour.isSupplementary || !withLabels || !contour.isIndex) continue;
+      if (contour.points.length <= 8 || placedLabels.length >= 26) continue;
       const anchor = contour.points[Math.floor(contour.points.length / 2)];
       if (!anchor || inWater(anchor[0], anchor[1])) continue;
       const screen = ctx.pt(anchor);
+      if (placedLabels.some((p) => Math.hypot(p[0] - screen[0], p[1] - screen[1]) < 115)) continue;
+      placedLabels.push(screen);
       contourLabel(ctx, contour.elev, screen[0], screen[1]);
     }
     const dryTicks = waterMasks.length === 0
@@ -216,7 +228,7 @@ export function paintScene(
     clip('bridges', () => paintBridges(ctx));
     clip('buildings', () => paintBuildings(ctx));
     clip('walls-wells', () => paintWalls(ctx));
-    clip('structures', () => paintStructures(ctx, withLabels));
+    clip('structures', () => paintStructures(ctx, false));
     clip('trees-canopy', () => paintTrees(ctx));
   }
 
@@ -226,6 +238,7 @@ export function paintScene(
   if (data) {
     backend.beginLayer('landmarks-labels');
     backend.pushClipRect(frame.x, frame.y, frame.w, frame.h);
+    paintStructureLabels(ctx, withLabels);
     paintAnnotations(ctx, mode, bounds);
     backend.popClip();
     backend.endLayer();
