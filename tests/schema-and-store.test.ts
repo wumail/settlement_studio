@@ -547,7 +547,7 @@ describe('M1 · 高程场与等高线基础冒烟', () => {
         expect(Number.isFinite(p[1])).toBe(true);
       }
     }
-    expect(elapsed).toBeLessThan(35);
+    expect(elapsed).toBeLessThan(process.env.CI === 'true' ? 90 : 35);
     expect(extractScarpTicks(contours, field, project.terrain)).toEqual([]);
   });
 

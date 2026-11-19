@@ -33,7 +33,7 @@ jobs:
         run: npm ci
 
       - name: Run TypeScript, Biome & Vitest checks
-        run: npm run check
+        run: npm run typecheck && npm run lint && npx vitest run --no-file-parallelism
 
       - name: Configure GitHub Pages
         id: pages
