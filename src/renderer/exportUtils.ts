@@ -5,17 +5,19 @@ import { paintScene } from './paintScene';
 import { createViewport } from './RenderBackend';
 import { SvgStringBackend } from './SvgStringBackend';
 
-export type ExportMode = 'full' | 'clean';
+export type ExportMode = 'full' | 'clean' | 'pure';
 export type PngScale = 1 | 2 | 3;
 
 export interface SvgExportOptions {
   readonly mode: ExportMode;
   readonly basePx?: number;
+  readonly displayMode?: 'standard' | 'guided' | 'pure';
 }
 
 export interface PngExportOptions {
   readonly scale: PngScale;
   readonly mode: ExportMode;
+  readonly displayMode?: 'standard' | 'guided' | 'pure';
 }
 
 function exportViewport(project: TownProject, sizePx: number) {
@@ -33,7 +35,8 @@ export function renderSceneToSvgString(
   paintScene(backend, project, scene, exportViewport(project, size), {
     isExport: true,
     includeCartouche: options.mode === 'full',
-    cleanPaper: options.mode === 'clean',
+    cleanPaper: options.mode === 'clean' || options.mode === 'pure',
+    displayMode: options.displayMode ?? (options.mode === 'pure' ? 'pure' : undefined),
   });
   return backend.toSvgString();
 }
@@ -57,7 +60,8 @@ export function exportScenePngBlob(
   paintScene(backend, project, scene, exportViewport(project, size), {
     isExport: true,
     includeCartouche: options.mode === 'full',
-    cleanPaper: options.mode === 'clean',
+    cleanPaper: options.mode === 'clean' || options.mode === 'pure',
+    displayMode: options.displayMode ?? (options.mode === 'pure' ? 'pure' : undefined),
   });
   return new Promise<Blob>((resolve, reject) => {
     canvas.toBlob((blob) => {

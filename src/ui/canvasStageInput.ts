@@ -1,29 +1,44 @@
 import type { MutableRefObject, PointerEvent as ReactPointerEvent, RefObject } from 'react';
 import { hitTestActiveHandles, hitTestSceneObject } from '../core/hitTest';
-import { hashSeed } from '../core/math/rng';
-import { applyContourWarpDrag, applySculptBrush, hitTestContourLine } from '../core/terrain/terrainSculpt';
-import { type ElevationFieldData, sampleElevation } from '../core/terrain/elevationField';
-import type { CompiledSceneBase, SelectionTarget, Vec2 } from '../schema/geometry.types';
-import { CUSTOM_GLYPH_TYPES, type CustomGlyphType } from '../schema/legend.schema';
+import { applyContourWarpDrag, hitTestContourLine } from '../core/terrain/terrainSculpt';
+import { sampleElevation } from '../core/terrain/elevationField';
+import type { SelectionTarget, Vec2 } from '../schema/geometry.types';
 import { useStudioStore } from '../store/useStudioStore';
 import {
+  type HandleDragSession,
   applyHandleDrag,
   beginHandleDrag,
   deleteVertexAt,
   insertVertexAtMid,
-  type HandleDragSession,
 } from './canvasStageHandlers';
+import {
+  type BrushDragState,
+  type BrushRefs,
+  beginBrushDrag,
+  currentField,
+  finishBrushDrag,
+  updateBrushDrag,
+} from './stageBrush';
+import {
+  cycleBridgeCrossing,
+  placeHydraulic,
+  placeLandmark,
+  placeStructure,
+  rerollStampAt,
+} from './stagePlacement';
 
-export type DragKind = 'pan' | 'contour' | 'sculpt' | 'measure' | 'hill' | 'handle';
+export type DragKind = 'pan' | 'brush' | 'measure' | 'hill' | 'handle';
 
 export interface DragSession {
   readonly kind: DragKind;
   prev: Vec2;
   start: Vec2;
-  elev: number;
   prevClient: Vec2;
   selection: SelectionTarget | null;
   handle: HandleDragSession | null;
+  brush: BrushDragState | null;
+  /** 选择工具在空白处按下形成的“软平移”：未发生位移时视为取消选中 */
+  softPan?: boolean;
 }
 
 export interface StageRefs {
@@ -39,21 +54,6 @@ export interface StageRefs {
   readonly space: MutableRefObject<boolean>;
 }
 
-type SceneWithField = CompiledSceneBase & {
-  readonly terrain: CompiledSceneBase['terrain'] & { readonly terrainData?: ElevationFieldData };
-};
-
-let uidSeq = 0;
-function uid(prefix: string): string {
-  uidSeq += 1;
-  return `${prefix}_${Date.now().toString(36)}${uidSeq.toString(36)}`;
-}
-
-function currentField(): ElevationFieldData | null {
-  const scene = useStudioStore.getState().compiledScene as SceneWithField | null;
-  return scene?.terrain.terrainData ?? null;
-}
-
 export interface StageHandlerContext {
   readonly refs: StageRefs;
   readonly toWorld: (clientX: number, clientY: number) => Vec2;
@@ -61,7 +61,15 @@ export interface StageHandlerContext {
   readonly commitDraft: () => void;
 }
 
-/** 画布指针状态机：选择手柄 / 平移 / 推拉 / 笔刷 / 测距 / 山包 / 草稿落点 */
+function brushRefs(refs: StageRefs): BrushRefs {
+  return { liveContours: refs.liveContours, sculptB64: refs.sculptB64, dirty: refs.dirty };
+}
+
+function makeDrag(kind: DragKind, world: Vec2, client: Vec2): DragSession {
+  return { kind, prev: world, start: world, prevClient: client, selection: null, handle: null, brush: null };
+}
+
+/** 画布指针状态机：选择手柄 / 平移 / 笔刷三态 / 水工与建筑群落位 / 测距 / 山包 / 草稿落点 */
 export function createStageHandlers(ctx: StageHandlerContext): {
   down: (event: ReactPointerEvent<HTMLCanvasElement>) => void;
   move: (event: ReactPointerEvent<HTMLCanvasElement>) => void;
@@ -73,14 +81,8 @@ export function createStageHandlers(ctx: StageHandlerContext): {
   const finishActiveEdit = (): void => {
     const drag = refs.drag.current;
     if (!drag) return;
-    const state = useStudioStore.getState();
-    if (drag.kind === 'contour' || drag.kind === 'sculpt' || drag.kind === 'handle') {
-      const b64 = refs.sculptB64.current;
-      if (b64) state.mutateProject((draft) => { draft.terrain.sculptDeltaB64 = b64; }, false);
-      refs.liveContours.current = null;
-      refs.sculptB64.current = null;
-      state.endContinuousEdit(true);
-    }
+    if (drag.kind === 'brush' && drag.brush) finishBrushDrag(drag.brush, drag.prev, brushRefs(refs), true);
+    if (drag.kind === 'handle') useStudioStore.getState().endContinuousEdit(true);
     refs.drag.current = null;
   };
 
@@ -92,11 +94,12 @@ export function createStageHandlers(ctx: StageHandlerContext): {
     refs.cursor.current = world;
     refs.canvas.current?.setPointerCapture(event.pointerId);
     if (event.button === 1 || refs.space.current) {
-      refs.drag.current = { kind: 'pan', prev: world, start: world, elev: 0, prevClient: client, selection: null, handle: null };
+      refs.drag.current = makeDrag('pan', world, client);
       return;
     }
     if (event.button === 2) return;
-    if (state.activeTool === 'select') {
+    const tool = state.activeTool;
+    if (tool === 'select') {
       if (!state.compiledScene) return;
       const hit = hitTestActiveHandles(state.project, state.selection, world[0], world[1], state.viewport);
       if (hit && state.selection) {
@@ -113,65 +116,73 @@ export function createStageHandlers(ctx: StageHandlerContext): {
           }
           session = { kind: 'vertex', index: inserted, grab: [0, 0] };
         }
-        refs.drag.current = { kind: 'handle', prev: world, start: world, elev: 0, prevClient: client, selection: state.selection, handle: session };
+        refs.drag.current = { ...makeDrag('handle', world, client), selection: state.selection, handle: session };
         return;
       }
-      state.setSelection(hitTestSceneObject(state.project, state.compiledScene, world[0], world[1], state.viewport));
-      return;
-    }
-    if (state.activeTool === 'place_reef') {
-      state.mutateProject((draft) => {
-        if (state.drawReefMode === 'ford') {
-          draft.fords.push({ id: uid('frd'), name: '新渡口', x: world[0], y: world[1], radiusM: 24 });
-        } else {
-          draft.reefs.push({ id: uid('reef'), x: world[0], y: world[1], radiusM: 14, angleDeg: 0, seed: hashSeed(`${world[0]}`), count: 2 });
-        }
-      });
-      return;
-    }
-    if (state.activeTool === 'place_landmark') {
-      const legendItem = state.project.legend.items.find((item) => item.key === state.activeLandmarkKey);
-      const rawGlyph = legendItem?.glyphType
-        ?? (state.activeLandmarkKey.startsWith('custom_') ? state.activeLandmarkKey.slice(7) : 'stele');
-      const glyphType: CustomGlyphType = (CUSTOM_GLYPH_TYPES as ReadonlyArray<string>).includes(rawGlyph)
-        ? (rawGlyph as CustomGlyphType)
-        : 'stele';
-      state.mutateProject((draft) => {
-        draft.landmarks.push({ id: uid('lm'), legendKey: state.activeLandmarkKey, glyphType, label: state.activeLandmarkLabel, x: world[0], y: world[1], showLabel: true, sizePx: 15 });
-      });
-      return;
-    }
-    if (state.activeTool === 'contour_drag') {
-      if (!currentField() || !state.compiledScene) return;
-      const hit = hitTestContourLine(state.compiledScene.terrain.contours, world[0], world[1], 12 / Math.max(0.06, state.viewport.zoom));
-      if (!hit) return;
-      state.beginContinuousEdit();
-      refs.drag.current = { kind: 'contour', prev: world, start: world, elev: hit.elev, prevClient: client, selection: null, handle: null };
-      return;
-    }
-    if (state.activeTool === 'sculpt_brush') {
-      const field = currentField();
-      if (!field) return;
-      if (event.altKey) {
-        state.updateBrush({ flattenTargetElev: sampleElevation(field, world[0], world[1]) });
+      const hitObject = hitTestSceneObject(state.project, state.compiledScene, world[0], world[1], state.viewport);
+      if (!hitObject) {
+        // 触控板/鼠标左键在空白处直接拖动即可平移地图（无需中键或空格）
+        refs.drag.current = { ...makeDrag('pan', world, client), softPan: true };
         return;
       }
-      state.beginContinuousEdit();
-      const first = applySculptBrush(field, state.project.terrain, { x: world[0], y: world[1], radiusM: state.brush.radiusM, strength: state.brush.strength, mode: state.brush.mode, flattenTargetElev: state.brush.flattenTargetElev });
-      refs.liveContours.current = first.contours;
-      refs.sculptB64.current = first.sculptDeltaB64;
-      refs.drag.current = { kind: 'sculpt', prev: world, start: world, elev: 0, prevClient: client, selection: null, handle: null };
+      state.setSelection(hitObject);
+      return;
+    }
+    if (tool === 'reroll_stamp') {
+      rerollStampAt(world, state.project);
+      return;
+    }
+    if (tool === 'place_hydraulic') {
+      placeHydraulic(world, state.hydraulicPreset);
+      return;
+    }
+    if (tool === 'place_structure') {
+      const id = placeStructure(world, state.structurePreset);
+      state.setSelection({ type: 'structure', id, name: '核心建筑' });
+      return;
+    }
+    if (tool === 'place_landmark') {
+      placeLandmark(world);
+      return;
+    }
+    if (tool === 'edit_crossing') {
+      const id = cycleBridgeCrossing(world);
+      if (id) state.setSelection({ type: 'bridge', id, name: '桥梁覆写' });
+      return;
+    }
+    if (tool === 'sculpt_brush' || tool === 'contour_drag' || tool === 'tree_brush') {
+      if (!currentField()) return;
+      let lockedElev: number | undefined;
+      if (tool === 'contour_drag') {
+        if (!state.compiledScene) return;
+        const hit = hitTestContourLine(
+          state.compiledScene.terrain.contours,
+          world[0],
+          world[1],
+          12 / Math.max(0.06, state.viewport.zoom),
+        );
+        if (!hit) return;
+        lockedElev = hit.elev;
+      }
+      if (tool === 'sculpt_brush' && state.brush.mode === 'flatten' && event.altKey) {
+        const field = currentField();
+        if (field) state.updateBrush({ flattenTargetElev: sampleElevation(field, world[0], world[1]) });
+        return;
+      }
+      const brush = beginBrushDrag(world, { alt: event.altKey, shift: event.shiftKey }, lockedElev);
+      if (!brush) return;
+      refs.drag.current = { ...makeDrag('brush', world, client), brush };
       refs.dirty.current = true;
       return;
     }
-    if (state.activeTool === 'measure') {
+    if (tool === 'measure') {
       refs.measure.current = [world, world];
-      refs.drag.current = { kind: 'measure', prev: world, start: world, elev: 0, prevClient: client, selection: null, handle: null };
+      refs.drag.current = makeDrag('measure', world, client);
       refs.dirty.current = true;
       return;
     }
-    if (state.activeTool === 'add_hill') {
-      refs.drag.current = { kind: 'hill', prev: world, start: world, elev: 0, prevClient: client, selection: null, handle: null };
+    if (tool === 'add_hill') {
+      refs.drag.current = makeDrag('hill', world, client);
       return;
     }
     const firstPoint = refs.draft.current[0];
@@ -191,8 +202,18 @@ export function createStageHandlers(ctx: StageHandlerContext): {
     emit(world);
     const drag = refs.drag.current;
     if (!drag) {
+      const brushTool =
+        state.activeTool === 'sculpt_brush' ||
+        state.activeTool === 'contour_drag' ||
+        state.activeTool === 'tree_brush';
+      if (brushTool) refs.dirty.current = true;
       if (state.activeTool === 'contour_drag' && state.compiledScene) {
-        const hit = hitTestContourLine(state.compiledScene.terrain.contours, world[0], world[1], 12 / Math.max(0.06, state.viewport.zoom));
+        const hit = hitTestContourLine(
+          state.compiledScene.terrain.contours,
+          world[0],
+          world[1],
+          12 / Math.max(0.06, state.viewport.zoom),
+        );
         const next = hit?.contourId ?? null;
         if (next !== refs.hover.current) {
           refs.hover.current = next;
@@ -223,16 +244,9 @@ export function createStageHandlers(ctx: StageHandlerContext): {
       refs.dirty.current = true;
       return;
     }
-    if (drag.kind === 'contour' || drag.kind === 'sculpt') {
-      const field = currentField();
-      if (!field) return;
-      const result = drag.kind === 'contour'
-        ? applyContourWarpDrag(field, state.project.terrain, { prevX: drag.prev[0], prevY: drag.prev[1], currX: world[0], currY: world[1], lockedElev: drag.elev, radiusM: 90, strength: 0.85 })
-        : applySculptBrush(field, state.project.terrain, { x: world[0], y: world[1], radiusM: state.brush.radiusM, strength: state.brush.strength, mode: state.brush.mode, flattenTargetElev: state.brush.flattenTargetElev });
-      refs.liveContours.current = result.contours;
-      refs.sculptB64.current = result.sculptDeltaB64;
+    if (drag.kind === 'brush' && drag.brush) {
+      updateBrushDrag(drag.brush, world, { alt: event.altKey, shift: event.shiftKey }, brushRefs(refs));
       drag.prev = world;
-      refs.dirty.current = true;
     }
   };
 
@@ -242,16 +256,19 @@ export function createStageHandlers(ctx: StageHandlerContext): {
     refs.drag.current = null;
     refs.canvas.current?.releasePointerCapture(event.pointerId);
     if (!drag) return;
+    if (drag.kind === 'brush' && drag.brush) {
+      const world = toWorld(event.clientX, event.clientY);
+      finishBrushDrag(drag.brush, world, brushRefs(refs), true);
+      return;
+    }
     if (drag.kind === 'handle') {
       state.endContinuousEdit(true);
       return;
     }
-    if (drag.kind === 'contour' || drag.kind === 'sculpt') {
-      const b64 = refs.sculptB64.current;
-      if (b64) state.mutateProject((draft) => { draft.terrain.sculptDeltaB64 = b64; }, false);
-      refs.liveContours.current = null;
-      refs.sculptB64.current = null;
-      state.endContinuousEdit(true);
+    if (drag.kind === 'pan' && drag.softPan) {
+      const world = toWorld(event.clientX, event.clientY);
+      const movedPx = Math.hypot(world[0] - drag.start[0], world[1] - drag.start[1]) * state.viewport.zoom;
+      if (movedPx < 4) state.setSelection(null);
       return;
     }
     if (drag.kind === 'hill') {
@@ -259,7 +276,7 @@ export function createStageHandlers(ctx: StageHandlerContext): {
       const shift = event.shiftKey;
       state.mutateProject((draft) => {
         draft.terrain.shapes.push({
-          id: uid('hill'), type: shift ? 'basin' : 'hill',
+          id: `hill_${Date.now().toString(36)}`, type: shift ? 'basin' : 'hill',
           cx: drag.start[0], cy: drag.start[1],
           rx: Math.max(60, Math.abs(world[0] - drag.start[0])),
           ry: Math.max(60, Math.abs(world[1] - drag.start[1])),
@@ -281,4 +298,16 @@ export function createStageHandlers(ctx: StageHandlerContext): {
   };
 
   return { down, move, up, contextMenu };
+}
+
+/** 供外部（模糊/卸载）收尾未完成的笔刷拖拽，确保 Base64 只编码一次 */
+export function abortStageDrag(refs: StageRefs): void {
+  const drag = refs.drag.current;
+  refs.drag.current = null;
+  if (!drag) return;
+  if (drag.kind === 'brush' && drag.brush) {
+    finishBrushDrag(drag.brush, null, brushRefs(refs), true);
+    return;
+  }
+  if (drag.kind === 'handle') useStudioStore.getState().endContinuousEdit(true);
 }

@@ -5,21 +5,33 @@ import type {
   Vec2,
   WallSegment,
   WallTowerPoint,
+  WaterGate,
 } from '../../schema/geometry.types';
 import { intersectSegmentsExact } from '../math/polygon';
 import type { ZoneGeneratorInput } from '../obstacles/guardSafe';
+import {
+  type Opening,
+  densifyRing,
+  gatePolygon,
+  mergeOpenings,
+  pointAtArc,
+  sliceRing,
+  waterGatePolygon,
+} from './wallGeometry';
 
 export type { GateStructure, WallSegment } from '../../schema/geometry.types';
 
 export interface WallSystem {
   readonly walls: ReadonlyArray<WallSegment>;
   readonly gates: ReadonlyArray<GateStructure>;
+  readonly waterGates: ReadonlyArray<WaterGate>;
   readonly towers: ReadonlyArray<WallTowerPoint>;
 }
 
 const RING_STEP_M = 16;
 const GATE_TOWER_RADIUS = 5.2;
 const GATE_TOWER_INSET_M = 2.6;
+const WATER_GATE_MARGIN_M = 1.25;
 
 interface RawGate {
   readonly x: number;
@@ -31,140 +43,38 @@ interface RawGate {
   readonly halfGap: number;
 }
 
-interface GateInterval {
-  start: number;
-  end: number;
-  readonly gates: GateStructure[];
+interface RawWaterGate {
+  readonly x: number;
+  readonly y: number;
+  readonly arc: number;
+  readonly canalId: string;
+  readonly canalName: string;
+  readonly canalWidthM: number;
+  readonly halfGap: number;
 }
 
-function densifyRing(points: Polyline, step: number): { ring: Vec2[]; arc: number[]; total: number } {
-  const ring: Vec2[] = [];
-  const arc: number[] = [];
-  let acc = 0;
-  for (let i = 0; i < points.length; i += 1) {
-    const a = points[i];
-    const b = points[(i + 1) % points.length];
-    if (!a || !b) continue;
-    const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
-    if (len < 1e-9) continue;
-    const n = Math.max(1, Math.ceil(len / step));
-    for (let k = 0; k < n; k += 1) {
-      const t = k / n;
-      ring.push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]);
-      arc.push(acc + len * t);
-    }
-    acc += len;
-  }
-  return { ring, arc, total: acc };
-}
-
-function pointAtArc(ring: ReadonlyArray<Vec2>, arc: ReadonlyArray<number>, total: number, s: number): Vec2 {
-  if (ring.length === 0) return [0, 0];
-  const safeTotal = total > 1e-9 ? total : 1;
-  const target = ((s % safeTotal) + safeTotal) % safeTotal;
-  for (let i = 0; i < ring.length; i += 1) {
-    const a = arc[i] ?? 0;
-    const b = i + 1 < ring.length ? (arc[i + 1] ?? safeTotal) : safeTotal;
-    if (target >= a && target <= b) {
-      const p = ring[i];
-      const q = i + 1 < ring.length ? ring[i + 1] : ring[0];
-      if (!p || !q) return [0, 0];
-      const span = b - a;
-      const t = span > 1e-9 ? (target - a) / span : 0;
-      return [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t];
-    }
-  }
-  const first = ring[0];
-  return first ? [first[0], first[1]] : [0, 0];
-}
-
-function sliceRing(
+function ringTangent(
   ring: ReadonlyArray<Vec2>,
   arc: ReadonlyArray<number>,
   total: number,
-  fromS: number,
-  toS: number,
-): Polyline {
-  const span = ((toS - fromS) % total + total) % total;
-  if (span < 1e-6) return [];
-  const items: Array<{ rel: number; p: Vec2 }> = [];
-  for (let i = 0; i < ring.length; i += 1) {
-    const p = ring[i];
-    if (!p) continue;
-    const rel = (((arc[i] ?? 0) - fromS) % total + total) % total;
-    if (rel > 1e-6 && rel < span - 1e-6) items.push({ rel, p });
-  }
-  items.sort((a, b) => a.rel - b.rel);
-  return [
-    pointAtArc(ring, arc, total, fromS),
-    ...items.map((it) => it.p),
-    pointAtArc(ring, arc, total, toS),
-  ];
-}
-
-/** 城门矩形门楼：沿墙切向 halfLen、沿法向 halfDepth 的真实厚度二维多边形 */
-function gatePolygon(center: Vec2, tangent: Vec2, halfLen: number, halfDepth: number): Polygon {
-  const nx = -tangent[1];
-  const ny = tangent[0];
-  return [
-    [center[0] - tangent[0] * halfLen - nx * halfDepth, center[1] - tangent[1] * halfLen - ny * halfDepth],
-    [center[0] + tangent[0] * halfLen - nx * halfDepth, center[1] + tangent[1] * halfLen - ny * halfDepth],
-    [center[0] + tangent[0] * halfLen + nx * halfDepth, center[1] + tangent[1] * halfLen + ny * halfDepth],
-    [center[0] - tangent[0] * halfLen + nx * halfDepth, center[1] - tangent[1] * halfLen + ny * halfDepth],
-  ];
-}
-
-/** 把各城门豁口 [arc-halfGap, arc+halfGap] 归一化并按弧长合并重叠区间（含首尾环绕） */
-function mergeGateIntervals(gates: ReadonlyArray<GateStructure>, total: number): GateInterval[] {
-  const spans: Array<{ start: number; end: number; gate: GateStructure }> = [];
-  for (const gate of gates) {
-    let start = gate.arc - gate.gapHalf;
-    let end = gate.arc + gate.gapHalf;
-    if (start < 0) {
-      spans.push({ start: start + total, end: total, gate });
-      spans.push({ start: 0, end, gate });
-      continue;
-    }
-    if (end > total) {
-      spans.push({ start, end: total, gate });
-      spans.push({ start: 0, end: end - total, gate });
-      continue;
-    }
-    spans.push({ start, end, gate });
-  }
-  spans.sort((a, b) => a.start - b.start);
-  const merged: GateInterval[] = [];
-  for (const span of spans) {
-    const last = merged[merged.length - 1];
-    if (last && span.start <= last.end + 0.5) {
-      last.end = Math.max(last.end, span.end);
-      if (!last.gates.some((g) => g.id === span.gate.id)) last.gates.push(span.gate);
-    } else {
-      merged.push({ start: span.start, end: span.end, gates: [span.gate] });
-    }
-  }
-  if (merged.length > 1) {
-    const first = merged[0];
-    const last = merged[merged.length - 1];
-    if (first && last && first.start <= 0.5 && last.end >= total - 0.5) {
-      first.start = last.start - total;
-      for (const gate of last.gates) if (!first.gates.some((g) => g.id === gate.id)) first.gates.push(gate);
-      merged.pop();
-    }
-  }
-  return merged;
+  at: number,
+): Vec2 {
+  const before = pointAtArc(ring, arc, total, at - 1.0);
+  const after = pointAtArc(ring, arc, total, at + 1.0);
+  const len = Math.hypot(after[0] - before[0], after[1] - before[1]);
+  return len > 1e-9 ? [(after[0] - before[0]) / len, (after[1] - before[1]) / len] : [1, 0];
 }
 
 /**
- * 阶段一城垣环构建器：以 16m 步长加密选区边界，对平滑后的 roadsBuilt 中心线调用
- * `intersectSegmentsExact` 取真实交点，城门取墙段切向角并生成真实厚度门楼多边形，
- * 豁口区间按弧长合并重叠，彻底杜绝近距双路绕环重画封死城门。
+ * 阶段一城垣环构建器：16m 步长加密选区边界，与平滑路网/明渠逐段精确求交。
+ * 道路 → 城门门楼与敌台；明渠（非 qanat）→ 拱形水门豁口（宽 = canal.widthM + 2.5m），
+ * 全部豁口按弧长合并后切环，彻底杜绝水渠横切死墙。
  */
 export function buildZoneWallSystem(input: ZoneGeneratorInput): WallSystem {
   const { zone, project, obstacleCtx } = input;
   const thickness = Math.max(1.5, zone.wallThicknessM);
   const { ring, arc, total } = densifyRing(zone.points, RING_STEP_M);
-  if (ring.length < 3 || total <= 0) return { walls: [], gates: [], towers: [] };
+  if (ring.length < 3 || total <= 0) return { walls: [], gates: [], waterGates: [], towers: [] };
 
   const raw: RawGate[] = [];
   for (const road of project.roads) {
@@ -199,15 +109,12 @@ export function buildZoneWallSystem(input: ZoneGeneratorInput): WallSystem {
   const gates: GateStructure[] = [];
   const gateArcs: number[] = [];
   for (const g of raw) {
-    const wrapped = gateArcs.some((v) => Math.abs(v - g.arc) < 4.0 || Math.abs(Math.abs(v - g.arc) - total) < 4.0);
+    const wrapped = gateArcs.some(
+      (v) => Math.abs(v - g.arc) < 4.0 || Math.abs(Math.abs(v - g.arc) - total) < 4.0,
+    );
     if (wrapped) continue;
     gateArcs.push(g.arc);
-    const before = pointAtArc(ring, arc, total, g.arc - 1.0);
-    const after = pointAtArc(ring, arc, total, g.arc + 1.0);
-    const tlen = Math.hypot(after[0] - before[0], after[1] - before[1]);
-    const tangent: Vec2 = tlen > 1e-9 ? [(after[0] - before[0]) / tlen, (after[1] - before[1]) / tlen] : [1, 0];
-    const leftArc = g.arc - g.halfGap - GATE_TOWER_INSET_M;
-    const rightArc = g.arc + g.halfGap + GATE_TOWER_INSET_M;
+    const tangent = ringTangent(ring, arc, total, g.arc);
     gates.push({
       id: `gate_${zone.id}_${gates.length + 1}`,
       x: g.x,
@@ -216,13 +123,87 @@ export function buildZoneWallSystem(input: ZoneGeneratorInput): WallSystem {
       angleDeg: (Math.atan2(tangent[1], tangent[0]) * 180) / Math.PI,
       gapHalf: g.halfGap,
       thicknessM: thickness,
-      polygon: gatePolygon([g.x, g.y], tangent, g.halfGap + GATE_TOWER_INSET_M, thickness * 0.9),
+      polygon: gatePolygon(
+        [g.x, g.y],
+        tangent,
+        g.halfGap + GATE_TOWER_INSET_M,
+        thickness * 0.9,
+      ),
       roadId: g.roadId,
       roadName: g.roadName,
       roadWidthM: g.roadWidthM,
       towers: [
-        pointAtArc(ring, arc, total, leftArc),
-        pointAtArc(ring, arc, total, rightArc),
+        pointAtArc(ring, arc, total, g.arc - g.halfGap - GATE_TOWER_INSET_M),
+        pointAtArc(ring, arc, total, g.arc + g.halfGap + GATE_TOWER_INSET_M),
+      ],
+    });
+  }
+
+  const rawWater: RawWaterGate[] = [];
+  for (const canal of project.canals) {
+    if (canal.style === 'qanat') continue;
+    const built = obstacleCtx.canalsBuilt.find((item) => item.id === canal.id);
+    const pts = built?.centerline ?? canal.points;
+    for (let i = 0; i < ring.length; i += 1) {
+      const a = ring[i];
+      const b = ring[(i + 1) % ring.length];
+      if (!a || !b) continue;
+      const segLen = Math.hypot(b[0] - a[0], b[1] - a[1]);
+      if (segLen < 1e-9) continue;
+      for (let j = 0; j < pts.length - 1; j += 1) {
+        const c = pts[j];
+        const d = pts[j + 1];
+        if (!c || !d) continue;
+        const hit = intersectSegmentsExact(a, b, c, d);
+        if (!hit) continue;
+        rawWater.push({
+          x: hit.x,
+          y: hit.y,
+          arc: (arc[i] ?? 0) + segLen * hit.t,
+          canalId: canal.id,
+          canalName: canal.name,
+          canalWidthM: canal.widthM,
+          halfGap: 0.5 * (canal.widthM + 2.5),
+        });
+      }
+    }
+  }
+
+  rawWater.sort((p, q) => p.arc - q.arc);
+  const waterGates: WaterGate[] = [];
+  const waterArcs: number[] = [];
+  for (const w of rawWater) {
+    const wrapped = waterArcs.some(
+      (v) => Math.abs(v - w.arc) < 5.0 || Math.abs(Math.abs(v - w.arc) - total) < 5.0,
+    );
+    if (wrapped) continue;
+    waterArcs.push(w.arc);
+    const tangent = ringTangent(ring, arc, total, w.arc);
+    const nx = -tangent[1];
+    const ny = tangent[0];
+    const mid = pointAtArc(ring, arc, total, w.arc);
+    const bulgeM = 1.8;
+    waterGates.push({
+      id: `wgate_${zone.id}_${waterGates.length + 1}`,
+      canalId: w.canalId,
+      canalName: w.canalName,
+      canalWidthM: w.canalWidthM,
+      x: w.x,
+      y: w.y,
+      arc: w.arc,
+      angleDeg: (Math.atan2(tangent[1], tangent[0]) * 180) / Math.PI,
+      gapHalf: w.halfGap,
+      thicknessM: thickness,
+      polygon: waterGatePolygon(
+        [w.x, w.y],
+        tangent,
+        w.halfGap + WATER_GATE_MARGIN_M,
+        thickness * 0.85,
+      ),
+      archRing: [
+        pointAtArc(ring, arc, total, w.arc - w.halfGap - WATER_GATE_MARGIN_M),
+        [mid[0] + nx * bulgeM, mid[1] + ny * bulgeM],
+        pointAtArc(ring, arc, total, w.arc + w.halfGap + WATER_GATE_MARGIN_M),
       ],
     });
   }
@@ -231,14 +212,21 @@ export function buildZoneWallSystem(input: ZoneGeneratorInput): WallSystem {
   const walls: WallSegment[] = [];
   const pushTower = (x: number, y: number, kind: 'tower' | 'gate_tower'): WallTowerPoint => {
     const key = `${Math.round(x * 10)}_${Math.round(y * 10)}`;
-    const existing = towers.find((item) => `${Math.round(item.x * 10)}_${Math.round(item.y * 10)}` === key);
+    const existing = towers.find(
+      (item) => `${Math.round(item.x * 10)}_${Math.round(item.y * 10)}` === key,
+    );
     if (existing) return existing;
     const tower: WallTowerPoint = { x, y, radiusM: GATE_TOWER_RADIUS, kind };
     towers.push(tower);
     return tower;
   };
 
-  if (gates.length === 0) {
+  const openings: Opening[] = [
+    ...gates.map((g) => ({ id: g.id, kind: 'gate' as const, arc: g.arc, halfGap: g.gapHalf })),
+    ...waterGates.map((w) => ({ id: w.id, kind: 'water' as const, arc: w.arc, halfGap: w.gapHalf })),
+  ];
+
+  if (openings.length === 0) {
     const sectionTowers: WallTowerPoint[] = [];
     for (let s = 0; s < total; s += Math.max(30, zone.towerIntervalM)) {
       const p = pointAtArc(ring, arc, total, s);
@@ -251,14 +239,15 @@ export function buildZoneWallSystem(input: ZoneGeneratorInput): WallSystem {
       polyline: [...ring, ring[0] ?? [0, 0]],
       closed: true,
       gates: [],
+      waterGates: [],
       towers: sectionTowers,
     };
     walls.push(wall);
     obstacleCtx.wallsBuilt.push({ id: wall.id, thicknessM: thickness, polyline: wall.polyline });
-    return { walls, gates, towers };
+    return { walls, gates, waterGates, towers };
   }
 
-  const intervals = mergeGateIntervals(gates, total);
+  const intervals = mergeOpenings(openings, total);
   for (let i = 0; i < intervals.length; i += 1) {
     const current = intervals[i];
     const next = intervals[(i + 1) % intervals.length];
@@ -267,8 +256,10 @@ export function buildZoneWallSystem(input: ZoneGeneratorInput): WallSystem {
     const toS = i + 1 === intervals.length ? next.start + total : next.start;
     const polyline = sliceRing(ring, arc, total, fromS, toS);
     if (polyline.length < 2) continue;
+    const sectionGates = gates.filter((g) => current.ids.includes(g.id));
+    const sectionWater = waterGates.filter((w) => current.ids.includes(w.id));
     const sectionTowers: WallTowerPoint[] = [];
-    if (current.gates.length > 0) {
+    if (sectionGates.length > 0) {
       const outerLeft = pointAtArc(ring, arc, total, current.start - GATE_TOWER_INSET_M);
       const outerRight = pointAtArc(ring, arc, total, current.end + GATE_TOWER_INSET_M);
       sectionTowers.push(pushTower(outerLeft[0], outerLeft[1], 'gate_tower'));
@@ -285,12 +276,30 @@ export function buildZoneWallSystem(input: ZoneGeneratorInput): WallSystem {
       thicknessM: thickness,
       polyline,
       closed: false,
-      gates: current.gates,
+      gates: sectionGates,
+      waterGates: sectionWater,
       towers: sectionTowers,
     };
     walls.push(wall);
     obstacleCtx.wallsBuilt.push({ id: wall.id, thicknessM: thickness, polyline });
   }
 
-  return { walls, gates, towers };
+  return { walls, gates, waterGates, towers };
+}
+
+/** 明渠穿墙水门查询（渲染与测试共用） */
+export function collectWaterGates(walls: ReadonlyArray<WallSegment>): WaterGate[] {
+  const out: WaterGate[] = [];
+  for (const wall of walls) out.push(...wall.waterGates);
+  return out;
+}
+
+/** 水门门洞轮廓批量导出（障碍场注册用） */
+export function waterGateFootprints(walls: ReadonlyArray<WallSegment>): Polygon[] {
+  return collectWaterGates(walls).map((gate) => gate.polygon);
+}
+
+/** 兼容旧渲染：门洞折线（拱形饰线） */
+export function waterGateArches(walls: ReadonlyArray<WallSegment>): Polyline[] {
+  return collectWaterGates(walls).map((gate) => gate.archRing);
 }

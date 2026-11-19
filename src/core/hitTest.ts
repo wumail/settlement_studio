@@ -6,10 +6,15 @@ import type {
   ViewportState,
 } from '../schema/geometry.types';
 import type { TerrainShape, TownProject } from '../schema/project.schema';
-import { pointToPolylineDist } from './obstacles/collisionAudit';
+import { pointToPolylineDist, pointToSegmentDist } from './obstacles/collisionAudit';
+import { ENTITY_SELECTION_TYPES, hitEntityHandle } from './entityHandles';
 import { pointInPolygon } from './math/polygon';
 
 export type HandleKind =
+  | 'entity_center'
+  | 'entity_rotate'
+  | 'entity_scale_w'
+  | 'entity_scale_d'
   | 'vertex'
   | 'edge_mid'
   | 'shape_center'
@@ -68,9 +73,31 @@ function hitLinearShape(shape: TerrainShape, wx: number, wy: number, tol: number
   return u * u + v * v <= scale * scale;
 }
 
+/** 旋转矩形（OBB）命中：把世界点反旋到局部轴系后按半宽/半高比较 */
+function hitObb(
+  wx: number,
+  wy: number,
+  cx: number,
+  cy: number,
+  widthM: number,
+  depthM: number,
+  angleDeg: number,
+  tol: number,
+): boolean {
+  const rad = (angleDeg * Math.PI) / 180;
+  const ca = Math.cos(rad);
+  const sa = Math.sin(rad);
+  const dx = wx - cx;
+  const dy = wy - cy;
+  const lx = dx * ca + dy * sa;
+  const ly = -dx * sa + dy * ca;
+  return Math.abs(lx) <= depthM * 0.5 + tol && Math.abs(ly) <= widthM * 0.5 + tol;
+}
+
 /**
- * 9 级严格优先级拾取：landmark -> reef -> ford -> canal -> road -> river -> waterBody -> zone -> terrainShape。
- * zone 强制先于 terrainShape，且永不拾取单栋房屋（严守 NG-01）。
+ * 14 级严格优先级拾取：landmark -> reef -> ford -> weir -> dock -> watermill -> structure -> bridge
+ * -> canal -> road -> river -> waterBody -> zone -> terrainShape。
+ * 水工与核心建筑群强制先于选区，zone 先于 terrainShape，且永不拾取单栋房屋（严守 NG-01）。
  */
 export function hitTestSceneObject(
   project: TownProject,
@@ -106,6 +133,32 @@ export function hitTestSceneObject(
     }
   }
   void crossedFords;
+  for (const weir of project.weirs) {
+    if (pointToSegmentDist(wx, wy, weir.pStart, weir.pEnd) <= weir.widthM * 0.5 + tol) {
+      return { type: 'weir', id: weir.id, name: weir.name };
+    }
+  }
+  for (const dock of project.docks) {
+    if (hitObb(wx, wy, dock.x, dock.y, dock.widthM, dock.lengthM, dock.angleDeg, tol)) {
+      return { type: 'dock', id: dock.id, name: dock.name };
+    }
+  }
+  for (const mill of project.watermills) {
+    if (hitObb(wx, wy, mill.x, mill.y, mill.widthM, mill.depthM, mill.angleDeg, tol)) {
+      return { type: 'watermill', id: mill.id, name: mill.name };
+    }
+  }
+  for (const structure of project.structures) {
+    const hit = structure.kind === 'round_altar'
+      ? Math.hypot(wx - structure.x, wy - structure.y) <= Math.max(structure.widthM, structure.depthM) * 0.5 + tol
+      : hitObb(wx, wy, structure.x, structure.y, structure.widthM, structure.depthM, structure.angleDeg, tol);
+    if (hit) return { type: 'structure', id: structure.id, name: structure.name };
+  }
+  for (const bridge of project.bridgeOverrides) {
+    if (Math.hypot(wx - bridge.x, wy - bridge.y) <= 16 + tol) {
+      return { type: 'bridge', id: bridge.id, name: '桥梁覆写' };
+    }
+  }
   for (const canal of scene.hydro.canals) {
     if (pointToPolylineDist(wx, wy, canal.centerline) <= tol) {
       return { type: 'canal', id: canal.id, name: canal.name };
@@ -199,6 +252,10 @@ export function hitTestActiveHandles(
   if (!selection) return null;
   const tol = toleranceM(viewport) * 1.4;
   const out: HandleHit[] = [];
+  if (ENTITY_SELECTION_TYPES.includes(selection.type)) {
+    const hit = hitEntityHandle(project, selection, wx, wy, tol);
+    return hit ? { kind: hit.kind, index: 0, x: hit.x, y: hit.y } : null;
+  }
 
   if (selection.type === 'terrainShape') {
     const shape = project.terrain.shapes.find((s) => s.id === selection.id);

@@ -30,30 +30,12 @@ import {
   polygonRadiusOf,
 } from './collisionAudit';
 import { type ObstacleGrid, sampleObstacleClearance } from './obstacleSdf';
-const SafeBuildingBrand: unique symbol = Symbol('terrax.SafeBuilding');
-const SafeFenceBrand: unique symbol = Symbol('terrax.SafeFence');
-const SafeTreeBrand: unique symbol = Symbol('terrax.SafeTree');
-export type BuildingRoofKind = 'inner' | 'town';
-export type BuildingArchetype = 'house' | 'farmhouse' | 'wing' | 'hall' | 'granary' | 'stall';
-export type TreeArchetype = 'garden' | 'woodland' | 'plaza' | 'field';
-export interface SafeBuilding {
-  readonly [SafeBuildingBrand]: true;
-  readonly id: string; readonly zoneId: string; readonly zoneName: string;
-  readonly contentType: TownProject['zones'][number]['contentType'];
-  readonly roofKind: BuildingRoofKind; readonly kind: BuildingArchetype; readonly label: string;
-  readonly points: Polygon; readonly centroid: Vec2; readonly areaM2: number;
-  readonly ridge: readonly [Vec2, Vec2] | null;
-}
-export interface SafeFence {
-  readonly [SafeFenceBrand]: true; readonly zoneId: string; readonly points: Polyline;
-}
-export interface SafeTree {
-  readonly [SafeTreeBrand]: true; readonly zoneId: string;
-  readonly x: number; readonly y: number; readonly r: number; readonly kind: TreeArchetype;
-}
-export interface WallObstacleRef {
-  readonly id: string; readonly thicknessM: number; readonly polyline: Polyline;
-}
+import type { BuildingArchetype, BuildingRoofKind, SafeBuilding, SafeFence, SafeTree, TreeArchetype } from './safeTypes';
+import { SafeBuildingBrand, SafeFenceBrand, SafeTreeBrand } from './safeTypes';
+
+export type { BuildingArchetype, BuildingRoofKind, SafeBuilding, SafeFence, SafeTree, TreeArchetype } from './safeTypes';
+export { PAINTED_TREE_ZONE, brandPaintedTree } from './safeTypes';
+export interface WallObstacleRef { readonly id: string; readonly thicknessM: number; readonly polyline: Polyline; }
 export interface ObstacleContext {
   readonly worldSizeM: number;
   readonly elevationField: ElevationFieldData;
@@ -64,6 +46,7 @@ export interface ObstacleContext {
   readonly roadsBuilt: ReadonlyArray<BuiltRoad>;
   readonly wallsBuilt: WallObstacleRef[];
   readonly exclusionPolys: Polygon[];
+  readonly rigidPolys: Polygon[];
   readonly spatialHash: SpatialHash<SafeBuilding>;
   grid: ObstacleGrid | null;
   buildingSeq: number;
@@ -149,9 +132,14 @@ export function isPolygonSafeAnalytic(
   ctx: ObstacleContext,
   extraMarginM = 0,
   slopeLimitDeg = ctx.maxSlopeDeg,
+  sameZoneId?: string,
 ): boolean {
   if (poly.length < 3) return false;
   const centroid = computePolygonCentroid(poly);
+  const clearance = ctx.grid
+    ? sampleObstacleClearance(ctx.grid, ctx.worldSizeM, centroid[0], centroid[1])
+    : -1;
+  if (ctx.grid && clearance <= 0.02) return false;
   const radius = polygonRadiusOf(poly, centroid);
   const limit = ctx.worldSizeM - 6.0;
   for (const p of poly) {
@@ -161,13 +149,12 @@ export function isPolygonSafeAnalytic(
   if (sampleSlopeDeg(ctx.elevationField, centroid[0], centroid[1]) > slopeLimitDeg) return false;
   const near = ctx.spatialHash.queryPolygonBBox(poly, 4.0);
   for (const other of near) {
+    // 只与同选区邻屋互斥：屋宇四角必在本选区内，选区互不重叠即天然跨区零穿模；
+    // 由此全量编译与单区重抽的布屋序列与障碍上下文彻底解耦，逐字复现。
+    if (sameZoneId !== undefined && other.zoneId !== sameZoneId) continue;
     if (!clearsPolygon(poly, centroid, radius, other.points, 0.8 + extraMarginM)) return false;
   }
-  if (ctx.grid) {
-    const clearance = sampleObstacleClearance(ctx.grid, ctx.worldSizeM, centroid[0], centroid[1]);
-    if (clearance <= 0.02) return false;
-    if (clearance > radius + 2.0 * ctx.grid.stepM + 10.0) return true;
-  }
+  if (ctx.grid && clearance > radius + 2.0 * ctx.grid.stepM + 10.0) return true;
   for (const river of ctx.riversBuilt) {
     if (!clearsPolygon(poly, centroid, radius, river.bankPolygon, 8.0 + extraMarginM)) return false;
   }
@@ -189,6 +176,9 @@ export function isPolygonSafeAnalytic(
     const margin = 0.5 * wall.thicknessM + 3.0 + extraMarginM;
     if (!clearsPolyline(poly, centroid, radius, wall.polyline, margin)) return false;
   }
+  for (const rigid of ctx.rigidPolys) {
+    if (!clearsPolygon(poly, centroid, radius, rigid, 2.0 + extraMarginM)) return false;
+  }
   return true;
 }
 
@@ -206,14 +196,14 @@ export function guardSafeBuilding(
   }
   let usePoly: Polygon = candidatePoly;
   let useArea = area;
-  if (!isPolygonSafeAnalytic(candidatePoly, ctx, 0, zone.maxSlopeDeg)) {
+  if (!isPolygonSafeAnalytic(candidatePoly, ctx, 0, zone.maxSlopeDeg, zone.id)) {
     const scaled = scalePolygon(candidatePoly, 0.82);
     const scaledArea = Math.abs(computePolygonAreaSigned(scaled));
     if (minEdgeLength(scaled) < 4.8 || scaledArea < 14) return null;
     for (const p of scaled) {
       if (!pointInPolygon(p[0], p[1], zone.points)) return null;
     }
-    if (!isPolygonSafeAnalytic(scaled, ctx, 0, zone.maxSlopeDeg)) return null;
+    if (!isPolygonSafeAnalytic(scaled, ctx, 0, zone.maxSlopeDeg, zone.id)) return null;
     usePoly = scaled;
     useArea = scaledArea;
   }
@@ -247,7 +237,7 @@ export function guardSafeFence(
   for (const p of fenceRectPoly) {
     if (!pointInPolygon(p[0], p[1], zone.points)) return null;
   }
-  if (!isPolygonSafeAnalytic(fenceRectPoly, ctx, 0, zone.maxSlopeDeg)) return null;
+  if (!isPolygonSafeAnalytic(fenceRectPoly, ctx, 0, zone.maxSlopeDeg, zone.id)) return null;
   const first = fenceRectPoly[0];
   if (!first) return null;
   return {
@@ -311,6 +301,8 @@ export function guardSafeTree(
     [x - r, y + r],
   ];
   for (const b of ctx.spatialHash.queryPolygonBBox(box, 0)) {
+    // 邻屋同样限定同选区：选区互不重叠时，本区内树木不可能落入别区屋面
+    if (b.zoneId !== zone.id) continue;
     if (pointInPolygon(x, y, b.points)) return null;
   }
   ctx.treeSeq += 1;

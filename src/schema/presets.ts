@@ -1,6 +1,7 @@
 import rawChanghu from '../../projects/长湖_复市镇.worldtown.json';
 import rawLosrumura from '../../projects/起点城_Losrumura.worldtown.json';
 import rawPalong from '../../projects/帕隆_峡谷铁寨.worldtown.json';
+import { SCHEMA_VERSION } from './geometry.types';
 import { type TownProject, normalizeProject } from './project.schema';
 
 export type PresetKey = 'losrumura' | 'changhu' | 'palong' | 'blank';
@@ -41,7 +42,7 @@ export const BUILTIN_PRESETS: ReadonlyArray<PresetDescriptor> = [
 
 export function createBlankProject(): TownProject {
   return normalizeProject({
-    schemaVersion: '2.0.0',
+    schemaVersion: SCHEMA_VERSION,
     meta: {
       id: 'proj_blank',
       name: '新建聚落测绘图',

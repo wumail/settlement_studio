@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { buildElevationField, sampleElevation, sampleGradient } from '../src/core/terrain/elevationField';
 import { extractContours, extractScarpTicks } from '../src/core/terrain/marchingSquares';
-import { applyContourWarpDrag, applySculptBrush } from '../src/core/terrain/terrainSculpt';
+import {
+  applyContourWarpDrag,
+  applyRampStroke,
+  applySculptBrush,
+  applySculptStrokeSegment,
+  sculptEncodeCount,
+} from '../src/core/terrain/terrainSculpt';
+import { scatterTreesAlongStroke } from '../src/core/terrain/treeBrush';
+import type { TreeGuardView } from '../src/core/obstacles/treeGuard';
 import { buildCanalGeometry, buildRiverGeometry } from '../src/core/hydro/riverCanal';
 import { buildHydroRoadPackage, solveOrthogonalBridges } from '../src/core/hydro/reefRoadBridge';
 import { buildObstacleGrid, sampleObstacleClearance } from '../src/core/obstacles/obstacleSdf';
@@ -444,6 +452,7 @@ describe('M2 · SDF 与 Safe* 品牌守卫', () => {
       canalsBuilt: hydro.canals,
       roadsBuilt: hydro.roads,
       wallsBuilt: [],
+      rigidPolys: [],
       exclusionPolys: project.zones.filter((z) => z.contentType === 'exclusion').map((z) => z.points),
       spatialHash: new SpatialHash<SafeBuilding>(32),
       grid: buildObstacleGrid({
@@ -684,5 +693,188 @@ describe('V2.0.2 · 坡宽法向 / 焦点优先 / 窄渠岸线对抗回归', () 
     const minHalf = Math.min(...built.halfWidths);
     expect(minHalf).toBeLessThanOrEqual(0.81);
     expect(minHalf).toBeGreaterThanOrEqual(0.25);
+  });
+});
+
+
+describe('V3 · 笔刷数学引擎重做', () => {
+  function idxOf(field: ReturnType<typeof buildElevationField>, x: number, y: number): number {
+    const gx = Math.round(x / field.cellSizeM);
+    const gy = Math.round(y / field.cellSizeM);
+    return gy * 257 + gx;
+  }
+
+  function flatProject(step = 4): TownProject {
+    return normalizeProject({
+      meta: { worldSizeM: 800, name: '笔刷数学' },
+      terrain: { baseElev: 300, slopeMagM: 0, slopeDirDeg: 0, contourStep: step, indexBase: 0 },
+    });
+  }
+
+  it('硬度平顶核：u <= hardness 恒 1，边缘平滑归零', () => {
+    const project = flatProject();
+    const field = buildElevationField(project);
+    const before = new Float32Array(field.elevation);
+    applySculptBrush(field, project.terrain, {
+      x: 400, y: 400, radiusM: 80, strength: 1, mode: 'raise', flattenTargetElev: 300, hardness: 0.7,
+    });
+    const at = (r: number): number => field.sculptDelta[idxOf(field, 400 + r, 400)] ?? 0;
+    const lifted = (r: number): number => {
+      const idx = idxOf(field, 400 + r, 400);
+      return (field.elevation[idx] ?? 0) - (before[idx] ?? 0);
+    };
+    const center = at(0);
+    expect(center).toBeGreaterThan(0);
+    expect(Math.abs(at(40) - center)).toBeLessThan(1e-3);
+    expect(Math.abs(at(55) - center)).toBeLessThan(1e-3);
+    expect(at(72)).toBeLessThan(center * 0.35);
+    expect(at(82)).toBe(0);
+    expect(lifted(0)).toBeGreaterThan(0);
+    const soft = buildElevationField(project);
+    applySculptBrush(soft, project.terrain, {
+      x: 400, y: 400, radiusM: 80, strength: 1, mode: 'raise', flattenTargetElev: 300, hardness: 0.05,
+    });
+    expect(at(0)).toBeGreaterThan(0);
+  });
+
+  it('弧长插值：快速长拖形成连续脊，零断珠（全采样点增量 > 0）', () => {
+    const project = flatProject();
+    const field = buildElevationField(project);
+    const from: Vec2 = [180, 400];
+    const to: Vec2 = [620, 400];
+    applySculptStrokeSegment(field, project.terrain, from, to, {
+      x: from[0], y: from[1], radiusM: 30, strength: 0.8, mode: 'raise', flattenTargetElev: 300, hardness: 0.5,
+    }, { skipEncode: true, skipContours: true });
+    let minDelta = Number.POSITIVE_INFINITY;
+    for (let i = 0; i <= 40; i += 1) {
+      const x = from[0] + ((to[0] - from[0]) * i) / 40;
+      minDelta = Math.min(minDelta, field.sculptDelta[idxOf(field, x, 400)] ?? 0);
+    }
+    expect(minDelta).toBeGreaterThan(0);
+    expect(field.sculptDelta[idxOf(field, 400, 400)] ?? 0).toBeGreaterThan(0);
+  });
+
+  it('斜坡拉道：沿线高程线性过渡且两端贴合起止高程', () => {
+    const project = flatProject();
+    const field = buildElevationField(project);
+    applyRampStroke(field, project.terrain, {
+      a: [200, 400], b: [600, 400], startElev: 310, endElev: 390, radiusM: 26, hardness: 0.4, strength: 1,
+    }, { skipEncode: true, skipContours: true });
+    for (let i = 0; i <= 10; i += 1) {
+      const t = i / 10;
+      const expectZ = 310 + 80 * t;
+      const z = sampleElevation(field, 200 + 400 * t, 400);
+      expect(Math.abs(z - expectZ)).toBeLessThan(1.2);
+      if (i > 0) expect(z).toBeGreaterThan(sampleElevation(field, 200 + 400 * ((i - 1) / 10), 400) - 1e-6);
+    }
+  });
+
+  it('阶地模式向 terraceStepM 整倍数收敛', () => {
+    const project = normalizeProject({
+      meta: { worldSizeM: 800 },
+      terrain: { baseElev: 300, slopeMagM: 0, slopeDirDeg: 0, contourStep: 2 },
+    });
+    const field = buildElevationField(project);
+    const idx = idxOf(field, 400, 400);
+    field.elevation[idx] = 317.4;
+    for (let i = 0; i < 60; i += 1) {
+      applySculptBrush(field, project.terrain, {
+        x: 400, y: 400, radiusM: 40, strength: 1, mode: 'terrace',
+        flattenTargetElev: 300, hardness: 0.6, terraceStepM: 6, baseElev: 300,
+      }, { skipEncode: true, skipContours: true });
+    }
+    const z = field.elevation[idx] ?? 0;
+    const snapped = Math.round((z - 300) / 6) * 6 + 300;
+    expect(Math.abs(z - snapped)).toBeLessThan(0.05);
+    expect(Math.abs(z - 318)).toBeLessThan(0.4);
+  });
+
+  it('擦除微雕把 sculptDelta 平滑归零并还原原地形', () => {
+    const project = flatProject();
+    const field = buildElevationField(project);
+    const before = new Float32Array(field.elevation);
+    const idx = idxOf(field, 400, 400);
+    applySculptStrokeSegment(field, project.terrain, [340, 400], [420, 400], {
+      x: 340, y: 400, radiusM: 40, strength: 1, mode: 'raise', flattenTargetElev: 300, hardness: 0.6,
+    }, { skipEncode: true, skipContours: true });
+    const peak = field.sculptDelta[idx] ?? 0;
+    expect(peak).toBeGreaterThan(1);
+    for (let i = 0; i < 40; i += 1) {
+      applySculptBrush(field, project.terrain, {
+        x: 400, y: 400, radiusM: 40, strength: 2, mode: 'erase', flattenTargetElev: 300, hardness: 0.6,
+      }, { skipEncode: true, skipContours: true });
+    }
+    expect(Math.abs(field.sculptDelta[idx] ?? 0)).toBeLessThan(peak * 0.02);
+    expect(Math.abs((field.elevation[idx] ?? 0) - (before[idx] ?? 0))).toBeLessThan(0.05);
+  });
+
+  it('pointermove 零 Base64 编码：skipEncode 不触发编码，松手一次编码', () => {
+    const project = flatProject();
+    const field = buildElevationField(project);
+    const before = sculptEncodeCount();
+    for (let i = 0; i < 30; i += 1) {
+      applySculptStrokeSegment(field, project.terrain, [200 + i * 8, 400], [208 + i * 8, 400], {
+        x: 200, y: 400, radiusM: 26, strength: 0.7, mode: 'raise', flattenTargetElev: 300, hardness: 0.4,
+      }, { skipEncode: true, skipContours: true });
+    }
+    expect(sculptEncodeCount()).toBe(before);
+    const flushed = applySculptStrokeSegment(field, project.terrain, [420, 400], [420, 400], {
+      x: 420, y: 400, radiusM: 26, strength: 0.7, mode: 'raise', flattenTargetElev: 300, hardness: 0.4,
+    }, {});
+    expect(sculptEncodeCount()).toBe(before + 1);
+    expect(flushed.sculptDeltaB64.length).toBeGreaterThan(0);
+    expect(flushed.contours.length).toBeGreaterThan(0);
+  });
+
+  it('林木撒点经守门校验：不落水、不落禁建圈、不落道路廊道', () => {
+    const project = flatProject();
+    const field = buildElevationField(project);
+    const view: TreeGuardView = {
+      worldSizeM: 800,
+      elevationField: field,
+      rivers: [{ bankPolygon: [[100, 0], [300, 0], [300, 800], [100, 800]] }],
+      waterBodies: [{ shorePoly: [[0, 600], [800, 600], [800, 800], [0, 800]] }],
+      canals: [],
+      roads: [{ centerline: [[400, 0], [400, 800]], widthM: 12 }],
+      walls: [],
+      exclusionPolys: [[[600, 60], [700, 60], [700, 200], [600, 200]]],
+      buildings: [],
+    };
+    const trees = scatterTreesAlongStroke([250, 300], [560, 300], view, {
+      radiusM: 60, spacingFactor: 0.75, minR: 4, maxR: 8, kind: 'woodland', seed: 7, slopeLimitDeg: 40,
+    });
+    expect(trees.length).toBeGreaterThan(4);
+    for (const tree of trees) {
+      expect(tree.x).toBeGreaterThan(301);
+      expect(tree.y).toBeLessThan(594);
+      expect(tree.r).toBeGreaterThanOrEqual(4);
+      expect(tree.r).toBeLessThanOrEqual(8);
+      expect(Math.abs(tree.x - 400)).toBeGreaterThan(6 + tree.r * 0.5);
+      const insideExclusion = tree.x > 600 && tree.x < 700 && tree.y > 60 && tree.y < 200;
+      expect(insideExclusion).toBe(false);
+    }
+  });
+
+  it('guardSafeTree 与涂抹笔刷共用同一套水岸净空判据', () => {
+    const project = makeFieldProject();
+    const field = buildElevationField(project);
+    const ctx = {
+      worldSizeM: 800, elevationField: field, maxSlopeDeg: 40,
+      riversBuilt: [], waterBodiesBuilt: [], canalsBuilt: [], roadsBuilt: [], wallsBuilt: [],
+      exclusionPolys: [], spatialHash: new SpatialHash<SafeBuilding>(), grid: null,
+      buildingSeq: 0, treeSeq: 0,
+    } as unknown as ObstacleContext;
+    void ctx;
+    const view: TreeGuardView = {
+      worldSizeM: 800, elevationField: field,
+      rivers: [], waterBodies: [], canals: [], roads: [], walls: [],
+      exclusionPolys: [[[0, 0], [200, 0], [200, 200], [0, 200]]],
+      buildings: [],
+    };
+    const near = scatterTreesAlongStroke([210, 100], [280, 100], view, {
+      radiusM: 40, spacingFactor: 0.75, minR: 4, maxR: 6, kind: 'garden', seed: 3, slopeLimitDeg: 40,
+    });
+    expect(near.length).toBeGreaterThan(0);
+    expect(near.every((tree) => tree.x > 201 || tree.y > 201)).toBe(true);
   });
 });

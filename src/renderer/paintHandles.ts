@@ -2,6 +2,7 @@ import type { Polygon, SelectionTarget, Vec2, ViewportState } from '../schema/ge
 import type { ResolvedPalette } from '../schema/palette.schema';
 import type { TerrainShape, TownProject } from '../schema/project.schema';
 import { shapeLocalToWorld } from '../core/hitTest';
+import { entityFrame, entityHandlePoints, toWorld } from '../core/entityHandles';
 import type { RenderBackend } from './RenderBackend';
 import { worldToScreen } from './RenderBackend';
 
@@ -73,6 +74,11 @@ export function paintSelectionHandles(
 ): void {
   if (!selection) return;
   const pt = (v: Vec2): Vec2 => worldToScreen(v[0], v[1], vp);
+  const entity = entityFrame(project, selection);
+  if (entity) {
+    paintEntityHandles(backend, entity, pal, pt);
+    return;
+  }
 
   if (selection.type === 'terrainShape') {
     const shape = project.terrain.shapes.find((item) => item.id === selection.id);
@@ -149,6 +155,53 @@ export function paintSelectionHandles(
     if (!a || !b) continue;
     const c = pt([0.5 * (a[0] + b[0]), 0.5 * (a[1] + b[1])]);
     backend.drawCircle(c[0], c[1], MID_R, { fill: pal.paperBg, stroke: pal.accentTerracotta, lineWidth: 1.1 });
+  }
+}
+
+/** V3 实体操控框：旋转框 + 中心十字 + 面宽/进深对拉柄 */
+function paintEntityHandles(
+  backend: RenderBackend,
+  frame: NonNullable<ReturnType<typeof entityFrame>>,
+  pal: ResolvedPalette,
+  pt: (v: Vec2) => Vec2,
+): void {
+  const hw = frame.widthM * 0.5;
+  const hd = frame.depthM * 0.5;
+  const ring = [
+    toWorld(frame, -hw, -hd),
+    toWorld(frame, hw, -hd),
+    toWorld(frame, hw, hd),
+    toWorld(frame, -hw, hd),
+    toWorld(frame, -hw, -hd),
+  ].map(pt);
+  backend.drawPolyline(ring, { stroke: pal.accentPine, lineWidth: 1.1, dash: [6, 4] });
+  const points = entityHandlePoints(frame);
+  const center = pt(points.center);
+  backend.drawSegments(
+    [
+      [[center[0] - 6, center[1]], [center[0] + 6, center[1]]],
+      [[center[0], center[1] - 6], [center[0], center[1] + 6]],
+    ],
+    { stroke: pal.accentPine, lineWidth: 1.2 },
+  );
+  if (points.rotate) {
+    const top = pt(toWorld(frame, 0, -hd));
+    const rotate = pt(points.rotate);
+    backend.drawSegments([[top, rotate]], { stroke: pal.accentTerracotta, lineWidth: 1.0, dash: [5, 3] });
+    backend.drawCircle(rotate[0], rotate[1], 5, {
+      fill: pal.paperBg,
+      stroke: pal.accentTerracotta,
+      lineWidth: 1.2,
+    });
+  }
+  for (const handle of [points.scaleW, points.scaleD]) {
+    if (!handle) continue;
+    const c = pt(handle);
+    backend.drawRect(c[0] - 4.5, c[1] - 4.5, 9, 9, {
+      fill: pal.paperBg,
+      stroke: pal.accentTerracotta,
+      lineWidth: 1.2,
+    });
   }
 }
 

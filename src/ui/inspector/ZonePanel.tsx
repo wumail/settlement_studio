@@ -1,137 +1,10 @@
-import { useEffect, useRef, type ReactNode } from 'react';
 import { useStudioStore } from '../../store/useStudioStore';
 import { ZONE_CONTENT_TYPES, type ZoneContentType } from '../../schema/project.schema';
 
-const LABEL = 'text-[11px] font-medium text-ink-secondary';
-const INPUT = 'h-7 w-full rounded border border-brass bg-input px-2 text-[11px] text-ink focus:border-pine focus:outline-none';
-const BTN = 'h-7 rounded border border-brass bg-card px-2 text-[11px] text-ink-secondary hover:bg-card-hover';
-const STEP_KEYS: ReadonlySet<string> = new Set(['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown']);
+import { FORM_BUTTON_CLASS as BTN, NumberField, PanelSection, RangeField, SelectField, TextField, ToggleField } from './FormControls';
+import { LayerOrderField } from './LayerOrderField';
 
-export function PanelSection({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section className="border-b border-brass px-3 py-2">
-      <h3 className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">{title}</h3>
-      <div className="flex flex-col gap-1.5">{children}</div>
-    </section>
-  );
-}
-
-export function RangeField(props: {
-  label: string;
-  value: number;
-  min: number;
-  max: number;
-  step: number;
-  digits?: number;
-  suffix?: string;
-  onChange: (value: number) => void;
-}) {
-  const begin = useStudioStore((state) => state.beginContinuousEdit);
-  const end = useStudioStore((state) => state.endContinuousEdit);
-  return (
-    <label className="block">
-      <span className="flex items-baseline justify-between">
-        <span className={LABEL}>{props.label}</span>
-        <span className="font-mono text-[10px] text-ink-muted">
-          {props.value.toFixed(props.digits ?? 1)}
-          {props.suffix ?? ''}
-        </span>
-      </span>
-      <input
-        type="range"
-        min={props.min}
-        max={props.max}
-        step={props.step}
-        value={props.value}
-        onChange={(event) => props.onChange(Number(event.target.value))}
-        onPointerDown={(event) => {
-          event.currentTarget.setPointerCapture(event.pointerId);
-          begin();
-        }}
-        onPointerUp={() => end(true)}
-        onPointerCancel={() => end(true)}
-        onKeyDown={(event) => {
-          if (STEP_KEYS.has(event.key)) begin();
-        }}
-        onKeyUp={(event) => {
-          if (STEP_KEYS.has(event.key)) end(true);
-        }}
-        onBlur={() => end(true)}
-        className="mt-0.5 w-full"
-      />
-    </label>
-  );
-}
-
-export function NumberField(props: {
-  label: string;
-  value: number;
-  min?: number;
-  max?: number;
-  step?: number;
-  onChange: (value: number) => void;
-}) {
-  const begin = useStudioStore((state) => state.beginContinuousEdit);
-  const end = useStudioStore((state) => state.endContinuousEdit);
-  const dirtyRef = useRef(false);
-  useEffect(() => () => {
-    if (dirtyRef.current) {
-      dirtyRef.current = false;
-      end(true);
-    }
-  }, [end]);
-  const commit = (): void => {
-    if (!dirtyRef.current) return;
-    dirtyRef.current = false;
-    end(true);
-  };
-  return (
-    <label className="flex items-center justify-between gap-2">
-      <span className={LABEL}>{props.label}</span>
-      <input
-        type="number"
-        value={props.value}
-        min={props.min}
-        max={props.max}
-        step={props.step ?? 1}
-        onFocus={() => { dirtyRef.current = true; begin(); }}
-        onBlur={commit}
-        onKeyDown={(event) => { if (event.key === 'Enter') commit(); }}
-        onChange={(event) => { dirtyRef.current = true; props.onChange(Number(event.target.value)); }}
-        className={`${INPUT} w-24 text-right font-mono`}
-      />
-    </label>
-  );
-}
-
-export function ToggleField(props: { label: string; checked: boolean; onChange: (value: boolean) => void }) {
-  return (
-    <label className="flex items-center justify-between gap-2">
-      <span className={LABEL}>{props.label}</span>
-      <input type="checkbox" checked={props.checked} onChange={(event) => props.onChange(event.target.checked)} className="h-3.5 w-3.5 accent-pine" />
-    </label>
-  );
-}
-
-export function SelectField<T extends string>(props: {
-  label: string;
-  value: T;
-  options: ReadonlyArray<{ value: T; label: string }>;
-  onChange: (value: T) => void;
-}) {
-  return (
-    <label className="flex items-center justify-between gap-2">
-      <span className={LABEL}>{props.label}</span>
-      <select value={props.value} onChange={(event) => props.onChange(event.target.value as T)} className={`${INPUT} w-36`}>
-        {props.options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    </label>
-  );
-}
+export { NumberField, PanelSection, RangeField, SelectField, TextField, ToggleField };
 
 const CONTENT_LABELS: Readonly<Record<ZoneContentType, string>> = {
   walled_city: '内城城垣',
@@ -165,13 +38,11 @@ export function ZonePanel() {
 
   return (
     <div className="flex flex-col">
+      <LayerOrderField />
       <PanelSection title="选中选区">
         {zone ? (
           <>
-            <label className="flex items-center justify-between gap-2">
-              <span className={LABEL}>名称</span>
-              <input value={zone.name} onChange={(event) => patch((target) => { target.name = event.target.value; }, false)} className={`${INPUT} w-44`} />
-            </label>
+            <TextField label="名称" value={zone.name} onChange={(value) => patch((target) => { target.name = value; }, false)} />
             <SelectField
               label="类型"
               value={zone.contentType}

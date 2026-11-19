@@ -1,82 +1,34 @@
-import type { WritableDraft } from 'immer';
 import { type TemporalState, type ZundoOptions, temporal } from 'zundo';
 import { create, useStore } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { hashSeed } from '../core/math/rng';
-import type {
-  CompiledSceneBase,
-  InspectorTabId,
-  SculptBrushMode,
-  SelectionTarget,
-  ToolId,
-  ViewportState,
-} from '../schema/geometry.types';
+import type { CompiledSceneBase } from '../schema/geometry.types';
 import type { LegendConfig } from '../schema/legend.schema';
 import { type PresetKey, createBlankProject, createPresetProject } from '../schema/presets';
 import { type TownProject, normalizeProject } from '../schema/project.schema';
+import {
+  INITIAL_BRUSH,
+  INITIAL_HYDRAULIC,
+  INITIAL_LAST_TOOL_IN_GROUP,
+  INITIAL_STRUCTURE,
+  INITIAL_TREE_BRUSH,
+  clampHardness,
+  clampRadius,
+} from './studioDefaults';
+import type { SceneCompilerRunner, StudioHistorySlice, StudioState } from './studioTypes';
+import { groupOf } from '../ui/toolCatalog';
+import { applyZ } from './zOrder';
 
-interface TownProjectHolder {
-  project: TownProject;
-}
+export type {
+  HydraulicPreset,
+  SceneCompilerRunner,
+  SculptBrushSettings,
+  StudioHistorySlice,
+  StudioState,
+  StructurePreset,
+  TreeBrushSettings,
+} from './studioTypes';
 
-export type StudioHistorySlice = Pick<TownProjectHolder, 'project'>;
-
-export type SceneCompilerRunner = (
-  project: TownProject,
-  zoneId?: string,
-  prevScene?: CompiledSceneBase | null,
-  explicitSeed?: number,
-) => Promise<{ scene: CompiledSceneBase; updatedSeed?: number; stale?: boolean } | null>;
-
-export interface SculptBrushSettings {
-  mode: SculptBrushMode;
-  radiusM: number;
-  strength: number;
-  flattenTargetElev: number;
-}
-
-export interface StudioState {
-  project: TownProject;
-  compiledScene: CompiledSceneBase | null;
-  isCompiling: boolean;
-  activeTool: ToolId;
-  activeTab: InspectorTabId;
-  selection: SelectionTarget | null;
-  viewport: ViewportState;
-  brush: SculptBrushSettings;
-  drawZoneContentType: TownProject['zones'][number]['contentType'];
-  drawRoadTier: TownProject['roads'][number]['tier'];
-  drawLinearShapeType: 'ridge' | 'valley' | 'scarp';
-  drawWaterMode: 'lake' | 'sea' | 'open_canal' | 'qanat_canal';
-  drawReefMode: 'reef' | 'ford';
-  activeLandmarkKey: string;
-  activeLandmarkLabel: string;
-  backendOnline: boolean;
-  terraxDataAvailable: boolean;
-  geoModalOpen: boolean;
-  toastMessage: string | null;
-  registerSceneCompiler: (runner: SceneCompilerRunner | null) => void;
-  loadProject: (rawOrProject: unknown, resetHistory?: boolean) => void;
-  loadPreset: (key: PresetKey) => void;
-  mutateProject: (recipe: (draft: WritableDraft<TownProject>) => void, recompile?: boolean) => void;
-  setCompiledScene: (scene: CompiledSceneBase | null) => void;
-  requestRecompile: () => Promise<void>;
-  rerollZone: (zoneId: string) => void;
-  rerollAllUnlockedZones: () => void;
-  beginContinuousEdit: () => void;
-  endContinuousEdit: (recompileOnEnd?: boolean) => void;
-  undoProject: () => void;
-  redoProject: () => void;
-  setActiveTool: (tool: ToolId) => void;
-  setDrawReefMode: (mode: 'reef' | 'ford') => void;
-  setActiveTab: (tab: InspectorTabId) => void;
-  setSelection: (sel: SelectionTarget | null) => void;
-  updateViewport: (patch: Partial<ViewportState>) => void;
-  updateBrush: (patch: Partial<SculptBrushSettings>) => void;
-  setBackendStatus: (online: boolean, terraxAvailable: boolean) => void;
-  setGeoModalOpen: (open: boolean) => void;
-  showToast: (msg: string | null) => void;
-}
 /** 注入式编译器句柄，刻意不进状态切片，避免函数进入历史快照 */
 let sceneRunner: SceneCompilerRunner | null = null;
 let continuousStartProject: TownProject | null = null;
@@ -89,12 +41,6 @@ const temporalOptions: ZundoOptions<StudioState, StudioHistorySlice> = {
     project: state.project,
   }),
   equality: (pastState, currentState) => pastState.project === currentState.project,
-};
-const INITIAL_BRUSH: SculptBrushSettings = {
-  mode: 'raise',
-  radiusM: 72,
-  strength: 0.65,
-  flattenTargetElev: 480,
 };
 
 export const useStudioStore = create<StudioState>()(
@@ -116,6 +62,10 @@ export const useStudioStore = create<StudioState>()(
         worldSizeM: 2400,
       },
       brush: { ...INITIAL_BRUSH },
+      treeBrush: { ...INITIAL_TREE_BRUSH },
+      hydraulicPreset: { ...INITIAL_HYDRAULIC },
+      structurePreset: { ...INITIAL_STRUCTURE },
+      lastToolInGroup: { ...INITIAL_LAST_TOOL_IN_GROUP },
       drawZoneContentType: 'town_blocks',
       drawRoadTier: 'street',
       drawLinearShapeType: 'ridge',
@@ -146,7 +96,7 @@ export const useStudioStore = create<StudioState>()(
         void get().requestRecompile();
       },
       loadPreset: (key) => {
-        get().loadProject(createPresetProject(key), true);
+        get().loadProject(createPresetProject(key as PresetKey), true);
       },
       mutateProject: (recipe, recompile = true) => {
         set((draft) => {
@@ -174,6 +124,13 @@ export const useStudioStore = create<StudioState>()(
         } finally {
           if (requestId === compileSeq) set((draft) => { draft.isCompiling = false; });
         }
+      },
+      setSelectionZ: (mode) => {
+        const selection = get().selection;
+        if (!selection) return;
+        get().mutateProject((draft) => {
+          applyZ(draft as unknown as TownProject, selection, mode);
+        }, false);
       },
       rerollZone: (zoneId) => {
         const targetZone = get().project.zones.find((zone) => zone.id === zoneId);
@@ -251,6 +208,7 @@ export const useStudioStore = create<StudioState>()(
       setActiveTool: (tool) => {
         set((draft) => {
           draft.activeTool = tool;
+          draft.lastToolInGroup[groupOf(tool).id] = tool;
         });
       },
       setDrawReefMode: (mode) => {
@@ -261,7 +219,29 @@ export const useStudioStore = create<StudioState>()(
       setActiveTab: (tab) => { set((draft) => { draft.activeTab = tab; }); },
       setSelection: (sel) => { set((draft) => { draft.selection = sel; }); },
       updateViewport: (patch) => { set((draft) => { Object.assign(draft.viewport, patch); }); },
-      updateBrush: (patch) => { set((draft) => { Object.assign(draft.brush, patch); }); },
+      updateBrush: (patch) => {
+        set((draft) => {
+          Object.assign(draft.brush, patch);
+          draft.brush.radiusM = clampRadius(draft.brush.radiusM);
+          draft.brush.hardness = clampHardness(draft.brush.hardness);
+        });
+      },
+      updateTreeBrush: (patch) => {
+        set((draft) => {
+          Object.assign(draft.treeBrush, patch);
+          draft.treeBrush.radiusM = clampRadius(draft.treeBrush.radiusM);
+        });
+      },
+      setHydraulicPreset: (patch) => {
+        set((draft) => {
+          Object.assign(draft.hydraulicPreset, patch);
+        });
+      },
+      setStructurePreset: (patch) => {
+        set((draft) => {
+          Object.assign(draft.structurePreset, patch);
+        });
+      },
       setBackendStatus: (online, terraxAvailable) => {
         set((draft) => {
           draft.backendOnline = online;
@@ -291,6 +271,9 @@ function adoptSceneLegend(scene: CompiledSceneBase | null): void {
       title: legend.title,
       position: legend.position,
       columns: legend.columns,
+      displayMode: legend.displayMode,
+      furnitureOpacity: legend.furnitureOpacity ?? current.furnitureOpacity,
+      labelOpacity: legend.labelOpacity ?? current.labelOpacity,
       items: legend.items.map((item) => ({ ...item })),
     } as LegendConfig;
   });

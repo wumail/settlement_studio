@@ -1,14 +1,18 @@
 import { computePolygonCentroid } from '../math/polygon';
 import { insetPolygonSafe } from '../math/voronoi';
 import { type ZoneGeneratorInput, guardSafeTree } from '../obstacles/guardSafe';
-import { generateVoronoiStreetBlocks } from './townBlocks';
+import { generateObbStreetBlocks } from './townBlocks';
+import { collectInnerHoles } from './zoneHoles';
 
-/** walled_city 内城：阶段一已建城墙，阶段二退界 wallThickness + 5m 后复用共享街坊算子 */
+export { collectInnerHoles };
+
+/** walled_city 内城：城垣退界后按道路骨架 + OBB 布屋，内嵌堡寨/集市/禁建圈自动挖空 */
 export function compileWalledCityZone(input: ZoneGeneratorInput): void {
   const zone = input.zone;
   const inner = insetPolygonSafe(zone.points, zone.wallThicknessM + 5.0);
   if (inner.length < 3) return;
-  generateVoronoiStreetBlocks(input, inner, 95, 240, 'inner');
+  const holes = collectInnerHoles(input);
+  generateObbStreetBlocks(input, inner, 95, 240, 'inner', holes);
 
   const c = computePolygonCentroid(inner);
   for (let i = 0; i < 6; i += 1) {

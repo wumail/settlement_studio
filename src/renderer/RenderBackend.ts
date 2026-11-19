@@ -28,6 +28,8 @@ export interface TextStyle {
   readonly haloWidthPx?: number;
   readonly align?: 'left' | 'center' | 'right';
   readonly baseline?: 'top' | 'middle' | 'alphabetic';
+  /** 整段文字（含纸晕）统一透明度：0 即完全隐去，双端同源生效 */
+  readonly opacity?: number;
 }
 
 export interface MergedCircleItem {

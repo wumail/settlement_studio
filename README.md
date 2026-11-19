@@ -2,12 +2,75 @@
 
 **Terrax Settlement Studio** 是面向 [TERRAX 建世资料库](../README.md) 的仓库级通用聚落可视化编辑与受控抽卡制图工作台，与跨平台星空创作端 [Terrax Sky Studio](../worldbuilding/README.md) 并列独立部署，专门承担 `300 m — 6,000 m` 微观聚落尺度（都城、湖岸复合市镇、高山峡谷村寨）的交互式地形水系铺设、多边形选区原地受控抽卡、编译期硬防穿模避让、全要素微缩图形图例编辑及高清矢量/位图成图交付。
 
-> **当前工程状态：`V2.0.3 Final Tuning Verified (2 P1 + 6 P2 Closed)`（`V2.0.3 终版微调已完成，2 项 P1 与 6 处 P2 全部清零，三道门禁退出码均为 0`）**
+> **当前工程状态：`V3.1 Atelier Polish Verified (20 / 20 + 12 项精修)`（V3.0 三阶段全部闭环，V3.1 完成图饰双态解耦、全局 UI 设计系统、离屏缓存绕空修复与三套工程穿帮精修，产出 9 张 SVG 审图预览）**
 >
 > - **V2.0.3 全量编码与三轮复审已闭环（`56` 微模块 / `38` 项任务 / `32` 项返修）**：`src/` 下 `56` 个 `.ts/.tsx` 微模块全部落盘且单文件物理行数不超过 `320` 行；`T-0.1` 至 `T-6.5` 共 `38` 项原子任务全部 `[x] 已完成`，`V2.0.1` 的 `7` 项 `P0` + `8` 项 `P1/P2` 与 `V2.0.2` 的 `9` 项二轮高优缺陷 + `P2` 微瑕与 `V2.0.3` 的 `2` 项 `P1` + `6` 处 `P2` 已全部收口（详见 `docs/03` 第 6、7、8 章）。`npm run check`（`tsc --noEmit` + `biome lint` + `4` 套 Vitest 共 `92` 用例）、`npm run build`（零告警产出 `dist/`）、`tests/verify_backend.py`（`141` 项断言）及上层三套世界观核验脚本退出码全为 `0`。
 > - **仓库零侵入已实证**：`地图/` 下六大地理数据文件 `sha256 + mtime_ns` 前后逐字一致，`worldbuilding` git 状态零新增，`legacy_v1_js/` 20 个归档文件 sha256 前后一致且最新 `mtime` 早于 V2 脚手架；全部 Python 命令仅经 `worldbuilding/venv/bin/python3` 执行。
 > - **V1.2.2 黄金对拍归档已冻结**：通过三轮对抗终审闭环的原生 ES Module 实现已完整归档至 [legacy_v1_js/](legacy_v1_js/README.md)（首轮 `177/177` + `53/53` 对抗压测全绿，V1.2.2 终审前端无头 `177/177` + 后端及零侵入 `81/81` 断言退出码全 `0`），作为 V2.0 几何算法与成图品质的只读黄金对拍神谕（Golden Reference Oracle）。
 > - **三套世界观典范工程原位保留**：`projects/*.worldtown.json` 原位保留三套 TERRAX 世界观标杆聚落工程——[起点城_Losrumura.worldtown.json](projects/起点城_Losrumura.worldtown.json)、[长湖_复市镇.worldtown.json](projects/长湖_复市镇.worldtown.json)、[帕隆_峡谷铁寨.worldtown.json](projects/帕隆_峡谷铁寨.worldtown.json)，V2.0 `TownProjectSchema` 对其提供 100% 无损向下兼容。
+
+---
+
+## 零、V3.0 方志交互制图升级总览（Gazetteer Cartography Release）
+
+V3.0 在不破坏 V2.0 架构与旧工程资产的前提下，完成「交互手感 — 水工建筑 — 方志成图」三级跃迁，`docs/06` 中 `V3-S1.1 — V3-S3.5` 共 **20 / 20** 项全部 `[x]`：
+
+| 维度 | V3.0 关键升级 |
+| --- | --- |
+| 工具与手感 | 左侧 PS 风格 **7 组聚合工具栏**（角标 / 右键 / 长按 280ms 子工具浮层、组键轮换、14 个单键别名）+ 顶部 **36px 上下文选项栏**；`[` `]` / `Shift+滚轮` 调半径、`Alt` 临时反向、`Shift` 临时平滑 |
+| 笔刷引擎 | 7 模式（隆起 / 下压 / 平滑 / 推平 / 阶地 / 斜坡 / 擦除微雕）+ 硬度平顶核 + 等距弧长插值（`max(3, 0.22R)`）；`pointermove` **零 Base64 编码**，松手仅编码一次；林木涂抹/擦除写入 `paintedTrees` |
+| 数据契约 | `TownProjectSchema` 19 顶层主键（新增 `weirs / docks / watermills / structures / bridgeOverrides / paintedTrees`），逐点河宽 `widthsM`，`legend.displayMode` 三模式，V1.2 / V2 旧 JSON 100% 无损 |
+| 水工与建筑群 | 分水堰（闸墩 + 溢流白浪）、滑道坞 / 木栈桥（岸线法向吸附）、水力工坊；明渠小桥、四型桥梁覆写（双桥头堡）、城墙拱形水门；`rect / l_hall / u_court / round_altar` 真实几何 + 中心/旋转/宽深手柄 |
+| 有机生成器 | 道路骨架切块 + 有界 Voronoi + 沿街定向 OBB（面宽 14–28m、进深 12–24m）+ 院落中庭 + `frayOuter` 平滑衰减；`walled_city` / `town_blocks` 自动挖空内嵌堡寨 / 集市 / 禁建圈（城中套城）；集市摊列铺展、村寨沿 `ribbonSpine` 带状生长 |
+| 地图学质感 | 确定性 3 八度微地形噪声、高程分层淡彩、顺坡晕滃短线（西北光照调制）、禁建圈黑石界碑点串；**17 层同源画家算法**，Canvas 与 SVG 严格共用一套指令流 |
+| 出版模式 | `standard` 标准图饰 / `guided` 编号角标 + 图廓索引 / `pure` 纯净无字艺术底图；离屏静态层缓存保证悬停与缩放 60–120 FPS |
+
+### V3.0 三套方志标杆工程与审图预览
+
+`projects/` 三套工程已按 `候选工作区` 官方样图脚本重制（坐标换算 `wx = W/2 + px`, `wy = W/2 - py`），并逐套通过零穿模与方志空间硬断言：
+
+| 工程 | 图幅 / 主题 | 规模（选区 / 屋宇 / 晕滃段） | 方志要点 |
+| --- | --- | --- | --- |
+| [起点城_Losrumura](projects/起点城_Losrumura.worldtown.json) | 3200 m · `watabou_classic` | 21 / 1191 / 4508 | 14 点穿界 R1966 干流（72→162m 变宽）、东关三孔分水堰、四类水渠、北埠四道滑道坞、13 边内城 + 内嵌议事厅四公仓、北岸司辰官坛、10 处编号地标 |
+| [长湖_复市镇](projects/长湖_复市镇.worldtown.json) | 2600 m · `arid_oasis` | 18 / 276 / 4210 | 贴边一体 L6 湖湾、3 座湖港木栈桥、伊珂暗渠 7 竖井→西水门堡、24 边黑石大疫禁建圈、岸坪市集、496 格分级盐池 |
+| [帕隆_峡谷铁寨](projects/帕隆_峡谷铁寨.worldtown.json) | 1500 m · `nordic_fjord` | 24 / 84 / 5565 | 高差 184m 深切 V 形峡谷、14 点 S 形穿界急溪、7 礁 + 暗梁渡口、双生石堡桥头楼、8 座水力锻锤坊、8 条带状村寨 |
+
+审图预览（由 `tests/v3-benchmark-projects.test.ts` 在构建后重新落盘，浏览器直接打开即可）：
+
+```text
+previews/losrumura_{standard,guided,pure}.svg
+previews/changhu_{standard,guided,pure}.svg
+previews/palong_{standard,guided,pure}.svg
+```
+
+> 注：`npm run build` 会清空 `dist/`；如需预览文件常驻，请在构建后执行
+> `npx vitest run tests/v3-benchmark-projects.test.ts` 重新生成（9 张，单张 1.7–3.7 MB）。
+
+### V3.1 终审精修（Atelier Polish）
+
+| 维度 | 精修内容 |
+| --- | --- |
+| 图饰双态 | 交互编辑态图饰（标题牌 / 指北针 / 比例尺 / 图例 / 导览目录）钉在**画布视口四角** 14px，绝不随地图平移缩放挤成一团；导出成图态才排进地图纸框内缩 14px；标题牌按实测字宽 `clamp(220, 440, 0.52×可用宽)` 动态撑宽并省略号收口 |
+| 半透明可调 | 新增 `legend.furnitureOpacity`（0.15–1，默认 0.72）与 `legend.labelOpacity`（0–1，默认 0.78），图例框 / 标题牌 / 比例尺 / 文字标识统一半透明，Canvas `globalAlpha` 与 SVG `fill-opacity` 双端同效，绝不遮死底图 |
+| 设计系统 | 浅色纸本测绘工坊：3px 黄铜底轨 + 松针绿圆钮仪表滑块、定制下拉箭头、隐藏数字微调、药丸 Switch、纸本卡片分区；TopBar 三段式 + 细竖线；选项栏分段控件；检视器六标签不裁字 |
+| 性能 | 离屏缓存命中后按平移偏移贴图，拖拽 / 悬停 / 草稿 / ramp 预览不再退回全量直绘；悬停等高线改由第 14 层浮层绘制，静态底图不失效；Worker 编译 0.9s 看门狗 + 同步兜底，首屏不再空白 |
+| 制图质感 | 淡彩带水平 RLE 合并（7744 → <=1500 面）+ 角点抖动；晕滃线长 4.5–10.5m；摊棚浅色细描边 + 11.6m 排距 + 随机断口；citadel 屋顶改暖赭金；标注右/下夹紧、地标与建筑名让位、宁缺不叠 |
+| 工程精修 | 长湖东北驿道跨 R2147 河口架木桥连至边界；帕隆窄峡只余 1 座双堡桥 + 1 座渠桥，桥头堡与五边形堡寨重叠时自动让位；村寨骨架贴合干道（< 10m）不再重复推白线 |
+| 叠放层级 | 每个可选物体（选区 / 河 / 渠 / 道路 / 堰 / 码头 / 工坊 / 建筑群 / 桥防）都有 `zIndex`，检视器「叠放层级」四键可置底 / 下移 / 上移 / 置顶，任意物体都能压过道路与屋宇或沉到水体田畴之下；全默认时仍按 17 层画家序列输出，导出分层不变 |
+| 路即桥 | 不再单独绘制桥面 / 栏杆 / 拱线，路面直接跨水即读作桥（仅双桥头堡保留堡体），桥位不再截断道路 |
+| 等高线置顶 | 等高线恒绘于全部地图对象之上（等效 z=9999，物体层级上限 500 远低于它）、文字标注之下；默认低透明度 0.35，地形面板「线条透明度」可在 0.05–1 间实时调整 |
+
+### V3.0 终验结果
+
+| 门禁 | 结果 |
+| --- | --- |
+| `npm run check` | 6 个测试文件 **148 passed**（`tsc --noEmit` + `biome lint` 0 错 0 警 + Vitest） |
+| `npm run build` | 退出码 0，1.47s，`dist/assets/index.js` 635.57 kB / gzip 192.70 kB |
+| `tests/verify_backend.py` | **141 项断言全部通过**（`dist/` 托管、工程原子存取与路径拦截、地理数据只读、上层核验联动） |
+| 微模块红线 | `src/` **103** 个 `.ts/.tsx`，最大 **320** 行；零 `any` / `TODO` / `@ts-ignore`，`core/` 零 `Math.random` |
+| 仓库边界 | `legacy_v1_js/`、`docs/01–04`、`候选工作区/`、`worldbuilding/` 零写入 |
+
+> **运行环境说明**：本机 `worldbuilding/venv/bin/python3` 指向的 Homebrew 解释器符号链接已失效（`python@3.13` 未安装）。终验以同版本 Python 3.13 叠加 `PYTHONPATH=<venv>/lib/python3.13/site-packages` 运行同一 `tests/verify_backend.py`，**未创建、删除或改写 `worldbuilding/` 内任何文件**；脚本内的 `sys.executable` 亦自动继承该组合拉起 `server.py`。
 
 ---
 
@@ -129,7 +192,7 @@ settlement_studio/
 │   └── ui/                                        # React 19 浅色纸本测绘工坊界面组件层
 │       ├── App.tsx                                # 三栏工作台主骨架与初始化编排
 │       ├── TopBar.tsx                             # 工程切换、保存/导入导出、Undo/Redo 与全局视图开关栏
-│       ├── ToolDock.tsx                           # 左侧 12 项测绘工具坞（严守 NG-01 无单栋房屋工具）
+│       ├── ToolDock.tsx                           # 左侧 7 组聚合工具坞（V3；严守 NG-01 无单栋房屋工具）
 │       ├── CanvasStage.tsx                        # 60–120 FPS 高频平移缩放、多边形绘制、推拉与笔刷画布舞台
 │       ├── canvasStageHandlers.ts                 # 手柄拖拽/插点/删点、草稿落盘与坡宽写入的纯操作层
 │       ├── canvasStageInput.ts                    # 指针状态机（平移/推拉/笔刷/测距/手柄）与拖拽事务清理

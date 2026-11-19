@@ -54,11 +54,19 @@ export const LegendItemSchema = z.object({
   order: z.number().default(100),
 });
 
+export const LEGEND_DISPLAY_MODES = ['standard', 'guided', 'pure'] as const;
+export type LegendDisplayMode = (typeof LEGEND_DISPLAY_MODES)[number];
+
 export const LegendConfigSchema = z.object({
   visible: z.boolean().default(true),
   title: z.string().default('图例 · LEGEND'),
   position: LegendPositionSchema.default('bottom-right'),
   columns: z.union([z.literal(1), z.literal(2)]).default(2),
+  displayMode: z.enum(LEGEND_DISPLAY_MODES).default('standard'),
+  /** 图饰（图例框/标题牌/指北针/比例尺/导览目录）统一半透明度，绝不遮死底图 */
+  furnitureOpacity: z.number().min(0.15).max(1).default(0.72),
+  /** 图面文字（选区名/地标名/河名/建筑名/等高线读数）统一透明度，0 为隐去 */
+  labelOpacity: z.number().min(0).max(1).default(0.78),
   items: z.array(LegendItemSchema).default([]),
 });
 
@@ -123,6 +131,9 @@ export interface LegendSyncProjectView {
     readonly title: string;
     readonly position: LegendPosition;
     readonly columns: 1 | 2;
+    readonly displayMode?: LegendDisplayMode;
+    readonly furnitureOpacity?: number;
+    readonly labelOpacity?: number;
     readonly items: ReadonlyArray<LegendItem>;
   };
 }
@@ -238,6 +249,9 @@ export function syncLegendWithProject(
     title: base?.title ?? '图例 · LEGEND',
     position: base?.position ?? 'bottom-right',
     columns: base?.columns ?? 2,
+    displayMode: base?.displayMode ?? 'standard',
+    furnitureOpacity: base?.furnitureOpacity ?? 0.72,
+    labelOpacity: base?.labelOpacity ?? 0.78,
     items: [...builtins, ...customList],
   };
 }
@@ -285,6 +299,9 @@ export function resolveEffectiveLegend(
     title: projectLegend.title,
     position: projectLegend.position,
     columns: projectLegend.columns,
+    displayMode: projectLegend.displayMode,
+    furnitureOpacity: projectLegend.furnitureOpacity,
+    labelOpacity: projectLegend.labelOpacity,
     items,
   };
 }

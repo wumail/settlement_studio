@@ -9,7 +9,7 @@ import {
 } from '../../schema/palette.schema';
 import { downloadPngFile, downloadSvgFile, exportScenePngBlob, type ExportMode, type PngScale } from '../../renderer/exportUtils';
 import { useStudioStore } from '../../store/useStudioStore';
-import { PanelSection } from './ZonePanel';
+import { PanelSection } from './FormControls';
 
 const THEME_LABELS: Readonly<Record<CanonicalThemeId, string>> = {
   watabou_classic: 'Watabou 古典',

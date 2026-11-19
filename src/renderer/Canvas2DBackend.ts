@@ -275,6 +275,9 @@ export class Canvas2DBackend implements RenderBackend {
   drawText(text: string, x: number, y: number, style: TextStyle): void {
     const ctx = this.ctx;
     ctx.save();
+    if (style.opacity !== undefined && style.opacity < 1) {
+      ctx.globalAlpha = Math.max(0, style.opacity);
+    }
     ctx.font = `${style.italic ? 'italic ' : ''}${style.fontWeight ?? 400} ${style.fontSizePx}px ${style.fontFamily}`;
     ctx.textAlign = style.align === 'center' ? 'center' : style.align === 'right' ? 'right' : 'left';
     ctx.textBaseline =

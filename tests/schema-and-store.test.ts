@@ -31,6 +31,7 @@ import {
 } from '../src/schema/project.schema';
 import { BUILTIN_PRESETS, createBlankProject, createPresetProject } from '../src/schema/presets';
 import { setSceneCompilerForTest, useStudioStore } from '../src/store/useStudioStore';
+import { TOOL_GROUPS, resolveToolHotkey } from '../src/ui/toolCatalog';
 import { commitDraftPoints, isClosedDraftTool } from '../src/ui/canvasStageHandlers';
 import { compileSettlementScene } from '../src/core/compileScene';
 import { resolveEffectiveLegend } from '../src/schema/legend.schema';
@@ -67,6 +68,25 @@ import {
 } from '../src/core/math/voronoi';
 import { closestPointOnPolyline, sampleCatmullRom } from '../src/core/math/spline';
 import type { Polygon, Vec2 } from '../src/schema/geometry.types';
+
+/** 旧字段逐层回读：parsed 必须是 raw 的超集（V3 只增不改） */
+function expectSuperset(actual: unknown, expected: unknown, path = '$'): void {
+  if (Array.isArray(expected)) {
+    expect(Array.isArray(actual), `${path} array`).toBe(true);
+    const got = actual as unknown[];
+    expected.forEach((item, index) => expectSuperset(got[index], item, `${path}[${index}]`));
+    return;
+  }
+  if (expected !== null && typeof expected === 'object') {
+    const got = actual as Record<string, unknown> | null;
+    expect(got !== null && typeof got === 'object', `${path} object`).toBe(true);
+    for (const [key, value] of Object.entries(expected as Record<string, unknown>)) {
+      expectSuperset(got?.[key], value, `${path}.${key}`);
+    }
+    return;
+  }
+  expect(actual, path).toBe(expected);
+}
 
 const SQUARE: Polygon = [
   [0, 0],
@@ -316,18 +336,25 @@ describe('M0 · 22 类图例目录与自动感知同步', () => {
 });
 
 describe('M0 · TownProjectSchema 与 V1.2.2 三套真实工程', () => {
-  it('13 个顶层主键完整', () => {
-    expect(Object.keys(TownProjectSchema.shape).length).toBe(13);
+  it('V3 共 19 个顶层主键完整（13 旧键 + 6 类新实体）', () => {
+    expect(Object.keys(TownProjectSchema.shape).length).toBe(19);
+    for (const key of ['weirs', 'docks', 'watermills', 'structures', 'bridgeOverrides', 'paintedTrees']) {
+      expect(Object.keys(TownProjectSchema.shape)).toContain(key);
+    }
   });
 
-  it('三套真实 .worldtown.json 100% 无损解析（字段零丢失）', () => {
+  it('三套 V3 方志标杆工程 100% 无损解析（逐层回读一致 + 新实体原样保留）', () => {
     const raws: unknown[] = [rawLosrumura, rawChanghu, rawPalong];
     for (const raw of raws) {
       const parsed = normalizeProject(raw);
-      expect(parsed).toEqual(raw);
-      expect(parsed.schemaVersion).toBe('1.2.0');
+      expectSuperset(parsed, raw);
+      expect(parsed.schemaVersion).toBe('3.0.0');
       expect(parsed.meta.worldSizeM).toBeGreaterThanOrEqual(600);
       expect(parsed.zones.length).toBeGreaterThan(0);
+      expect(parsed.weirs.length + parsed.docks.length + parsed.structures.length).toBeGreaterThan(0);
+      expect(parsed.paintedTrees.length).toBeGreaterThan(20);
+      expect(parsed.terrain.showHypsometricTint).toBe(true);
+      expect(parsed.legend.displayMode).toBe('standard');
     }
   });
 
@@ -341,7 +368,7 @@ describe('M0 · TownProjectSchema 与 V1.2.2 三套真实工程', () => {
 
   it('normalizeProject({}) 补齐全部默认键且零异常', () => {
     const blank = normalizeProject({});
-    expect(Object.keys(blank).length).toBe(13);
+    expect(Object.keys(blank).length).toBe(19);
     expect(blank.meta.worldSizeM).toBe(2400);
     expect(blank.terrain.contourStep).toBe(5);
     expect(blank.terrain.showScarpTicks).toBe(false);
@@ -423,7 +450,7 @@ describe('M0 · Zundo 50 步时间旅行与连续编辑合并', () => {
   it('初始工程与预设工厂可用', () => {
     expect(useStudioStore.getState().project.meta.worldSizeM).toBe(2400);
     const losrumura = createPresetProject('losrumura');
-    expect(losrumura.zones.length).toBe(14);
+    expect(losrumura.zones.length).toBe(21);
     expect(losrumura.legend.items.length).toBe(0);
   });
 
@@ -503,7 +530,7 @@ describe('M1 · 高程场与等高线基础冒烟', () => {
   it('纯斜坡坡度采样误差 < 0.05 度', () => {
     const project = normalizeProject({
       meta: { worldSizeM: 2400 },
-      terrain: { baseElev: 450, slopeMagM: 20, slopeDirDeg: 90, shapes: [] },
+      terrain: { baseElev: 450, slopeMagM: 20, slopeDirDeg: 90, shapes: [], terrainNoiseAmpM: 0 },
     });
     const field = buildElevationField(project);
     const analytic = Math.atan(20 / 2400) * (180 / Math.PI);
@@ -812,7 +839,7 @@ describe('V2.0.2 · 草稿落盘 / 重抽快照 / 图例合成对抗回归', () 
     useStudioStore.getState().loadProject(createPresetProject('palong'), true);
     await new Promise((resolve) => setTimeout(resolve, 400));
     expect(useStudioStore.getState().project.meta.id).toBe('proj_palong');
-    expect(useStudioStore.getState().compiledScene?.worldSizeM).toBe(1400);
+    expect(useStudioStore.getState().compiledScene?.worldSizeM).toBe(1500);
     setSceneCompilerForTest(null);
   });
 
@@ -830,14 +857,15 @@ describe('V2.0.2 · 草稿落盘 / 重抽快照 / 图例合成对抗回归', () 
       order: index * 10,
     }));
     const sceneLegend = {
-      visible: true, title: '图例 · LEGEND', position: 'bottom-right' as const, columns: 2 as const, items: builtins,
+      visible: true, title: '图例 · LEGEND', position: 'bottom-right' as const, columns: 2 as const, displayMode: 'standard' as const, furnitureOpacity: 0.72, labelOpacity: 0.78, items: builtins,
     };
     const custom = {
       key: 'custom_tower', isCustom: true, glyphType: 'tower', label: '烽燧',
       color: '', colorLocked: false, strokeColor: '', visible: true, autoPresent: true, order: 999,
     };
     const projectLegend = {
-      visible: false, title: '图例 · LEGEND', position: 'top-left' as const, columns: 1 as const, items: [custom],
+      visible: false, title: '图例 · LEGEND', position: 'top-left' as const, columns: 1 as const,
+      displayMode: 'standard' as const, furnitureOpacity: 0.72, labelOpacity: 0.78, items: [custom],
     };
     const effective = resolveEffectiveLegend(projectLegend, sceneLegend);
     expect(effective.visible).toBe(false);
@@ -861,12 +889,114 @@ describe('V2.0.3 · 终版种子一致性与图例删除回归', () => {
       key: 'custom_tower', isCustom: true, glyphType: 'tower' as const, label: '烽燧',
       color: '', colorLocked: false, strokeColor: '', visible: true, autoPresent: true, order: 999,
     };
-    const sceneLegend = { visible: true, title: '图例 · LEGEND', position: 'bottom-right' as const, columns: 2 as const, items: [...builtins, custom] };
-    const withCustom = { visible: true, title: '图例 · LEGEND', position: 'top-left' as const, columns: 1 as const, items: [...builtins, custom] };
+    const sceneLegend = { visible: true, title: '图例 · LEGEND', position: 'bottom-right' as const, columns: 2 as const, displayMode: 'standard' as const, furnitureOpacity: 0.72, labelOpacity: 0.78, items: [...builtins, custom] };
+    const withCustom = { visible: true, title: '图例 · LEGEND', position: 'top-left' as const, columns: 1 as const, displayMode: 'standard' as const, furnitureOpacity: 0.72, labelOpacity: 0.78, items: [...builtins, custom] };
     expect(resolveEffectiveLegend(withCustom, sceneLegend).items.some((item) => item.key === 'custom_tower')).toBe(true);
     const deleted = { ...withCustom, items: builtins };
     const effective = resolveEffectiveLegend(deleted, sceneLegend);
     expect(effective.items.some((item) => item.key === 'custom_tower')).toBe(false);
     expect(effective.items.length).toBe(14);
+  });
+});
+
+
+describe('V3 · Store 工具组记忆、七模式笔刷与 V2 旧工程兼容', () => {
+  beforeEach(() => {
+    useStudioStore.temporal.getState().resume();
+    useStudioStore.getState().loadProject(createBlankProject(), true);
+  });
+
+  it('setActiveTool 写回 lastToolInGroup，组键在组内轮换且离开组后回到记忆工具', () => {
+    const store = useStudioStore.getState();
+    store.setActiveTool('sculpt_brush');
+    expect(useStudioStore.getState().lastToolInGroup.terrain).toBe('sculpt_brush');
+    const cycle = resolveToolHotkey('B', {
+      activeTool: 'sculpt_brush',
+      lastToolInGroup: useStudioStore.getState().lastToolInGroup,
+      shift: false,
+    });
+    expect(cycle).toBe('contour_drag');
+    store.setActiveTool('add_ridge');
+    expect(resolveToolHotkey('B', {
+      activeTool: 'select',
+      lastToolInGroup: useStudioStore.getState().lastToolInGroup,
+      shift: false,
+    })).toBe('add_ridge');
+    expect(resolveToolHotkey('C', {
+      activeTool: 'select',
+      lastToolInGroup: useStudioStore.getState().lastToolInGroup,
+      shift: false,
+    })).toBe('contour_drag');
+    expect(resolveToolHotkey('X', {
+      activeTool: 'select',
+      lastToolInGroup: useStudioStore.getState().lastToolInGroup,
+      shift: false,
+    })).toBe('place_structure');
+    expect(TOOL_GROUPS.length).toBe(7);
+  });
+
+  it('笔刷硬度 0–0.95、半径 8–280，林木/水工/建筑预设可更新', () => {
+    const store = useStudioStore.getState();
+    store.updateBrush({ hardness: 1.4, radiusM: 400, terraceStepM: 12, autoLockStartElev: false });
+    const brush = useStudioStore.getState().brush;
+    expect(brush.hardness).toBeCloseTo(0.95, 6);
+    expect(brush.radiusM).toBe(280);
+    expect(brush.terraceStepM).toBe(12);
+    expect(brush.autoLockStartElev).toBe(false);
+    expect(brush.mode).toBe('raise');
+    store.updateTreeBrush({ radiusM: 96, spacingM: 1.2, eraseMode: true, minR: 3, maxR: 9 });
+    expect(useStudioStore.getState().treeBrush.radiusM).toBe(96);
+    expect(useStudioStore.getState().treeBrush.eraseMode).toBe(true);
+    store.setHydraulicPreset({ kind: 'dock_pier', sluices: 5, autoSnap: false });
+    expect(useStudioStore.getState().hydraulicPreset.kind).toBe('dock_pier');
+    store.setStructurePreset({ kind: 'round_altar', widthM: 88, depthM: 88, roofKind: 'inner' });
+    expect(useStudioStore.getState().structurePreset.roofKind).toBe('inner');
+    expect(useStudioStore.getState().structurePreset.widthM).toBe(88);
+  });
+
+  it('V2 旧 JSON（无任何 V3 字段）补齐六类实体与地形/图例默认值且旧字段零丢失', () => {
+    const legacy = {
+      schemaVersion: '2.0.0',
+      meta: { id: 'proj_v2_legacy', name: '旧版工程', worldSizeM: 1800 },
+      terrain: { baseElev: 320, contourStep: 4, shapes: [] },
+      canals: [{ id: 'cn1', name: '旧明渠', style: 'open', points: [[10, 10], [200, 120]], widthM: 5 }],
+      zones: [{ id: 'z1', name: '旧关厢', contentType: 'town_blocks', points: [[100, 100], [300, 100], [300, 300], [100, 300]] }],
+      landmarks: [{ id: 'lm1', x: 150, y: 150, label: '旧地标' }],
+    };
+    const parsed = normalizeProject(legacy);
+    expect(parsed.canals[0]?.style).toBe('open');
+    expect(parsed.zones[0]?.contentType).toBe('town_blocks');
+    expect(parsed.landmarks[0]?.label).toBe('旧地标');
+    expect(parsed.zones[0]?.frayOuter).toBe(true);
+    expect(parsed.zones[0]?.marketMode).toBe('stalls');
+    expect(parsed.zones[0]?.corridorWidthM).toBe(110);
+    expect(parsed.terrain.showHachures).toBe(true);
+    expect(parsed.terrain.hachureSlopeMinDeg).toBe(3.5);
+    expect(parsed.terrain.terrainNoiseAmpM).toBe(1.6);
+    expect(parsed.legend.displayMode).toBe('standard');
+    expect(parsed.weirs).toEqual([]);
+    expect(parsed.structures).toEqual([]);
+    expect(parsed.bridgeOverrides).toEqual([]);
+    expect(parsed.paintedTrees).toEqual([]);
+    expect(serializeProject(parsed).includes('"paintedTrees"')).toBe(true);
+  });
+
+  it('V3 六类实体落盘后往返序列化无损', () => {
+    const project = normalizeProject({
+      meta: { worldSizeM: 1600 },
+      weirs: [{ id: 'w1', pStart: [100, 200], pEnd: [160, 200], sluices: 3 }],
+      docks: [{ id: 'd1', x: 300, y: 300, kind: 'wooden_pier', slips: 4 }],
+      watermills: [{ id: 'm1', x: 500, y: 400, wheelSide: 'right' }],
+      structures: [{ id: 's1', x: 700, y: 700, kind: 'u_court', widthM: 64, depthM: 48 }],
+      bridgeOverrides: [{ id: 'b1', x: 900, y: 900, style: 'fortified_twin' }],
+      paintedTrees: [{ id: 't1', x: 1000, y: 1000, r: 7.2, kind: 'garden' }],
+    });
+    expect(project.weirs[0]?.sluices).toBe(3);
+    expect(project.docks[0]?.kind).toBe('wooden_pier');
+    expect(project.watermills[0]?.wheelSide).toBe('right');
+    expect(project.structures[0]?.kind).toBe('u_court');
+    expect(project.bridgeOverrides[0]?.style).toBe('fortified_twin');
+    expect(project.paintedTrees[0]?.r).toBeCloseTo(7.2, 5);
+    expect(deserializeProject(serializeProject(project))).toEqual(project);
   });
 });

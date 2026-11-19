@@ -3,6 +3,12 @@ import type { SelectionTarget, ToolId, Vec2 } from '../schema/geometry.types';
 import type { TerrainShape, TownProject } from '../schema/project.schema';
 import { computePolygonAreaSigned } from '../core/math/polygon';
 import { shapeWorldToLocal, type HandleKind } from '../core/hitTest';
+import {
+  ENTITY_SELECTION_TYPES,
+  type EntityHandleKind,
+  applyEntityHandleDrag,
+  entityFrame,
+} from '../core/entityHandles';
 import { useStudioStore } from '../store/useStudioStore';
 
 export interface HandleDragSession {
@@ -13,6 +19,15 @@ export interface HandleDragSession {
 
 type ShapeDraft = WritableDraft<TerrainShape>;
 
+function isEntityHandle(kind: HandleKind): kind is EntityHandleKind {
+  return (
+    kind === 'entity_center' ||
+    kind === 'entity_rotate' ||
+    kind === 'entity_scale_w' ||
+    kind === 'entity_scale_d'
+  );
+}
+
 /** 手柄拖拽会话：记录抓取偏移，避免中心/焦点柄瞬移到光标造成跳变 */
 export function beginHandleDrag(
   selection: SelectionTarget,
@@ -20,6 +35,13 @@ export function beginHandleDrag(
   world: Vec2,
   project: TownProject,
 ): HandleDragSession | null {
+  if (ENTITY_SELECTION_TYPES.includes(selection.type)) {
+    const frame = entityFrame(project, selection);
+    const grab: Vec2 = frame && hit.kind === 'entity_center'
+      ? [frame.cx - world[0], frame.cy - world[1]]
+      : [0, 0];
+    return { kind: hit.kind, index: hit.index, grab };
+  }
   if (selection.type === 'terrainShape') {
     const shape = project.terrain.shapes.find((item) => item.id === selection.id);
     if (shape && !('points' in shape) && hit.kind === 'shape_center') {
@@ -111,6 +133,10 @@ export function applyHandleDrag(
   session: HandleDragSession,
   world: Vec2,
 ): void {
+  if (ENTITY_SELECTION_TYPES.includes(selection.type) && isEntityHandle(session.kind)) {
+    applyEntityHandleDrag(draft, selection, session.kind, world, draft, session.grab);
+    return;
+  }
   if (selection.type === 'terrainShape') {
     const shape = draft.terrain.shapes.find((item) => item.id === selection.id);
     if (shape) dragShape(shape, session, world);
@@ -225,17 +251,17 @@ export function commitDraftPoints(
   const state = useStudioStore.getState();
   state.mutateProject((draft) => {
     if (context.tool === 'draw_river') {
-      draft.rivers.push({ id: draftId('riv'), name: '新河道', points: pts, widthStartM: 28, widthEndM: 40, carveDepthM: 6, rippleLines: 3 });
+      draft.rivers.push({ zIndex: 0, id: draftId('riv'), name: '新河道', points: pts, widthStartM: 28, widthEndM: 40, widthsM: [], carveDepthM: 6, rippleLines: 3 });
     } else if (context.tool === 'draw_road') {
       const tier = context.roadTier;
-      draft.roads.push({ id: draftId('rd'), name: '新道路', tier, points: pts, widthM: tier === 'highway' ? 14 : tier === 'lane' ? 5 : 9 });
+      draft.roads.push({ zIndex: 0, id: draftId('rd'), name: '新道路', tier, points: pts, widthM: tier === 'highway' ? 14 : tier === 'lane' ? 5 : 9 });
     } else if (context.tool === 'draw_zone' && zoneId) {
-      draft.zones.push({ id: zoneId, name: '新选区', contentType: context.zoneContentType, points: pts, seed, locked: false, density: 0.72, maxSlopeDeg: 24, streetWidthM: 7.5, wallThicknessM: 5.5, towerIntervalM: 110 });
+      draft.zones.push({ zIndex: 0, id: zoneId, name: '新选区', contentType: context.zoneContentType, points: pts, seed, locked: false, density: 0.72, maxSlopeDeg: 24, streetWidthM: 7.5, wallThicknessM: 5.5, towerIntervalM: 110, frayOuter: true, marketMode: 'stalls', exclusionStyle: 'plague_stones', ribbonSpine: [], corridorWidthM: 110 });
     } else if (context.tool === 'draw_water_area') {
       if (context.waterMode === 'lake' || context.waterMode === 'sea') {
-        if (points.length >= 3) draft.waterBodies.push({ id: draftId('wb'), name: '新水体', kind: context.waterMode, points: pts, rippleLines: 3 });
+        if (points.length >= 3) draft.waterBodies.push({ zIndex: 0, id: draftId('wb'), name: '新水体', kind: context.waterMode, points: pts, rippleLines: 3 });
       } else {
-        draft.canals.push({ id: draftId('cn'), name: '新水渠', style: context.waterMode === 'qanat_canal' ? 'qanat' : 'open', points: pts, widthM: 6 });
+        draft.canals.push({ zIndex: 0, id: draftId('cn'), name: '新水渠', style: context.waterMode === 'qanat_canal' ? 'qanat' : 'open', points: pts, widthM: 6 });
       }
     } else if (context.tool === 'add_ridge') {
       const type = context.linearType;

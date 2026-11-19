@@ -2,7 +2,7 @@ import type { Polygon, Vec2 } from '../../schema/geometry.types';
 import { computePolygonBBox, computePolygonCentroid, pointInPolygon } from '../math/polygon';
 import { clearsPolygon, polygonRadiusOf } from '../obstacles/collisionAudit';
 import { insetPolygonSafe } from '../math/voronoi';
-import { type ZoneGeneratorInput, guardSafeBuilding } from '../obstacles/guardSafe';
+import { type ZoneGeneratorInput, guardSafeBuilding, guardSafeTree } from '../obstacles/guardSafe';
 
 const CORNER_OFFSETS: ReadonlyArray<readonly [number, number]> = [
   [-0.28, -0.26],
@@ -51,6 +51,13 @@ export function compileCitadelZone(input: ZoneGeneratorInput): void {
   const box = computePolygonBBox(inner);
   const spanX = Math.max(20, box[2] - box[0]);
   const spanY = Math.max(20, box[3] - box[1]);
+  const explicit = input.project.structures.filter(
+    (item) => item.zoneId === zone.id || pointInPolygon(item.x, item.y, zone.points),
+  );
+  if (explicit.length > 0) {
+    emitParade(input, inner, c, angle, spanX, spanY);
+    return;
+  }
 
   const hall = guardSafeBuilding(
     rectPoly(c[0], c[1], angle, Math.min(30, spanX * 0.3), Math.min(18, spanY * 0.3)),
@@ -72,6 +79,19 @@ export function compileCitadelZone(input: ZoneGeneratorInput): void {
     if (granary) targetResult.buildings.push(granary);
   }
 
+  emitParade(input, inner, c, angle, spanX, spanY);
+}
+
+/** 高阶院坪/校场底面 + 院树：已有显式建筑群时只铺底与点树，不再硬塞固定五小点 */
+function emitParade(
+  input: ZoneGeneratorInput,
+  inner: Polygon,
+  c: Vec2,
+  angle: number,
+  spanX: number,
+  spanY: number,
+): void {
+  const { zone, targetResult, obstacleCtx } = input;
   const parade = rectPoly(c[0], c[1], angle, Math.min(54, spanX * 0.58), Math.min(34, spanY * 0.44));
   const paradeCentroid = computePolygonCentroid(parade);
   const paradeRadius = polygonRadiusOf(parade, paradeCentroid);
@@ -82,4 +102,6 @@ export function compileCitadelZone(input: ZoneGeneratorInput): void {
   if (!blocked && cornersInside) {
     targetResult.marketAprons.push({ zoneId: zone.id, kind: 'parade_ground', points: parade });
   }
+  const tree = guardSafeTree(c[0], c[1], 5.6, 'plaza', zone, obstacleCtx);
+  if (tree) targetResult.trees.push(tree);
 }

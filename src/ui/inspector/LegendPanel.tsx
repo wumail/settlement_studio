@@ -5,7 +5,7 @@ import { getActivePalette } from '../../schema/palette.schema';
 import { Canvas2DBackend } from '../../renderer/Canvas2DBackend';
 import { paintLegendGlyph } from '../../renderer/paintLegendGlyph';
 import { useStudioStore } from '../../store/useStudioStore';
-import { PanelSection, SelectField, ToggleField } from './ZonePanel';
+import { PanelSection, RangeField, SelectField, TextField, ToggleField } from './FormControls';
 
 const POSITIONS: ReadonlyArray<{ value: LegendPosition; label: string }> = [
   { value: 'bottom-right', label: '右下' },
@@ -72,11 +72,15 @@ export function LegendPanel() {
     <div className="flex flex-col">
       <PanelSection title="图例框">
         <ToggleField label="显示图例" checked={legend.visible} onChange={(value) => editLegend((draft) => { draft.visible = value; }, false)} />
-        <label className="flex items-center justify-between gap-2">
-          <span className="text-[11px] text-ink-secondary">抬头标题</span>
-          <input value={legend.title} onChange={(event) => editLegend((draft) => { draft.title = event.target.value; }, false)} className="h-7 w-44 rounded border border-brass bg-input px-2 text-[11px] text-ink focus:border-pine focus:outline-none" />
-        </label>
+        <TextField label="抬头标题" value={legend.title} onChange={(value) => editLegend((draft) => { draft.title = value; }, false)} />
+        <RangeField label="图饰透明度" value={legend.furnitureOpacity} min={0.15} max={1} step={0.01} digits={2} onChange={(value) => editLegend((draft) => { draft.furnitureOpacity = value; }, false)} />
+        <RangeField label="文字标识透明度" value={legend.labelOpacity} min={0} max={1} step={0.01} digits={2} onChange={(value) => editLegend((draft) => { draft.labelOpacity = value; }, false)} />
         <SelectField label="停靠方位" value={legend.position} options={POSITIONS} onChange={(value) => editLegend((draft) => { draft.position = value; }, false)} />
+        <SelectField label="出版模式" value={legend.displayMode} options={[
+          { value: 'standard' as const, label: '标准图饰 standard' },
+          { value: 'guided' as const, label: '方志导览 guided' },
+          { value: 'pure' as const, label: '纯净底图 pure' },
+        ]} onChange={(value) => editLegend((draft) => { draft.displayMode = value; }, false)} />
         <SelectField label="列数" value={legend.columns === 1 ? '1' : '2'} options={[{ value: '1', label: '单列' }, { value: '2', label: '双列' }]} onChange={(value) => editLegend((draft) => { draft.columns = value === '1' ? 1 : 2; }, false)} />
       </PanelSection>
 

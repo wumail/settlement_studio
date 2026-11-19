@@ -15,6 +15,8 @@ let latestRequestId = 0;
 let workerInstance: Worker | null = null;
 let workerUnavailable = false;
 const pending = new Map<number, (res: CompileWorkerResponse) => void>();
+/** 在途请求的原始参数：Worker 载入失败或返回错误时同步兜底，绝不空等 */
+const inflight = new Map<number, { project: TownProject; zoneId?: string; prevScene?: CompiledScene; seed?: number }>();
 
 function getWorker(): Worker | null {
   if (typeof Worker === 'undefined' || workerUnavailable) return null;
@@ -32,6 +34,16 @@ function getWorker(): Worker | null {
     });
     instance.addEventListener('error', () => {
       workerUnavailable = true;
+      // Worker 脚本加载/执行失败：立即用同步编译补上在途请求，避免画布永远空白
+      for (const [requestId, resolve] of pending) {
+        const args = inflight.get(requestId);
+        pending.delete(requestId);
+        inflight.delete(requestId);
+        const fallback = args
+          ? runSync(args.project, args.zoneId, args.prevScene, args.seed)
+          : { scene: null };
+        resolve({ requestId, ok: fallback.scene !== null, scene: fallback.scene ?? undefined, error: fallback.error });
+      }
     });
     workerInstance = instance;
     return instance;
@@ -84,16 +96,45 @@ export function compileSceneAsync(
       };
     });
   }
+  inflight.set(requestId, { project, zoneId, prevScene, seed: explicitSeed });
+  // 看门狗：Worker 静默无响应（脚本 404 / 模块加载失败 / 被策略拦截）时 0.9s 后同步兜底
+  const watchdog = setTimeout(() => {
+    if (!pending.has(requestId)) return;
+    workerUnavailable = true;
+    workerInstance?.terminate();
+    workerInstance = null;
+    for (const [id, done] of pending) {
+      const args = inflight.get(id);
+      pending.delete(id);
+      inflight.delete(id);
+      const fallback = args ? runSync(args.project, args.zoneId, args.prevScene, args.seed) : { scene: null };
+      done({ requestId: id, ok: fallback.scene !== null, scene: fallback.scene ?? undefined, error: fallback.error });
+    }
+  }, 900);
   return new Promise<CompileOutcome>((resolve) => {
     pending.set(requestId, (response) => {
+      clearTimeout(watchdog);
+      inflight.delete(response.requestId);
       if (response.requestId !== latestRequestId) {
         resolve({ requestId: response.requestId, stale: true, scene: null });
+        return;
+      }
+      if (!response.ok || !response.scene) {
+        // Worker 编译抛错：降级为同步编译，保证任何浏览器都能出图
+        const fallback = runSync(project, zoneId, prevScene, explicitSeed);
+        resolve({
+          requestId: response.requestId,
+          stale: false,
+          scene: fallback.scene,
+          updatedSeed: fallback.updatedSeed,
+          error: fallback.error ?? response.error,
+        });
         return;
       }
       resolve({
         requestId: response.requestId,
         stale: false,
-        scene: response.scene ?? null,
+        scene: response.scene,
         updatedSeed: response.updatedSeed,
         error: response.error,
       });

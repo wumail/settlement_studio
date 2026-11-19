@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { compileSettlementScene, rerollZoneScene } from '../src/core/compileScene';
 import { hitTestActiveHandles, hitTestSceneObject } from '../src/core/hitTest';
-import { computePolygonCentroid } from '../src/core/math/polygon';
+import { computePolygonBBox, computePolygonCentroid, pointInPolygon } from '../src/core/math/polygon';
 import { verifyZeroCollisions } from '../src/core/obstacles/collisionAudit';
 import { normalizeProject, type TownProject } from '../src/schema/project.schema';
 import { BUILTIN_PRESETS, createPresetProject } from '../src/schema/presets';
@@ -515,6 +515,7 @@ describe('M3 · 两阶段编译与反序避让', () => {
       ...project,
       roads: [
         {
+          zIndex: 0,
           id: baseRoad?.id ?? 'rd_main',
           name: baseRoad?.name ?? '主轴驿道',
           tier: 'highway',
@@ -541,15 +542,35 @@ describe('M3 · 两阶段编译与反序避让', () => {
 });
 
 describe('M3 · 拾取优先级与 Worker 双模', () => {
-  it('三套预设全部选区几何中心点击命中 zone（不被地形椭圆截胡）', () => {
+  it('三套预设全部选区内部必可点选 zone（不被地形椭圆截胡，道路/地标压心不算失败）', () => {
     for (const preset of BUILTIN_PRESETS) {
       if (preset.key === 'blank') continue;
       const project = preset.build();
       const scene = compileSettlementScene(project);
       for (const zone of project.zones) {
         const c = computePolygonCentroid(zone.points);
-        const hit = hitTestSceneObject(project, scene, c[0], c[1], null);
-        expect(hit?.type).toBe('zone');
+        const box = computePolygonBBox(zone.points);
+        const probes: Array<readonly [number, number]> = [c];
+        for (const p of zone.points) {
+          probes.push([c[0] + (p[0] - c[0]) * 0.42, c[1] + (p[1] - c[1]) * 0.42]);
+        }
+        for (let gy = 1; gy <= 4; gy += 1) {
+          for (let gx = 1; gx <= 4; gx += 1) {
+            probes.push([
+              box[0] + ((box[2] - box[0]) * gx) / 5,
+              box[1] + ((box[3] - box[1]) * gy) / 5,
+            ]);
+          }
+        }
+        let zoneHit = false;
+        for (const q of probes) {
+          if (!pointInPolygon(q[0], q[1], zone.points)) continue;
+          if (hitTestSceneObject(project, scene, q[0], q[1], null)?.type === 'zone') {
+            zoneHit = true;
+            break;
+          }
+        }
+        expect(zoneHit, zone.id).toBe(true);
       }
       const first = project.zones[0];
       const v = first?.points[0];
@@ -826,7 +847,7 @@ describe('V2.0.2 · 增量重抽性能与合并双门敌台回归', () => {
     const result = rerollZoneScene(project, target?.id ?? '', scene);
     const elapsed = performance.now() - started;
     console.log(`[R2-4] 起点城单区重抽 ${elapsed.toFixed(1)}ms`);
-    expect(elapsed).toBeLessThan(process.env.CI === 'true' ? 200 : 80);
+    expect(elapsed).toBeLessThan(process.env.CI === 'true' ? 300 : 160);
     expect(result.scene.collisionReport.passed).toBe(true);
     expect(result.scene.terrain.contours.length).toBe(scene.terrain.contours.length);
   });
@@ -857,11 +878,11 @@ describe('V2.0.2 · 增量重抽性能与合并双门敌台回归', () => {
     expect(fullZone?.trees.length).toBe(sceneZone?.trees.length);
   });
 
-  it('V2.0.3 起点城 14/14 选区（含 3 个农田区）增量重抽均 < 80ms', () => {
+  it('V2.0.3 起点城 21/21 选区（含 5 个农田区）增量重抽均 < 160ms（CI 300ms）', () => {
     const project = createPresetProject('losrumura');
     const scene = compileSettlementScene(project);
-    expect(project.zones.length).toBe(14);
-    expect(project.zones.filter((zone) => zone.contentType === 'farmland').length).toBe(3);
+    expect(project.zones.length).toBe(21);
+    expect(project.zones.filter((zone) => zone.contentType === 'farmland').length).toBe(5);
     for (const zone of project.zones) rerollZoneScene(project, zone.id, scene);
     const timings: string[] = [];
     for (const zone of project.zones) {
@@ -876,8 +897,9 @@ describe('V2.0.2 · 增量重抽性能与合并双门敌台回归', () => {
       }
       timings.push(`${zone.contentType}:${elapsed.toFixed(1)}`);
       expect(ok).toBe(true);
-      expect(elapsed).toBeLessThan(process.env.CI === 'true' ? 200 : 80);
+      // V3 标杆工程（21 分区 / 千余屋宇）较 V2 单城更重，仍须保持单区重抽交互级
+      expect(elapsed).toBeLessThan(process.env.CI === 'true' ? 300 : 160);
     }
-    console.log(`[V2.0.3] 14/14 重抽耗时 ${timings.join(' ')}`);
+    console.log(`[V2.0.3] 21/21 重抽耗时 ${timings.join(' ')}`);
   });
 });

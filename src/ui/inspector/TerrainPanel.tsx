@@ -1,21 +1,11 @@
 import { useStudioStore } from '../../store/useStudioStore';
-import type { SculptBrushMode } from '../../schema/geometry.types';
-import { NumberField, PanelSection, RangeField, SelectField, ToggleField } from './ZonePanel';
+import { NumberField, PanelSection, RangeField, ToggleField } from './FormControls';
 
-const BRUSH_MODES: ReadonlyArray<{ value: SculptBrushMode; label: string }> = [
-  { value: 'raise', label: '隆起 raise' },
-  { value: 'lower', label: '下压 lower' },
-  { value: 'smooth', label: '平滑 smooth' },
-  { value: 'flatten', label: '推平 flatten' },
-];
-
-/** 地形与等高线属性卡：全局坡面/等高距/截断区间/齿线开关/四模式笔刷/选中图元参数 */
+/** 地形与等高线属性卡：全局坡面/等高距/截断区间/齿线开关/选中图元参数（笔刷参数已归顶部选项栏） */
 export function TerrainPanel() {
   const project = useStudioStore((state) => state.project);
-  const brush = useStudioStore((state) => state.brush);
   const selection = useStudioStore((state) => state.selection);
   const mutateProject = useStudioStore((state) => state.mutateProject);
-  const updateBrush = useStudioStore((state) => state.updateBrush);
   const terrain = project.terrain;
   const patch = (recipe: (target: typeof terrain) => void): void => {
     mutateProject((draft) => {
@@ -38,16 +28,10 @@ export function TerrainPanel() {
         <NumberField label="最低截断" value={terrain.minContourElev} step={1} onChange={(value) => patch((t) => { t.minContourElev = value; })} />
         <NumberField label="最高截断" value={terrain.maxContourElev} step={1} onChange={(value) => patch((t) => { t.maxContourElev = value; })} />
         <ToggleField label="显示等高线" checked={terrain.showContours} onChange={(value) => mutateProject((draft) => { draft.terrain.showContours = value; })} />
+        <RangeField label="线条透明度" value={terrain.contourOpacity} min={0.05} max={1} step={0.01} digits={2} onChange={(value) => patch((t) => { t.contourOpacity = value; })} />
+        <p className="text-[10px] leading-4 text-ink-muted">等高线恒在最上层（等效 z=9999），只以低透明度覆于聚落之上。</p>
         <ToggleField label="陡坎短齿线 (4.0m)" checked={terrain.showScarpTicks} onChange={(value) => mutateProject((draft) => { draft.terrain.showScarpTicks = value; })} />
         <RangeField label="齿线坡度阈值" value={terrain.scarpSlopeThresholdDeg} min={10} max={60} step={1} digits={0} suffix="°" onChange={(value) => patch((t) => { t.scarpSlopeThresholdDeg = value; })} />
-      </PanelSection>
-
-      <PanelSection title="微雕笔刷 (B)">
-        <SelectField label="模式" value={brush.mode} options={BRUSH_MODES} onChange={(value) => updateBrush({ mode: value })} />
-        <RangeField label="半径" value={brush.radiusM} min={8} max={240} step={2} digits={0} suffix="m" onChange={(value) => updateBrush({ radiusM: value })} />
-        <RangeField label="强度" value={brush.strength} min={0.05} max={2} step={0.05} digits={2} onChange={(value) => updateBrush({ strength: value })} />
-        <RangeField label="推平目标高程" value={brush.flattenTargetElev} min={-200} max={3000} step={5} digits={0} suffix="m" onChange={(value) => updateBrush({ flattenTargetElev: value })} />
-        <p className="text-[10px] leading-4 text-ink-muted">Alt + 左键在画布吸取任意点实时海拔作为推平目标。</p>
       </PanelSection>
 
       <PanelSection title="选中地形图元">

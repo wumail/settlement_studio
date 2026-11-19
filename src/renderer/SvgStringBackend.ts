@@ -208,6 +208,10 @@ export class SvgStringBackend implements RenderBackend {
       `text-anchor="${anchor}"`,
       `dominant-baseline="${baseline}"`,
     ];
+    if (style.opacity !== undefined && style.opacity < 1) {
+      parts.push(`fill-opacity="${num(Math.max(0, style.opacity))}"`);
+      if (style.haloColor) parts.push(`stroke-opacity="${num(Math.max(0, style.opacity))}"`);
+    }
     if (style.fontWeight !== undefined) parts.push(`font-weight="${num(Number(style.fontWeight) || 400)}"`);
     if (style.italic) parts.push('font-style="italic"');
     if (style.haloColor && (style.haloWidthPx ?? 0) > 0) {

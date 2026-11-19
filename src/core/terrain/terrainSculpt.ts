@@ -1,13 +1,12 @@
 import { GRID_N } from '../../schema/geometry.types';
-import type { SculptBrushMode } from '../../schema/geometry.types';
 import type { TownProject } from '../../schema/project.schema';
 import { encodeSculptDelta } from '../math/sculptCodecs';
-import {
-  type ElevationFieldData,
-  sampleElevation,
-  sampleGradient,
-} from './elevationField';
+import { type ElevationFieldData, sampleElevation, sampleGradient } from './elevationField';
 import { type ContourLine, extractContours } from './marchingSquares';
+import { brushFootprint, clamp01, plateauWeight } from './brushKernel';
+import { applySculptDab, hardnessOf, type SculptBrushInput } from './sculptDab';
+
+export type { SculptBrushInput } from './sculptDab';
 
 export interface ContourHit {
   readonly contourId: string;
@@ -27,23 +26,38 @@ export interface ContourDragInput {
   readonly strength: number;
 }
 
-export interface SculptBrushInput {
-  readonly x: number;
-  readonly y: number;
-  readonly radiusM: number;
-  readonly strength: number;
-  readonly mode: SculptBrushMode;
-  readonly flattenTargetElev: number;
+export interface SculptApplyOptions {
+  /** 拖拽期间为 true：绝不调用 encodeSculptDelta（零每帧 Base64 编码） */
+  readonly skipEncode?: boolean;
+  /** 拖拽期间为 false：跳过全图等高线提取，仅在 pointerup 统一重算 */
+  readonly skipContours?: boolean;
 }
 
-export interface ContourWarpOutput {
+export interface SculptBrushOutput {
   readonly sculptDeltaB64: string;
   readonly contours: ContourLine[];
 }
 
-export type SculptBrushOutput = ContourWarpOutput;
+export type ContourWarpOutput = SculptBrushOutput;
 
 const MAX_SUB_STEPS = 24;
+
+let encodeCount = 0;
+
+/** 诊断计数器：单测据此断言 pointermove 阶段零次 Base64 编码 */
+export function sculptEncodeCount(): number {
+  return encodeCount;
+}
+
+function encodeOnce(field: ElevationFieldData): string {
+  encodeCount += 1;
+  return encodeSculptDelta(field.sculptDelta);
+}
+
+/** 松手唯一编码入口：pointerup / blur 时调用一次，其它阶段一律 skipEncode */
+export function encodeSculptField(field: ElevationFieldData): string {
+  return encodeOnce(field);
+}
 
 function clamp(v: number, lo: number, hi: number): number {
   return v < lo ? lo : v > hi ? hi : v;
@@ -96,10 +110,7 @@ function applyRadialKernel(
   const { cx, cy, radiusM, sigma } = spec;
   if (!(radiusM > 0) || !Number.isFinite(deltaCenter) || deltaCenter === 0) return;
   const cell = field.cellSizeM;
-  const gx0 = Math.max(0, Math.floor((cx - radiusM) / cell));
-  const gx1 = Math.min(GRID_N - 1, Math.ceil((cx + radiusM) / cell));
-  const gy0 = Math.max(0, Math.floor((cy - radiusM) / cell));
-  const gy1 = Math.min(GRID_N - 1, Math.ceil((cy + radiusM) / cell));
+  const { gx0, gx1, gy0, gy1 } = brushFootprint(field, cx, cy, radiusM);
   const twoSigma2 = 2 * sigma * sigma;
   const edgeBase = Math.exp(-(radiusM * radiusM) / twoSigma2);
   const invDen = 1 / Math.max(1e-9, 1 - edgeBase);
@@ -134,6 +145,7 @@ export function applyContourWarpDrag(
   field: ElevationFieldData,
   terrainConfig: TownProject['terrain'],
   dragCtx: ContourDragInput,
+  options: SculptApplyOptions = {},
 ): ContourWarpOutput {
   const radiusM = Math.max(6, dragCtx.radiusM);
   const sigma = radiusM / 2.2;
@@ -161,106 +173,76 @@ export function applyContourWarpDrag(
   }
 
   return {
-    sculptDeltaB64: encodeSculptDelta(field.sculptDelta),
-    contours: extractContours(field, terrainConfig),
+    sculptDeltaB64: options.skipEncode === true ? '' : encodeOnce(field),
+    contours: options.skipContours === true ? [] : extractContours(field, terrainConfig),
   };
 }
 
-interface BrushWindow {
-  readonly gx0: number;
-  readonly gy0: number;
-  readonly cols: number;
-  readonly rows: number;
-  readonly snapshot: Float32Array;
-}
-
-function snapshotWindow(field: ElevationFieldData, x: number, y: number, radiusM: number): BrushWindow {
-  const cell = field.cellSizeM;
-  const gx0 = Math.max(0, Math.floor((x - radiusM) / cell));
-  const gx1 = Math.min(GRID_N - 1, Math.ceil((x + radiusM) / cell));
-  const gy0 = Math.max(0, Math.floor((y - radiusM) / cell));
-  const gy1 = Math.min(GRID_N - 1, Math.ceil((y + radiusM) / cell));
-  const cols = gx1 - gx0 + 1;
-  const rows = gy1 - gy0 + 1;
-  const snapshot = new Float32Array(cols * rows);
-  for (let gy = 0; gy < rows; gy += 1) {
-    for (let gx = 0; gx < cols; gx += 1) {
-      const idx = (gy0 + gy) * GRID_N + (gx0 + gx);
-      snapshot[gy * cols + gx] = field.elevation[idx] ?? 0;
-    }
-  }
-  return { gx0, gy0, cols, rows, snapshot };
-}
-
-function snapshotAt(win: BrushWindow, lx: number, ly: number): number {
-  const cx = Math.max(0, Math.min(win.cols - 1, lx));
-  const cy = Math.max(0, Math.min(win.rows - 1, ly));
-  return win.snapshot[cy * win.cols + cx] ?? 0;
-}
-
-const LAPLACIAN_KERNEL: ReadonlyArray<readonly [number, number, number]> = [
-  [-1, -1, 1],
-  [0, -1, 2],
-  [1, -1, 1],
-  [-1, 0, 2],
-  [0, 0, 4],
-  [1, 0, 2],
-  [-1, 1, 1],
-  [0, 1, 2],
-  [1, 1, 1],
-];
-
-function laplacianAverage(win: BrushWindow, lx: number, ly: number): number {
-  let sum = 0;
-  for (const [dx, dy, wgt] of LAPLACIAN_KERNEL) {
-    sum += snapshotAt(win, lx + dx, ly + dy) * wgt;
-  }
-  return sum / 16;
-}
-
-/** 四模式微雕笔刷：raise / lower / smooth / flatten，径向 `(1 - r^2/R^2)^2` 平滑核 */
+/** 单点微雕：七模式（ramp 为拉道模式，落笔无增量，仅拖拽预览） */
 export function applySculptBrush(
   field: ElevationFieldData,
   terrainConfig: TownProject['terrain'],
   brushCtx: SculptBrushInput,
+  options: SculptApplyOptions = {},
 ): SculptBrushOutput {
-  const radiusM = Math.max(4, brushCtx.radiusM);
-  const strength = clamp(brushCtx.strength, 0, 4);
-  const contourStep = Math.max(1, terrainConfig.contourStep);
+  applySculptDab(field, terrainConfig, brushCtx);
+  return {
+    sculptDeltaB64: options.skipEncode === true ? '' : encodeOnce(field),
+    contours: options.skipContours === true ? [] : extractContours(field, terrainConfig),
+  };
+}
+
+export interface RampStrokeInput {
+  readonly a: readonly [number, number];
+  readonly b: readonly [number, number];
+  readonly startElev: number;
+  readonly endElev: number;
+  readonly radiusM: number;
+  readonly hardness?: number;
+  readonly strength?: number;
+}
+
+/** 斜坡拉道：沿 A->B 一次拉出线性过渡带，法向按硬度平顶核衰减 */
+export function applyRampStroke(
+  field: ElevationFieldData,
+  terrainConfig: TownProject['terrain'],
+  ramp: RampStrokeInput,
+  options: SculptApplyOptions = {},
+): SculptBrushOutput {
+  const radiusM = Math.max(4, ramp.radiusM);
+  const hardness = hardnessOf(ramp.hardness);
+  const strength = clamp(ramp.strength ?? 1, 0, 2);
+  const ax = ramp.a[0];
+  const ay = ramp.a[1];
+  const bx = ramp.b[0];
+  const by = ramp.b[1];
+  const dx = bx - ax;
+  const dy = by - ay;
+  const len2 = dx * dx + dy * dy;
   const cell = field.cellSizeM;
-  const gx0 = Math.max(0, Math.floor((brushCtx.x - radiusM) / cell));
-  const gx1 = Math.min(GRID_N - 1, Math.ceil((brushCtx.x + radiusM) / cell));
-  const gy0 = Math.max(0, Math.floor((brushCtx.y - radiusM) / cell));
-  const gy1 = Math.min(GRID_N - 1, Math.ceil((brushCtx.y + radiusM) / cell));
-  const snap = brushCtx.mode === 'smooth' ? snapshotWindow(field, brushCtx.x, brushCtx.y, radiusM) : null;
-  const r2Max = radiusM * radiusM;
+  const gx0 = Math.max(0, Math.floor((Math.min(ax, bx) - radiusM) / cell));
+  const gx1 = Math.min(GRID_N - 1, Math.ceil((Math.max(ax, bx) + radiusM) / cell));
+  const gy0 = Math.max(0, Math.floor((Math.min(ay, by) - radiusM) / cell));
+  const gy1 = Math.min(GRID_N - 1, Math.ceil((Math.max(ay, by) + radiusM) / cell));
 
   for (let gy = gy0; gy <= gy1; gy += 1) {
     const wy = gy * cell;
     for (let gx = gx0; gx <= gx1; gx += 1) {
       const wx = gx * cell;
-      const dx = wx - brushCtx.x;
-      const dy = wy - brushCtx.y;
-      const r2 = dx * dx + dy * dy;
-      if (r2 > r2Max) continue;
-      const u = 1 - r2 / r2Max;
-      const w = u * u;
+      let t = 0;
+      if (len2 > 1e-12) {
+        t = clamp01(((wx - ax) * dx + (wy - ay) * dy) / len2);
+      }
+      const px = ax + dx * t;
+      const py = ay + dy * t;
+      const dist = Math.hypot(wx - px, wy - py);
+      if (dist > radiusM) continue;
+      const w = plateauWeight(dist / radiusM, hardness);
       if (!(w > 0)) continue;
+      const target = ramp.startElev + (ramp.endElev - ramp.startElev) * t;
       const idx = gy * GRID_N + gx;
       const current = field.elevation[idx] ?? 0;
-      let delta = 0;
-      if (brushCtx.mode === 'raise') {
-        delta = contourStep * 0.65 * strength * w;
-      } else if (brushCtx.mode === 'lower') {
-        delta = -contourStep * 0.65 * strength * w;
-      } else if (brushCtx.mode === 'flatten') {
-        delta = (brushCtx.flattenTargetElev - current) * (0.45 * strength * w);
-      } else if (snap) {
-        const lx = gx - snap.gx0;
-        const ly = gy - snap.gy0;
-        const lapAvg = laplacianAverage(snap, lx, ly);
-        delta = (lapAvg - current) * (0.65 * strength * w);
-      }
+      const delta = (target - current) * clamp01(w * strength);
       if (!Number.isFinite(delta) || delta === 0) continue;
       field.sculptDelta[idx] = (field.sculptDelta[idx] ?? 0) + delta;
       field.elevation[idx] = current + delta;
@@ -268,7 +250,41 @@ export function applySculptBrush(
   }
 
   return {
-    sculptDeltaB64: encodeSculptDelta(field.sculptDelta),
-    contours: extractContours(field, terrainConfig),
+    sculptDeltaB64: options.skipEncode === true ? '' : encodeOnce(field),
+    contours: options.skipContours === true ? [] : extractContours(field, terrainConfig),
+  };
+}
+
+/** 等距弧长插值：spacing = max(3, 0.22R)，单步增量按步长比例归一化，杜绝断珠与叠爆 */
+export function applySculptStrokeSegment(
+  field: ElevationFieldData,
+  terrainConfig: TownProject['terrain'],
+  from: readonly [number, number],
+  to: readonly [number, number],
+  brushCtx: SculptBrushInput,
+  options: SculptApplyOptions = {},
+): SculptBrushOutput {
+  const radiusM = Math.max(4, brushCtx.radiusM);
+  const spacing = Math.max(3.0, radiusM * 0.22);
+  const dist = Math.hypot(to[0] - from[0], to[1] - from[1]);
+  if (dist < 1e-6) {
+    applySculptDab(field, terrainConfig, brushCtx);
+  } else {
+    const steps = Math.max(1, Math.round(dist / spacing));
+    const stepLen = dist / steps;
+    const gain = clamp(stepLen / spacing, 0.2, 1.0);
+    for (let s = 1; s <= steps; s += 1) {
+      const t = s / steps;
+      applySculptDab(field, terrainConfig, {
+        ...brushCtx,
+        x: from[0] + (to[0] - from[0]) * t,
+        y: from[1] + (to[1] - from[1]) * t,
+        strength: brushCtx.strength * gain,
+      });
+    }
+  }
+  return {
+    sculptDeltaB64: options.skipEncode === true ? '' : encodeOnce(field),
+    contours: options.skipContours === true ? [] : extractContours(field, terrainConfig),
   };
 }

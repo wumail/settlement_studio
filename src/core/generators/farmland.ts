@@ -7,7 +7,7 @@ import {
 } from '../math/polygon';
 import { computeVoronoiCells, insetPolygonSafe } from '../math/voronoi';
 import { clearsPolygon, polygonRadiusOf } from '../obstacles/collisionAudit';
-import type { ZoneGeneratorInput } from '../obstacles/guardSafe';
+import { type ZoneGeneratorInput, guardSafeTree } from '../obstacles/guardSafe';
 
 const FURROW_ANGLES = [0, 35, 75, 120] as const;
 const TARGET_PLOT_HA = 0.72;
@@ -96,6 +96,15 @@ export function compileFarmlandZone(input: ZoneGeneratorInput): void {
       for (const run of runs) furrows.push(run);
     }
 
+    if (rng() < 0.6) {
+      const corner = innerPolygon[Math.floor(rng() * innerPolygon.length)];
+      if (corner) {
+        const tx = corner[0] + (c[0] - corner[0]) * 0.12;
+        const ty = corner[1] + (c[1] - corner[1]) * 0.12;
+        const tree = guardSafeTree(tx, ty, 3.6 + rng() * 1.8, 'field', zone, obstacleCtx);
+        if (tree) targetResult.trees.push(tree);
+      }
+    }
     targetResult.farmlandPlots.push({
       id: `fp_${zone.id}_${targetResult.farmlandPlots.length + 1}`,
       zoneId: zone.id,
