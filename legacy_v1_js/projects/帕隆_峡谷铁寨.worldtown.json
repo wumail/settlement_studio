@@ -1,0 +1,596 @@
+{
+  "schemaVersion": "1.2.0",
+  "meta": {
+    "id": "proj_palong",
+    "name": "帕隆双生铁寨",
+    "subtitle": "停战线深切 V 形峡谷与暗梁渡口平面图",
+    "worldSizeM": 1400,
+    "terraxAnchor": {
+      "lon": 29.04,
+      "lat": 14.58,
+      "elevM": 1662.6,
+      "regionNote": "G04 帕隆停战峡谷"
+    },
+    "updatedAt": "2026-11-18T09:00:00Z"
+  },
+  "palette": {
+    "themeId": "nordic_fjord",
+    "overrides": {}
+  },
+  "terrain": {
+    "baseElev": 1652,
+    "slopeMagM": 26,
+    "slopeDirDeg": 340,
+    "contourStep": 10,
+    "indexEvery": 5,
+    "minContourElev": 1600,
+    "maxContourElev": 1920,
+    "showContours": true,
+    "showScarpTicks": true,
+    "scarpSlopeThresholdDeg": 26,
+    "shapes": [
+      {
+        "id": "shape_ridge_north",
+        "type": "ridge",
+        "points": [
+          [
+            60,
+            214
+          ],
+          [
+            420,
+            262
+          ],
+          [
+            820,
+            224
+          ],
+          [
+            1340,
+            264
+          ]
+        ],
+        "deltaElev": 150,
+        "widthLeft": 220,
+        "widthRight": 196
+      },
+      {
+        "id": "shape_ridge_south",
+        "type": "ridge",
+        "points": [
+          [
+            60,
+            1214
+          ],
+          [
+            420,
+            1152
+          ],
+          [
+            820,
+            1192
+          ],
+          [
+            1340,
+            1146
+          ]
+        ],
+        "deltaElev": 170,
+        "widthLeft": 214,
+        "widthRight": 202
+      },
+      {
+        "id": "shape_gorge_east",
+        "type": "valley",
+        "points": [
+          [
+            1120,
+            520
+          ],
+          [
+            1190,
+            700
+          ],
+          [
+            1130,
+            940
+          ]
+        ],
+        "deltaElev": -24,
+        "widthLeft": 96,
+        "widthRight": 120
+      },
+      {
+        "id": "shape_gorge_west",
+        "type": "valley",
+        "points": [
+          [
+            210,
+            520
+          ],
+          [
+            260,
+            700
+          ],
+          [
+            220,
+            940
+          ]
+        ],
+        "deltaElev": -18,
+        "widthLeft": 88,
+        "widthRight": 104
+      }
+    ],
+    "sculptDeltaB64": ""
+  },
+  "rivers": [
+    {
+      "id": "riv_palong",
+      "name": "帕隆急溪",
+      "points": [
+        [
+          40,
+          700
+        ],
+        [
+          220,
+          684
+        ],
+        [
+          420,
+          690
+        ],
+        [
+          700,
+          716
+        ],
+        [
+          980,
+          690
+        ],
+        [
+          1180,
+          700
+        ],
+        [
+          1360,
+          712
+        ]
+      ],
+      "widthStartM": 26,
+      "widthEndM": 34,
+      "carveDepthM": 6,
+      "rippleLines": 3
+    }
+  ],
+  "waterBodies": [],
+  "canals": [],
+  "reefs": [
+    {
+      "id": "reef_anliang_1",
+      "x": 686,
+      "y": 710,
+      "radiusM": 12,
+      "angleDeg": 24,
+      "seed": 101,
+      "count": 1
+    },
+    {
+      "id": "reef_anliang_2",
+      "x": 712,
+      "y": 704,
+      "radiusM": 10,
+      "angleDeg": 68,
+      "seed": 211,
+      "count": 1
+    },
+    {
+      "id": "reef_anliang_3",
+      "x": 724,
+      "y": 724,
+      "radiusM": 13,
+      "angleDeg": 132,
+      "seed": 307,
+      "count": 1
+    },
+    {
+      "id": "reef_anliang_4",
+      "x": 694,
+      "y": 730,
+      "radiusM": 9,
+      "angleDeg": 12,
+      "seed": 419,
+      "count": 1
+    },
+    {
+      "id": "reef_anliang_5",
+      "x": 704,
+      "y": 716,
+      "radiusM": 14,
+      "angleDeg": 96,
+      "seed": 523,
+      "count": 1
+    },
+    {
+      "id": "reef_anliang_6",
+      "x": 676,
+      "y": 726,
+      "radiusM": 8,
+      "angleDeg": 44,
+      "seed": 631,
+      "count": 1
+    },
+    {
+      "id": "reef_anliang_7",
+      "x": 732,
+      "y": 712,
+      "radiusM": 9,
+      "angleDeg": 156,
+      "seed": 743,
+      "count": 1
+    }
+  ],
+  "roads": [
+    {
+      "id": "rd_bridge_road",
+      "name": "跨溪廊桥石道",
+      "tier": "street",
+      "points": [
+        [
+          260,
+          360
+        ],
+        [
+          360,
+          540
+        ],
+        [
+          460,
+          690
+        ],
+        [
+          560,
+          860
+        ],
+        [
+          600,
+          1020
+        ]
+      ],
+      "widthM": 10
+    },
+    {
+      "id": "rd_ford_road",
+      "name": "暗梁渡口道",
+      "tier": "lane",
+      "points": [
+        [
+          700,
+          430
+        ],
+        [
+          702,
+          716
+        ],
+        [
+          706,
+          1000
+        ]
+      ],
+      "widthM": 6
+    },
+    {
+      "id": "rd_north_terrace",
+      "name": "北岸阶地石径",
+      "tier": "highway",
+      "points": [
+        [
+          80,
+          520
+        ],
+        [
+          300,
+          440
+        ],
+        [
+          700,
+          430
+        ],
+        [
+          1100,
+          500
+        ],
+        [
+          1300,
+          560
+        ]
+      ],
+      "widthM": 8
+    },
+    {
+      "id": "rd_south_terrace",
+      "name": "南岸盘山石道",
+      "tier": "street",
+      "points": [
+        [
+          80,
+          860
+        ],
+        [
+          340,
+          900
+        ],
+        [
+          700,
+          900
+        ],
+        [
+          1040,
+          880
+        ],
+        [
+          1300,
+          920
+        ]
+      ],
+      "widthM": 7
+    },
+    {
+      "id": "rd_switchback_a",
+      "name": "北坡之字盘道",
+      "tier": "lane",
+      "points": [
+        [
+          300,
+          440
+        ],
+        [
+          380,
+          300
+        ],
+        [
+          520,
+          250
+        ],
+        [
+          640,
+          330
+        ],
+        [
+          660,
+          430
+        ]
+      ],
+      "widthM": 5
+    },
+    {
+      "id": "rd_switchback_b",
+      "name": "南坡之字盘道",
+      "tier": "lane",
+      "points": [
+        [
+          1040,
+          880
+        ],
+        [
+          1120,
+          1020
+        ],
+        [
+          1000,
+          1080
+        ],
+        [
+          880,
+          1020
+        ],
+        [
+          860,
+          900
+        ]
+      ],
+      "widthM": 5
+    }
+  ],
+  "fords": [
+    {
+      "id": "ford_anliang",
+      "x": 702,
+      "y": 716,
+      "radiusM": 30,
+      "name": "暗梁渡口"
+    }
+  ],
+  "zones": [
+    {
+      "id": "zn_village_north",
+      "name": "北岸窄阶地散居铁寨",
+      "contentType": "village",
+      "points": [
+        [
+          180,
+          340
+        ],
+        [
+          640,
+          360
+        ],
+        [
+          624,
+          636
+        ],
+        [
+          164,
+          616
+        ]
+      ],
+      "seed": 771,
+      "locked": false,
+      "density": 0.72,
+      "maxSlopeDeg": 28,
+      "streetWidthM": 4.5,
+      "wallThicknessM": 3,
+      "towerIntervalM": 110
+    },
+    {
+      "id": "zn_village_south",
+      "name": "南岸窄阶地散居铁寨",
+      "contentType": "village",
+      "points": [
+        [
+          740,
+          790
+        ],
+        [
+          1200,
+          810
+        ],
+        [
+          1184,
+          1070
+        ],
+        [
+          724,
+          1050
+        ]
+      ],
+      "seed": 882,
+      "locked": false,
+      "density": 0.7,
+      "maxSlopeDeg": 28,
+      "streetWidthM": 4.5,
+      "wallThicknessM": 3,
+      "towerIntervalM": 110
+    },
+    {
+      "id": "zn_market_north",
+      "name": "北岸铁寨互市坪",
+      "contentType": "market",
+      "points": [
+        [
+          720,
+          420
+        ],
+        [
+          940,
+          432
+        ],
+        [
+          930,
+          600
+        ],
+        [
+          710,
+          588
+        ]
+      ],
+      "seed": 935,
+      "locked": false,
+      "density": 0.82,
+      "maxSlopeDeg": 26,
+      "streetWidthM": 6,
+      "wallThicknessM": 4,
+      "towerIntervalM": 110
+    },
+    {
+      "id": "zn_wood_north",
+      "name": "北山腰薪炭林",
+      "contentType": "woodland",
+      "points": [
+        [
+          940,
+          250
+        ],
+        [
+          1330,
+          272
+        ],
+        [
+          1312,
+          590
+        ],
+        [
+          920,
+          568
+        ]
+      ],
+      "seed": 993,
+      "locked": false,
+      "density": 0.76,
+      "maxSlopeDeg": 34,
+      "streetWidthM": 4,
+      "wallThicknessM": 3,
+      "towerIntervalM": 110
+    },
+    {
+      "id": "zn_wood_south",
+      "name": "南山腰薪炭林",
+      "contentType": "woodland",
+      "points": [
+        [
+          180,
+          980
+        ],
+        [
+          700,
+          1000
+        ],
+        [
+          690,
+          1290
+        ],
+        [
+          170,
+          1270
+        ]
+      ],
+      "seed": 1010,
+      "locked": false,
+      "density": 0.72,
+      "maxSlopeDeg": 34,
+      "streetWidthM": 4,
+      "wallThicknessM": 3,
+      "towerIntervalM": 110
+    }
+  ],
+  "landmarks": [
+    {
+      "id": "lm_hammer",
+      "legendKey": "custom_hammer",
+      "glyphType": "mine_hammer",
+      "label": "水力锻锤铁坊",
+      "x": 470,
+      "y": 640,
+      "showLabel": true,
+      "sizePx": 15
+    },
+    {
+      "id": "lm_reef_ford",
+      "legendKey": "custom_ford",
+      "glyphType": "ferry_anchor",
+      "label": "暗梁渡口礁滩",
+      "x": 702,
+      "y": 716,
+      "showLabel": true,
+      "sizePx": 15
+    },
+    {
+      "id": "lm_watchtower",
+      "legendKey": "custom_tower",
+      "glyphType": "tower",
+      "label": "停战线哨塔望碉",
+      "x": 300,
+      "y": 330,
+      "showLabel": true,
+      "sizePx": 15
+    }
+  ],
+  "legend": {
+    "visible": true,
+    "title": "图例 · 帕隆铁寨",
+    "position": "bottom-right",
+    "columns": 2,
+    "items": []
+  }
+}

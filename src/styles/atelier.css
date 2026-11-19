@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  --color-desk: #f4f1ea;
+  --color-panel: #faf8f3;
+  --color-card: #efeae0;
+  --color-card-hover: #e7e0d2;
+  --color-input: #ffffff;
+  --color-brass: #d5cdbd;
+  --color-brass-strong: #b8ad98;
+  --color-ink: #2b2620;
+  --color-ink-secondary: #4a4339;
+  --color-ink-muted: #6e6659;
+  --color-on-accent: #faf8f3;
+  --color-pine: #365942;
+  --color-pine-hover: #294533;
+  --color-terracotta: #b55838;
+  --color-ochre: #9c7432;
+  --color-status-ok: #2d6a4f;
+  --color-status-warn: #b55838;
+
+  --font-ui: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --font-map-serif: "Palatino Linotype", "Book Antiqua", "Songti SC", "STSong", "Noto Serif SC", serif;
+  --font-mono: "SF Mono", "Menlo", "Consolas", monospace;
+}
+
+:root {
+  --bg-desk: #f4f1ea;
+  --bg-panel: #faf8f3;
+  --bg-card: #efeae0;
+  --bg-card-hover: #e7e0d2;
+  --bg-input: #ffffff;
+  --bg-hud-float: rgba(250, 248, 243, 0.94);
+  --border-brass: #d5cdbd;
+  --border-brass-strong: #b8ad98;
+  --border-focus: #365942;
+  --ink-primary: #2b2620;
+  --ink-secondary: #4a4339;
+  --ink-muted: #6e6659;
+  --accent-pine: #365942;
+  --accent-terracotta: #b55838;
+  --accent-ochre: #9c7432;
+  --status-ok: #2d6a4f;
+}
+
+html,
+body {
+  background-color: var(--bg-desk);
+  color: var(--ink-primary);
+  font-family: var(--font-ui);
+}
+
+/* 细滚动条与黄铜分规质感输入控件定制 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #efeae0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #b8ad98;
+  border-radius: 999px;
+}
+
+input[type="range"] {
+  accent-color: #365942;
+}

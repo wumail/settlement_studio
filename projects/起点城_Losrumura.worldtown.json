@@ -1,0 +1,870 @@
+{
+  "schemaVersion": "1.2.0",
+  "meta": {
+    "id": "proj_losrumura",
+    "name": "起点都城 Lōsrūmūra",
+    "subtitle": "R1966 南岸高阶台地与分水堰水工平面图",
+    "worldSizeM": 3200,
+    "terraxAnchor": {
+      "lon": 42.51,
+      "lat": 35.19,
+      "elevM": 484.9,
+      "regionNote": "E1-01 起点河阶本境"
+    },
+    "updatedAt": "2026-11-18T09:00:00Z"
+  },
+  "palette": {
+    "themeId": "watabou_classic",
+    "overrides": {}
+  },
+  "terrain": {
+    "baseElev": 468,
+    "slopeMagM": 16,
+    "slopeDirDeg": 300,
+    "contourStep": 4,
+    "indexEvery": 5,
+    "minContourElev": 448,
+    "maxContourElev": 528,
+    "showContours": true,
+    "showScarpTicks": false,
+    "scarpSlopeThresholdDeg": 26,
+    "shapes": [
+      {
+        "id": "shape_terrace_01",
+        "type": "hill",
+        "cx": 1560,
+        "cy": 1820,
+        "rx": 980,
+        "ry": 720,
+        "angleDeg": -10,
+        "deltaElev": 26,
+        "focusX": 0.12,
+        "focusY": -0.42
+      },
+      {
+        "id": "shape_scarp_01",
+        "type": "scarp",
+        "points": [
+          [
+            3140,
+            980
+          ],
+          [
+            2400,
+            1010
+          ],
+          [
+            1600,
+            1055
+          ],
+          [
+            800,
+            1105
+          ],
+          [
+            80,
+            1150
+          ]
+        ],
+        "deltaElev": 12,
+        "widthLeft": 300,
+        "widthRight": 90
+      },
+      {
+        "id": "shape_ridge_west",
+        "type": "ridge",
+        "points": [
+          [
+            60,
+            2060
+          ],
+          [
+            420,
+            1960
+          ],
+          [
+            820,
+            1900
+          ],
+          [
+            1180,
+            1880
+          ]
+        ],
+        "deltaElev": 36,
+        "widthLeft": 200,
+        "widthRight": 260
+      },
+      {
+        "id": "shape_ridge_east",
+        "type": "ridge",
+        "points": [
+          [
+            3140,
+            2140
+          ],
+          [
+            2820,
+            2060
+          ],
+          [
+            2500,
+            2010
+          ]
+        ],
+        "deltaElev": 24,
+        "widthLeft": 180,
+        "widthRight": 210
+      }
+    ],
+    "sculptDeltaB64": ""
+  },
+  "rivers": [
+    {
+      "id": "riv_r1966",
+      "name": "R1966 干流",
+      "points": [
+        [
+          3140,
+          790
+        ],
+        [
+          2700,
+          720
+        ],
+        [
+          2300,
+          650
+        ],
+        [
+          1900,
+          604
+        ],
+        [
+          1560,
+          570
+        ],
+        [
+          1200,
+          512
+        ],
+        [
+          860,
+          450
+        ],
+        [
+          460,
+          404
+        ],
+        [
+          80,
+          356
+        ]
+      ],
+      "widthStartM": 58,
+      "widthEndM": 78,
+      "carveDepthM": 8,
+      "rippleLines": 3
+    }
+  ],
+  "waterBodies": [],
+  "canals": [
+    {
+      "id": "can_clean_01",
+      "name": "东关饮用净水渠",
+      "style": "open",
+      "points": [
+        [
+          2380,
+          690
+        ],
+        [
+          2140,
+          900
+        ],
+        [
+          1960,
+          1080
+        ],
+        [
+          1760,
+          1180
+        ],
+        [
+          1520,
+          1260
+        ]
+      ],
+      "widthM": 7
+    },
+    {
+      "id": "can_drain_01",
+      "name": "南排污碱渠",
+      "style": "open",
+      "points": [
+        [
+          1360,
+          1580
+        ],
+        [
+          1580,
+          1760
+        ],
+        [
+          1820,
+          1940
+        ],
+        [
+          2080,
+          2080
+        ]
+      ],
+      "widthM": 5.5
+    }
+  ],
+  "reefs": [],
+  "roads": [
+    {
+      "id": "rd_p1_main",
+      "name": "P1 坡冈换装驿道",
+      "tier": "highway",
+      "points": [
+        [
+          60,
+          1700
+        ],
+        [
+          700,
+          1620
+        ],
+        [
+          1420,
+          1560
+        ],
+        [
+          2120,
+          1510
+        ],
+        [
+          2620,
+          1540
+        ],
+        [
+          3140,
+          1580
+        ]
+      ],
+      "widthM": 15
+    },
+    {
+      "id": "rd_north_port",
+      "name": "北埠门道",
+      "tier": "street",
+      "points": [
+        [
+          1500,
+          1730
+        ],
+        [
+          1610,
+          1600
+        ],
+        [
+          1640,
+          1300
+        ],
+        [
+          1655,
+          980
+        ],
+        [
+          1670,
+          620
+        ],
+        [
+          1690,
+          300
+        ]
+      ],
+      "widthM": 10
+    },
+    {
+      "id": "rd_west_ring",
+      "name": "西郭顺城街",
+      "tier": "street",
+      "points": [
+        [
+          700,
+          900
+        ],
+        [
+          690,
+          1220
+        ],
+        [
+          700,
+          1500
+        ],
+        [
+          720,
+          1700
+        ]
+      ],
+      "widthM": 9
+    },
+    {
+      "id": "rd_east_avenue",
+      "name": "东郭顺城街",
+      "tier": "street",
+      "points": [
+        [
+          2050,
+          900
+        ],
+        [
+          2040,
+          1220
+        ],
+        [
+          2050,
+          1500
+        ],
+        [
+          2070,
+          1700
+        ],
+        [
+          2090,
+          2050
+        ]
+      ],
+      "widthM": 9
+    },
+    {
+      "id": "rd_south_avenue",
+      "name": "南关横街",
+      "tier": "street",
+      "points": [
+        [
+          760,
+          2100
+        ],
+        [
+          1420,
+          2112
+        ],
+        [
+          2100,
+          2104
+        ],
+        [
+          2760,
+          2090
+        ]
+      ],
+      "widthM": 8
+    },
+    {
+      "id": "rd_east_lane",
+      "name": "东郊车马小径",
+      "tier": "lane",
+      "points": [
+        [
+          2320,
+          1700
+        ],
+        [
+          2540,
+          1980
+        ],
+        [
+          2740,
+          2300
+        ]
+      ],
+      "widthM": 5
+    },
+    {
+      "id": "rd_west_lane",
+      "name": "西郊麦场小径",
+      "tier": "lane",
+      "points": [
+        [
+          700,
+          1720
+        ],
+        [
+          560,
+          1980
+        ],
+        [
+          430,
+          2260
+        ]
+      ],
+      "widthM": 5
+    }
+  ],
+  "fords": [],
+  "zones": [
+    {
+      "id": "zn_inner_city",
+      "name": "砾基夯土内城",
+      "contentType": "walled_city",
+      "points": [
+        [
+          1120,
+          1150
+        ],
+        [
+          1660,
+          1168
+        ],
+        [
+          1646,
+          1520
+        ],
+        [
+          1106,
+          1502
+        ]
+      ],
+      "seed": 112301,
+      "locked": false,
+      "density": 0.78,
+      "maxSlopeDeg": 24,
+      "streetWidthM": 7.5,
+      "wallThicknessM": 5.5,
+      "towerIntervalM": 110
+    },
+    {
+      "id": "zn_citadel",
+      "name": "三木合契议事厅与公仓",
+      "contentType": "citadel",
+      "points": [
+        [
+          1680,
+          1175
+        ],
+        [
+          2000,
+          1190
+        ],
+        [
+          1986,
+          1470
+        ],
+        [
+          1666,
+          1455
+        ]
+      ],
+      "seed": 55127,
+      "locked": false,
+      "density": 0.62,
+      "maxSlopeDeg": 24,
+      "streetWidthM": 6.5,
+      "wallThicknessM": 5,
+      "towerIntervalM": 90
+    },
+    {
+      "id": "zn_north_blocks",
+      "name": "北关河埠换装街区",
+      "contentType": "town_blocks",
+      "points": [
+        [
+          820,
+          880
+        ],
+        [
+          1560,
+          900
+        ],
+        [
+          1548,
+          1112
+        ],
+        [
+          808,
+          1092
+        ]
+      ],
+      "seed": 40233,
+      "locked": false,
+      "density": 0.76,
+      "maxSlopeDeg": 26,
+      "streetWidthM": 7,
+      "wallThicknessM": 4,
+      "towerIntervalM": 110
+    },
+    {
+      "id": "zn_west_blocks",
+      "name": "西坡老榆梁换装街区",
+      "contentType": "town_blocks",
+      "points": [
+        [
+          700,
+          1210
+        ],
+        [
+          1070,
+          1226
+        ],
+        [
+          1056,
+          1600
+        ],
+        [
+          686,
+          1584
+        ]
+      ],
+      "seed": 90211,
+      "locked": false,
+      "density": 0.8,
+      "maxSlopeDeg": 26,
+      "streetWidthM": 7,
+      "wallThicknessM": 4,
+      "towerIntervalM": 110
+    },
+    {
+      "id": "zn_east_blocks",
+      "name": "东关盐铁坊巷",
+      "contentType": "town_blocks",
+      "points": [
+        [
+          2060,
+          1210
+        ],
+        [
+          2500,
+          1226
+        ],
+        [
+          2486,
+          1580
+        ],
+        [
+          2046,
+          1564
+        ]
+      ],
+      "seed": 31777,
+      "locked": false,
+      "density": 0.78,
+      "maxSlopeDeg": 26,
+      "streetWidthM": 7,
+      "wallThicknessM": 4,
+      "towerIntervalM": 110
+    },
+    {
+      "id": "zn_south_blocks",
+      "name": "南关厢车马店巷",
+      "contentType": "town_blocks",
+      "points": [
+        [
+          980,
+          1618
+        ],
+        [
+          1400,
+          1634
+        ],
+        [
+          1386,
+          1900
+        ],
+        [
+          966,
+          1884
+        ]
+      ],
+      "seed": 31877,
+      "locked": false,
+      "density": 0.76,
+      "maxSlopeDeg": 26,
+      "streetWidthM": 6.5,
+      "wallThicknessM": 4,
+      "towerIntervalM": 110
+    },
+    {
+      "id": "zn_southeast_blocks",
+      "name": "东南厢匠户坊巷",
+      "contentType": "town_blocks",
+      "points": [
+        [
+          1830,
+          1640
+        ],
+        [
+          2260,
+          1656
+        ],
+        [
+          2246,
+          2010
+        ],
+        [
+          1816,
+          1994
+        ]
+      ],
+      "seed": 60413,
+      "locked": false,
+      "density": 0.74,
+      "maxSlopeDeg": 26,
+      "streetWidthM": 6.5,
+      "wallThicknessM": 4,
+      "towerIntervalM": 110
+    },
+    {
+      "id": "zn_south_market",
+      "name": "南门灰粪柴市",
+      "contentType": "market",
+      "points": [
+        [
+          1470,
+          1618
+        ],
+        [
+          1790,
+          1634
+        ],
+        [
+          1776,
+          1868
+        ],
+        [
+          1456,
+          1852
+        ]
+      ],
+      "seed": 70401,
+      "locked": false,
+      "density": 0.88,
+      "maxSlopeDeg": 24,
+      "streetWidthM": 6,
+      "wallThicknessM": 4,
+      "towerIntervalM": 110
+    },
+    {
+      "id": "zn_west_farm",
+      "name": "西郊河阶麦粟条田",
+      "contentType": "farmland",
+      "points": [
+        [
+          250,
+          1620
+        ],
+        [
+          640,
+          1636
+        ],
+        [
+          626,
+          2060
+        ],
+        [
+          236,
+          2044
+        ]
+      ],
+      "seed": 227,
+      "locked": false,
+      "density": 0.62,
+      "maxSlopeDeg": 30,
+      "streetWidthM": 5,
+      "wallThicknessM": 3,
+      "towerIntervalM": 110
+    },
+    {
+      "id": "zn_east_farm",
+      "name": "东郊渠灌条田",
+      "contentType": "farmland",
+      "points": [
+        [
+          2320,
+          1640
+        ],
+        [
+          2900,
+          1656
+        ],
+        [
+          2886,
+          2120
+        ],
+        [
+          2306,
+          2104
+        ]
+      ],
+      "seed": 331,
+      "locked": false,
+      "density": 0.6,
+      "maxSlopeDeg": 30,
+      "streetWidthM": 5,
+      "wallThicknessM": 3,
+      "towerIntervalM": 110
+    },
+    {
+      "id": "zn_south_farm",
+      "name": "南郊河阶麦粟条田",
+      "contentType": "farmland",
+      "points": [
+        [
+          640,
+          2180
+        ],
+        [
+          2300,
+          2200
+        ],
+        [
+          2280,
+          2820
+        ],
+        [
+          620,
+          2800
+        ]
+      ],
+      "seed": 457,
+      "locked": false,
+      "density": 0.58,
+      "maxSlopeDeg": 30,
+      "streetWidthM": 5,
+      "wallThicknessM": 3,
+      "towerIntervalM": 110
+    },
+    {
+      "id": "zn_south_wood",
+      "name": "东南岗薪炭疏林",
+      "contentType": "woodland",
+      "points": [
+        [
+          2420,
+          2260
+        ],
+        [
+          2960,
+          2280
+        ],
+        [
+          2940,
+          2820
+        ],
+        [
+          2400,
+          2800
+        ]
+      ],
+      "seed": 613,
+      "locked": false,
+      "density": 0.66,
+      "maxSlopeDeg": 34,
+      "streetWidthM": 4,
+      "wallThicknessM": 3,
+      "towerIntervalM": 110
+    },
+    {
+      "id": "zn_north_wood",
+      "name": "东北岗河柳薪炭林",
+      "contentType": "woodland",
+      "points": [
+        [
+          2620,
+          900
+        ],
+        [
+          3060,
+          915
+        ],
+        [
+          3045,
+          1250
+        ],
+        [
+          2605,
+          1235
+        ]
+      ],
+      "seed": 727,
+      "locked": false,
+      "density": 0.62,
+      "maxSlopeDeg": 34,
+      "streetWidthM": 4,
+      "wallThicknessM": 3,
+      "towerIntervalM": 110
+    },
+    {
+      "id": "zn_west_wood",
+      "name": "西冈榆槐护坡林",
+      "contentType": "woodland",
+      "points": [
+        [
+          120,
+          1180
+        ],
+        [
+          420,
+          1196
+        ],
+        [
+          410,
+          1560
+        ],
+        [
+          108,
+          1544
+        ]
+      ],
+      "seed": 839,
+      "locked": false,
+      "density": 0.6,
+      "maxSlopeDeg": 34,
+      "streetWidthM": 4,
+      "wallThicknessM": 3,
+      "towerIntervalM": 110
+    }
+  ],
+  "landmarks": [
+    {
+      "id": "lm_weir_01",
+      "legendKey": "custom_weir",
+      "glyphType": "well_shrine",
+      "label": "东关总分水堰",
+      "x": 2190,
+      "y": 686,
+      "showLabel": true,
+      "sizePx": 16
+    },
+    {
+      "id": "lm_altar_01",
+      "legendKey": "custom_altar",
+      "glyphType": "star_fort",
+      "label": "司辰河衡官坛",
+      "x": 1230,
+      "y": 1195,
+      "showLabel": true,
+      "sizePx": 15
+    },
+    {
+      "id": "lm_slip_01",
+      "legendKey": "custom_slip",
+      "glyphType": "ferry_anchor",
+      "label": "北埠浅船滑道坞",
+      "x": 1730,
+      "y": 520,
+      "showLabel": true,
+      "sizePx": 15
+    }
+  ],
+  "legend": {
+    "visible": true,
+    "title": "图例 · Lōsrūmūra",
+    "position": "bottom-right",
+    "columns": 2,
+    "items": []
+  }
+}

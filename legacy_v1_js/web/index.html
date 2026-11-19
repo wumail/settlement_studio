@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terrax Settlement Studio · 聚落测绘制图工坊</title>
+  <link rel="stylesheet" href="css/atelier.css">
+</head>
+<body>
+  <div id="studio-root">
+
+    <!-- ============================ 顶部工程栏 ============================ -->
+    <header id="topbar">
+      <div id="brand">
+        <svg id="brand-mark" viewBox="0 0 28 28" aria-hidden="true">
+          <circle cx="14" cy="14" r="11.2" fill="none" stroke="currentColor" stroke-width="1.2"/>
+          <circle cx="14" cy="14" r="7.4" fill="none" stroke="currentColor" stroke-width="0.7" stroke-dasharray="2 2"/>
+          <path d="M14 2.8 L14 25.2 M2.8 14 L25.2 14" stroke="currentColor" stroke-width="0.7" opacity="0.55"/>
+          <path d="M14 7.4 L16.6 14 L14 20.6 L11.4 14 Z" fill="currentColor" opacity="0.85"/>
+        </svg>
+        <div id="brand-text">
+          <strong>Terrax Settlement Studio</strong>
+          <span>聚落可视化制图工坊 V1.2</span>
+        </div>
+      </div>
+
+      <div id="topbar-project">
+        <label for="project-name" class="sr-only">工程名称</label>
+        <input id="project-name" type="text" value="未命名聚落测绘图" autocomplete="off" spellcheck="false">
+        <label for="preset-select" class="sr-only">示例工程</label>
+        <select id="preset-select" title="切换内置示例工程"></select>
+        <button id="btn-import-terrax" class="btn btn-ghost" type="button" title="从 TERRAX 地图数据导入经纬度初值">
+          <svg viewBox="0 0 16 16" class="ico"><path d="M2 12.5 L6 4 L9 9.5 L11 6.5 L14 12.5 Z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+          导入经纬度
+        </button>
+      </div>
+
+      <div id="topbar-actions">
+        <button id="btn-undo" class="btn btn-icon" type="button" title="撤销 ⌘Z / Ctrl+Z" disabled>
+          <svg viewBox="0 0 18 18" class="ico"><path d="M6.5 5.5 L3 9 L6.5 12.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M3.4 9 H10.5 A4 4 0 0 1 10.5 17" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+        </button>
+        <button id="btn-redo" class="btn btn-icon" type="button" title="重做 ⌘⇧Z / Ctrl+Y" disabled>
+          <svg viewBox="0 0 18 18" class="ico"><path d="M11.5 5.5 L15 9 L11.5 12.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M14.6 9 H7.5 A4 4 0 0 0 7.5 17" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+        </button>
+        <span class="topbar-sep"></span>
+        <button id="btn-open-json" class="btn btn-ghost" type="button" title="打开本地 .worldtown.json">
+          <svg viewBox="0 0 16 16" class="ico"><path d="M2 4.5 A1 1 0 0 1 3 3.5 H6.2 L7.4 5 H13 A1 1 0 0 1 14 6 V12 A1 1 0 0 1 13 13 H3 A1 1 0 0 1 2 12 Z" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+          打开
+        </button>
+        <input id="file-input" type="file" accept=".json,.worldtown.json,application/json" hidden>
+        <button id="btn-save-json" class="btn btn-ghost" type="button" title="保存为 .worldtown.json">
+          <svg viewBox="0 0 16 16" class="ico"><path d="M3 3 H11 L13 5 V13 H3 Z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M5.5 3 V7 H10.5 V3" fill="none" stroke="currentColor" stroke-width="1"/><rect x="5.5" y="9.5" width="5" height="3.2" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+          保存
+        </button>
+        <button id="btn-export" class="btn btn-primary" type="button" title="导出高清 PNG / 矢量 SVG">
+          <svg viewBox="0 0 16 16" class="ico"><path d="M8 2.5 V10" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M5 6.5 L8 10 L11 6.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M2.8 12.5 H13.2" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
+          导出
+        </button>
+      </div>
+    </header>
+
+    <main id="studio-main">
+
+      <!-- ============================ 左侧工具坞 ============================ -->
+      <aside id="tool-dock" aria-label="制图工具坞">
+        <button class="tool-btn is-active" data-tool="select" type="button" title="选择与手柄调整 (V)">
+          <svg viewBox="0 0 22 22" class="tool-ico"><path d="M5 3.5 L16.5 11.2 L11.4 12.2 L13.8 17.8 L11.2 19 L8.8 13.2 L5 16.6 Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+          <span class="tool-key">V</span>
+        </button>
+        <button class="tool-btn" data-tool="contour_drag" type="button" title="等高线直接拖拽推拉 (C)">
+          <svg viewBox="0 0 22 22" class="tool-ico"><path d="M2.6 7.2 C7 4.6 15 9.4 19.4 6.4" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M2.6 12 C7 9.4 15 14.2 19.4 11.2" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M2.6 16.8 C7 14.2 15 18.6 19.4 16" fill="none" stroke="currentColor" stroke-width="1.25"/></svg>
+          <span class="tool-key">C</span>
+        </button>
+        <button class="tool-btn" data-tool="sculpt_brush" type="button" title="高程涂抹微雕笔刷 (B)">
+          <svg viewBox="0 0 22 22" class="tool-ico"><path d="M15.4 3.4 L18.6 6.6 L10 15.2 L6.2 15.8 L6.8 12 Z" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linejoin="round"/><path d="M4 18.6 C6 17.4 7.4 18.8 9.2 17.6" fill="none" stroke="currentColor" stroke-width="1.1"/></svg>
+          <span class="tool-key">B</span>
+        </button>
+        <span class="dock-sep"></span>
+        <button class="tool-btn" data-tool="add_hill" type="button" title="放置非对称山包 / 盆地 (H)">
+          <svg viewBox="0 0 22 22" class="tool-ico"><ellipse cx="11" cy="11" rx="7.6" ry="5.4" fill="none" stroke="currentColor" stroke-width="1.2"/><ellipse cx="11" cy="11" rx="4.4" ry="3" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2"/><circle cx="9.2" cy="10" r="1.5" fill="currentColor"/></svg>
+          <span class="tool-key">H</span>
+        </button>
+        <button class="tool-btn" data-tool="add_ridge" type="button" title="绘制山脊 / 冲沟 / 陡坎 (G)">
+          <svg viewBox="0 0 22 22" class="tool-ico"><path d="M2.6 15.6 L6.4 8.4 L9.8 12.2 L13.4 5.2 L19.4 15.6" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linejoin="round"/></svg>
+          <span class="tool-key">G</span>
+        </button>
+        <button class="tool-btn" data-tool="draw_river" type="button" title="绘制纯净变宽河流 (W)">
+          <svg viewBox="0 0 22 22" class="tool-ico"><path d="M3 4.4 C8 6.6 10 9 11 11.4 C12 13.8 14.6 16.4 19 17.4" fill="none" stroke="currentColor" stroke-width="2.4" opacity="0.55"/><path d="M3 4.4 C8 6.6 10 9 11 11.4 C12 13.8 14.6 16.4 19 17.4" fill="none" stroke="currentColor" stroke-width="0.9"/></svg>
+          <span class="tool-key">W</span>
+        </button>
+        <button class="tool-btn" data-tool="draw_water_area" type="button" title="绘制湖泊 / 海域 / 水渠 (L)">
+          <svg viewBox="0 0 22 22" class="tool-ico"><path d="M11 3.4 C14.4 7.4 17.4 10.4 17.4 13.2 A6.4 6.4 0 0 1 4.6 13.2 C4.6 10.4 7.6 7.4 11 3.4 Z" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8.4 13.4 A2.8 2.8 0 0 0 11 16" fill="none" stroke="currentColor" stroke-width="0.9"/></svg>
+          <span class="tool-key">L</span>
+        </button>
+        <button class="tool-btn" data-tool="place_reef" type="button" title="点放基岩礁石 / 渡口 (K)">
+          <svg viewBox="0 0 22 22" class="tool-ico"><path d="M4.6 14.6 L8.4 6.2 L12.4 9.4 L15 6.8 L18 14.6 Z" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linejoin="round"/><path d="M3.4 17.4 C7 16.2 14.6 18.2 18.6 16.8" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2.4 2"/></svg>
+          <span class="tool-key">K</span>
+        </button>
+        <button class="tool-btn" data-tool="draw_road" type="button" title="绘制主次干道 (D)">
+          <svg viewBox="0 0 22 22" class="tool-ico"><path d="M6.4 18.6 L9.2 3.4" fill="none" stroke="currentColor" stroke-width="3.4" opacity="0.5"/><path d="M15.6 3.4 L18.4 18.6" fill="none" stroke="currentColor" stroke-width="3.4" opacity="0.5"/><path d="M11 3.6 V6.4 M11 9.2 V12 M11 14.8 V17.6" fill="none" stroke="currentColor" stroke-width="1.1"/></svg>
+          <span class="tool-key">D</span>
+        </button>
+        <button class="tool-btn" data-tool="draw_zone" type="button" title="绘制多边形抽卡选区 (Z)">
+          <svg viewBox="0 0 22 22" class="tool-ico"><path d="M4 7.4 L11 3.6 L18 7.4 L18 14.6 L11 18.4 L4 14.6 Z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 2.2"/><circle cx="4" cy="7.4" r="1.5" fill="currentColor"/><circle cx="18" cy="7.4" r="1.5" fill="currentColor"/><circle cx="11" cy="18.4" r="1.5" fill="currentColor"/></svg>
+          <span class="tool-key">Z</span>
+        </button>
+        <button class="tool-btn" data-tool="place_landmark" type="button" title="点放图例地标戳记 (M)">
+          <svg viewBox="0 0 22 22" class="tool-ico"><path d="M11 19.2 C11 19.2 17 13.4 17 9.2 A6 6 0 0 0 5 9.2 C5 13.4 11 19.2 11 19.2 Z" fill="none" stroke="currentColor" stroke-width="1.25"/><circle cx="11" cy="9.2" r="2.2" fill="none" stroke="currentColor" stroke-width="1.1"/></svg>
+          <span class="tool-key">M</span>
+        </button>
+        <button class="tool-btn" data-tool="measure" type="button" title="测距与剖面标尺 (U)">
+          <svg viewBox="0 0 22 22" class="tool-ico"><path d="M3.4 13.6 L13.6 3.4 L18.6 8.4 L8.4 18.6 Z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 12.4 L8.8 14.2 M9.8 9.6 L11.6 11.4 M12.6 6.8 L14.4 8.6" fill="none" stroke="currentColor" stroke-width="0.9"/></svg>
+          <span class="tool-key">U</span>
+        </button>
+      </aside>
+
+      <!-- ============================ 中央视口 ============================ -->
+      <section id="viewport-wrap">
+        <canvas id="map-canvas"></canvas>
+
+        <div id="zone-floating-hud" class="hidden">
+          <span class="hud-grip" aria-hidden="true">⠿</span>
+          <label class="hud-field">
+            <span>选区</span>
+            <input id="zone-hud-name" type="text" autocomplete="off" spellcheck="false">
+          </label>
+          <label class="hud-field">
+            <span>类型</span>
+            <select id="zone-hud-type"></select>
+          </label>
+          <button id="zone-hud-reroll" class="btn btn-primary btn-sm" type="button" title="重抽此选区 (R)">🎲 重抽此选区 (R)</button>
+          <label class="hud-toggle" title="锁定后全局重抽不改变此区种子">
+            <input id="zone-hud-lock" type="checkbox">
+            <span>锁定选区</span>
+          </label>
+          <span id="zone-hud-meta" class="hud-meta"></span>
+        </div>
+
+        <div id="draft-hint" class="hidden"></div>
+
+        <div id="viewport-badge" class="hidden">
+          <span class="spin"></span>
+          <span id="viewport-badge-text">重算中…</span>
+        </div>
+
+        <div id="viewport-tools">
+          <button id="btn-zoom-in" class="btn btn-icon btn-float" type="button" title="放大">＋</button>
+          <button id="btn-zoom-out" class="btn btn-icon btn-float" type="button" title="缩小">－</button>
+          <button id="btn-fit" class="btn btn-float btn-fit" type="button" title="适配整幅">适配</button>
+          <span id="zoom-readout">100%</span>
+        </div>
+      </section>
+
+      <!-- ============================ 右侧检视器 ============================ -->
+      <aside id="inspector" aria-label="属性检视器">
+        <nav id="inspector-tabs" role="tablist">
+          <button class="inspector-tab is-active" data-tab="terrain" type="button" role="tab">地形</button>
+          <button class="inspector-tab" data-tab="hydro" type="button" role="tab">水路</button>
+          <button class="inspector-tab" data-tab="zones" type="button" role="tab">选区抽卡</button>
+          <button class="inspector-tab" data-tab="legend" type="button" role="tab">图例</button>
+          <button class="inspector-tab" data-tab="palette" type="button" role="tab">配色与导出</button>
+        </nav>
+
+        <div id="inspector-body">
+
+          <!-- ---------- Tab 1 地形 ---------- -->
+          <section class="inspector-panel is-active" id="panel-terrain" role="tabpanel">
+            <div class="panel-group">
+              <h3 class="group-title">全域高程与等高线</h3>
+              <div class="field">
+                <label for="terr-base">基准海拔 (m)</label>
+                <input id="terr-base" type="number" step="1" min="-200" max="6000">
+              </div>
+              <div class="field">
+                <label for="terr-slope-mag">背景高差 (m)</label>
+                <div class="field-inline">
+                  <input id="terr-slope-mag" type="range" min="0" max="800" step="1">
+                  <output id="terr-slope-mag-out">18</output>
+                </div>
+              </div>
+              <div class="field">
+                <label for="terr-slope-dir">下坡方向角 (°)</label>
+                <div class="field-inline">
+                  <input id="terr-slope-dir" type="range" min="0" max="359" step="1">
+                  <output id="terr-slope-dir-out">315</output>
+                </div>
+              </div>
+              <div class="field-grid">
+                <div class="field">
+                  <label for="terr-step">基本等高距 (m)</label>
+                  <input id="terr-step" type="number" step="1" min="1" max="100">
+                </div>
+                <div class="field">
+                  <label for="terr-index">计曲线间隔</label>
+                  <input id="terr-index" type="number" step="1" min="1" max="20">
+                </div>
+                <div class="field">
+                  <label for="terr-min">最低截断 (m)</label>
+                  <input id="terr-min" type="number" step="1">
+                </div>
+                <div class="field">
+                  <label for="terr-max">最高截断 (m)</label>
+                  <input id="terr-max" type="number" step="1">
+                </div>
+              </div>
+              <label class="switch-row">
+                <input id="terr-show-contours" type="checkbox">
+                <span>显示等高线图层</span>
+              </label>
+              <label class="switch-row">
+                <input id="terr-show-ticks" type="checkbox">
+                <span>陡坎示坡短齿线（默认关闭）</span>
+              </label>
+              <div class="field">
+                <label for="terr-tick-thresh">齿线触发坡度阈值 (°)</label>
+                <div class="field-inline">
+                  <input id="terr-tick-thresh" type="range" min="5" max="60" step="1">
+                  <output id="terr-tick-thresh-out">26</output>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel-group">
+              <h3 class="group-title">参数化地形图元</h3>
+              <div class="btn-row">
+                <button class="btn btn-chip" data-add-shape="hill" type="button">＋山包</button>
+                <button class="btn btn-chip" data-add-shape="basin" type="button">＋盆地</button>
+                <button class="btn btn-chip" data-add-shape="ridge" type="button">＋山脊</button>
+                <button class="btn btn-chip" data-add-shape="valley" type="button">＋冲沟</button>
+                <button class="btn btn-chip" data-add-shape="scarp" type="button">＋陡坎</button>
+              </div>
+              <div id="shape-list" class="list-block"></div>
+              <div id="shape-editor" class="editor-block hidden"></div>
+            </div>
+
+            <div class="panel-group">
+              <h3 class="group-title">高程涂抹笔刷 (B)</h3>
+              <div class="segmented" id="brush-modes">
+                <button class="seg-btn is-active" data-brush="raise" type="button">刷高</button>
+                <button class="seg-btn" data-brush="lower" type="button">刷低</button>
+                <button class="seg-btn" data-brush="smooth" type="button">平滑刷疏</button>
+                <button class="seg-btn" data-brush="flatten" type="button">定高台地</button>
+              </div>
+              <div class="field">
+                <label for="brush-radius">笔刷半径 (m)</label>
+                <div class="field-inline">
+                  <input id="brush-radius" type="range" min="25" max="600" step="5">
+                  <output id="brush-radius-out">140</output>
+                </div>
+              </div>
+              <div class="field">
+                <label for="brush-strength">笔刷强度</label>
+                <div class="field-inline">
+                  <input id="brush-strength" type="range" min="0.05" max="1" step="0.05">
+                  <output id="brush-strength-out">0.35</output>
+                </div>
+              </div>
+              <div class="field">
+                <label for="brush-target">定高目标高程 (m)</label>
+                <div class="field-inline">
+                  <input id="brush-target" type="number" step="0.5">
+                  <button id="btn-pick-elev" class="btn btn-chip" type="button" title="按住 Alt 点击画布吸取高程">吸管</button>
+                </div>
+              </div>
+              <p class="hint">按住 <kbd>Alt</kbd> 点击画布可吸取该点海拔填入目标高程。</p>
+            </div>
+          </section>
+
+          <!-- ---------- Tab 2 水路 ---------- -->
+          <section class="inspector-panel" id="panel-hydro" role="tabpanel">
+            <div class="panel-group">
+              <h3 class="group-title">绘制预设</h3>
+              <div class="field">
+                <label for="road-tier">道路等级</label>
+                <select id="road-tier">
+                  <option value="highway">主干驿道 highway · 14 m</option>
+                  <option value="street">市镇街路 street · 9 m</option>
+                  <option value="lane">顺坡村径 lane · 5 m</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>水域绘制类型（L 工具）</label>
+                <div class="segmented" id="water-mode">
+                  <button class="seg-btn is-active" data-water="lake" type="button">湖泊</button>
+                  <button class="seg-btn" data-water="sea" type="button">海域</button>
+                  <button class="seg-btn" data-water="open" type="button">明渠</button>
+                  <button class="seg-btn" data-water="qanat" type="button">暗渠</button>
+                </div>
+              </div>
+              <p class="hint">河流 / 水渠 / 道路：连续点击落点，双击结束。湖海：双击闭合。放置礁石 (K) 时点击河道内生成岩礁，点击道路与河流交点则切换为浅滩渡口。</p>
+            </div>
+            <div class="panel-group">
+              <h3 class="group-title">河道（纯净无河心岛）</h3>
+              <div id="list-rivers" class="list-block"></div>
+            </div>
+            <div class="panel-group">
+              <h3 class="group-title">湖泊与海域</h3>
+              <div id="list-water" class="list-block"></div>
+            </div>
+            <div class="panel-group">
+              <h3 class="group-title">明渠与暗渠</h3>
+              <div id="list-canals" class="list-block"></div>
+            </div>
+            <div class="panel-group">
+              <h3 class="group-title">道路与桥梁</h3>
+              <div id="list-roads" class="list-block"></div>
+            </div>
+            <div class="panel-group">
+              <h3 class="group-title">显式岩礁与浅滩渡口</h3>
+              <div id="list-reefs" class="list-block"></div>
+              <div id="list-fords" class="list-block"></div>
+            </div>
+            <div class="panel-group">
+              <h3 class="group-title">选中对象参数</h3>
+              <div id="hydro-editor" class="editor-block hidden"></div>
+              <div id="hydro-stats" class="stat-block"></div>
+            </div>
+          </section>
+
+          <!-- ---------- Tab 3 选区抽卡 ---------- -->
+          <section class="inspector-panel" id="panel-zones" role="tabpanel">
+            <div class="panel-group">
+              <h3 class="group-title">抽卡选区（9 类内容）</h3>
+              <p class="hint">用 <kbd>Z</kbd> 工具框定多边形，双击闭合即按类型与种子原地抽卡。选中后可按 <kbd>R</kbd> 秒级重抽。</p>
+              <div id="zone-list" class="list-block"></div>
+              <div id="zone-stats" class="stat-block"></div>
+            </div>
+            <div class="panel-group">
+              <h3 class="group-title">选中选区参数</h3>
+              <div id="zone-editor" class="editor-block hidden"></div>
+            </div>
+            <div class="panel-group">
+              <h3 class="group-title">零穿模核验</h3>
+              <div id="collision-detail" class="stat-block"></div>
+            </div>
+          </section>
+
+          <!-- ---------- Tab 4 图例 ---------- -->
+          <section class="inspector-panel" id="panel-legend" role="tabpanel">
+            <div class="panel-group">
+              <h3 class="group-title">图例框设置</h3>
+              <label class="switch-row">
+                <input id="legend-visible" type="checkbox">
+                <span>显示图面图例框</span>
+              </label>
+              <div class="field">
+                <label for="legend-title">图例主标题</label>
+                <input id="legend-title" type="text" autocomplete="off">
+              </div>
+              <div class="field">
+                <label>画布四角停靠</label>
+                <div class="segmented" id="legend-position">
+                  <button class="seg-btn is-active" data-pos="bottom-right" type="button">右下</button>
+                  <button class="seg-btn" data-pos="bottom-left" type="button">左下</button>
+                  <button class="seg-btn" data-pos="top-right" type="button">右上</button>
+                  <button class="seg-btn" data-pos="top-left" type="button">左上</button>
+                </div>
+              </div>
+              <div class="field">
+                <label>排版列数</label>
+                <div class="segmented" id="legend-columns">
+                  <button class="seg-btn is-active" data-cols="2" type="button">双列</button>
+                  <button class="seg-btn" data-cols="1" type="button">单列</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel-group">
+              <h3 class="group-title">图例条目（真图形微缩预览）</h3>
+              <div id="legend-list" class="legend-list"></div>
+              <button id="btn-reset-legend" class="btn btn-ghost btn-block" type="button">恢复默认自动图例</button>
+            </div>
+
+            <div class="panel-group">
+              <h3 class="group-title">新增自定义图例符号</h3>
+              <div class="field">
+                <label for="custom-glyph">徽记形状</label>
+                <select id="custom-glyph"></select>
+              </div>
+              <div class="field">
+                <label for="custom-label">图例名称</label>
+                <input id="custom-label" type="text" placeholder="如：司辰河衡分水坛" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="custom-color">主色</label>
+                <input id="custom-color" type="color" value="#8c3b2b">
+              </div>
+              <button id="btn-add-custom" class="btn btn-primary btn-block" type="button">＋ 新增自定义图例符号</button>
+              <p class="hint">新增后选中 <kbd>M</kbd> 工具，在画布点击即可盖印带旁注的地标徽记。</p>
+            </div>
+          </section>
+
+          <!-- ---------- Tab 5 配色与导出 ---------- -->
+          <section class="inspector-panel" id="panel-palette" role="tabpanel">
+            <div class="panel-group">
+              <h3 class="group-title">主题配色</h3>
+              <div id="theme-cards" class="theme-cards"></div>
+              <div id="palette-slots" class="palette-slots"></div>
+              <button id="btn-reset-palette" class="btn btn-ghost btn-block" type="button">重置配色</button>
+            </div>
+            <div class="panel-group">
+              <h3 class="group-title">导出成图</h3>
+              <div class="field-grid">
+                <div class="field">
+                  <label for="export-scale">分辨率</label>
+                  <select id="export-scale">
+                    <option value="1">1x · 1600 px</option>
+                    <option value="2" selected>2x · 3200 px</option>
+                    <option value="3">3x · 4800 px</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="export-mode">成图模式</label>
+                  <select id="export-mode">
+                    <option value="full">含图例成图</option>
+                    <option value="clean">纯净底图</option>
+                  </select>
+                </div>
+              </div>
+              <div class="btn-row">
+                <button id="btn-export-png" class="btn btn-primary" type="button">导出 PNG</button>
+                <button id="btn-export-svg" class="btn btn-ghost" type="button">导出 SVG</button>
+              </div>
+            </div>
+            <div class="panel-group">
+              <h3 class="group-title">工程持久化</h3>
+              <div class="btn-row">
+                <button id="btn-save-json-2" class="btn btn-ghost" type="button">保存 .worldtown.json</button>
+                <button id="btn-open-json-2" class="btn btn-ghost" type="button">打开工程</button>
+              </div>
+              <div id="project-meta-info" class="stat-block"></div>
+            </div>
+          </section>
+
+        </div>
+      </aside>
+    </main>
+
+    <!-- ============================ 底部状态栏 ============================ -->
+    <footer id="statusbar">
+      <span id="status-coords">X: — m · Y: — m</span>
+      <span class="status-sep">|</span>
+      <span id="status-elev-slope">海拔: — m · 坡度: —°</span>
+      <span class="status-sep">|</span>
+      <span id="status-counts">选区: 0 · 屋宇: 0 栋 · 桥梁: 0 座</span>
+      <span class="status-sep">|</span>
+      <span id="status-zoom">缩放: —</span>
+      <span class="status-flex"></span>
+      <span id="backend-badge" class="badge badge-offline">离线独立模式</span>
+      <span id="status-collision-pill" class="badge badge-ok">✓ 零穿模核验 (0 冲突)</span>
+    </footer>
+  </div>
+
+  <!-- ============================ 经纬度导入弹窗 ============================ -->
+  <div id="modal-backdrop" class="hidden">
+    <div id="modal-import" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <header class="modal-head">
+        <h2 id="modal-title">导入 TERRAX 经纬度初值</h2>
+        <button id="btn-modal-close" class="btn btn-icon" type="button" title="关闭">✕</button>
+      </header>
+      <div class="modal-body">
+        <p class="hint">从 <code>地图/</code> 只读桥接 <code>lake_bed_dem.bin</code>、<code>global_owner.npz</code> 与 <code>water_vectors</code>，生成基准海拔、背景坡向与水路初值。</p>
+        <div class="field-grid">
+          <div class="field">
+            <label for="terrax-lon">经度 lon (°E)</label>
+            <input id="terrax-lon" type="number" step="0.01" value="42.51">
+          </div>
+          <div class="field">
+            <label for="terrax-lat">纬度 lat (°N)</label>
+            <input id="terrax-lat" type="number" step="0.01" value="35.19">
+          </div>
+          <div class="field">
+            <label for="terrax-span">图幅边长 (m)</label>
+            <input id="terrax-span" type="number" step="100" value="2800">
+          </div>
+        </div>
+        <div id="terrax-result" class="stat-block">尚未查询。</div>
+      </div>
+      <footer class="modal-foot">
+        <button id="btn-terrax-fetch" class="btn btn-ghost" type="button">查询初值</button>
+        <button id="btn-modal-apply" class="btn btn-primary" type="button" disabled>应用到当前工程</button>
+      </footer>
+    </div>
+  </div>
+
+  <div id="toast" class="hidden"></div>
+
+  <div id="file-protocol-notice" class="hidden">
+    <div class="notice-card">
+      <h2>请通过本地服务打开本工坊</h2>
+      <p>当前以 <code>file://</code> 协议直接打开页面，浏览器安全策略禁止加载 ES Module，地图内核无法启动。</p>
+      <p>请任选其一：</p>
+      <ol>
+        <li>运行 <code>/Users/jrdamocles/code/TERRAX/worldbuilding/venv/bin/python3 server.py --port 8765</code>，然后访问 <code>http://127.0.0.1:8765/web/index.html</code>；</li>
+        <li>或在工程目录执行 <code>python3 -m http.server 8791</code>，再访问 <code>http://127.0.0.1:8791/web/index.html</code>。</li>
+      </ol>
+      <p class="notice-foot">工坊本体完全离线运行，不依赖任何第三方 CDN 或网络请求。</p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      if (location.protocol !== 'file:') return;
+      document.addEventListener('DOMContentLoaded', function () {
+        var el = document.getElementById('file-protocol-notice');
+        if (el) el.classList.remove('hidden');
+      });
+    })();
+  </script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
