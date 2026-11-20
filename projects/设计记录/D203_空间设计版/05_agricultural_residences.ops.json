@@ -1,0 +1,586 @@
+[
+  {
+    "op": "connect_road",
+    "id": "west_hamlet_lane",
+    "name": "坡脚村巷",
+    "tier": "lane",
+    "widthM": 3,
+    "from": [
+      1450,
+      2910
+    ],
+    "to": [
+      1380,
+      3200
+    ],
+    "via": [
+      [
+        1375,
+        2940
+      ],
+      [
+        1330,
+        2980
+      ],
+      [
+        1300,
+        3070
+      ],
+      [
+        1340,
+        3130
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "west_well_path",
+    "name": "坡脚取水径",
+    "tier": "lane",
+    "widthM": 2,
+    "from": [
+      1330,
+      2980
+    ],
+    "to": [
+      1270,
+      2965
+    ],
+    "via": []
+  },
+  {
+    "op": "place_zone",
+    "id": "west_well_space",
+    "name": "井边空地",
+    "contentType": "exclusion",
+    "seed": 7101,
+    "maxSlopeDeg": 12,
+    "density": 0.5,
+    "frayOuter": true,
+    "relative": {
+      "anchor": [
+        1270,
+        2965
+      ],
+      "shape": "organic",
+      "areaHa": 0.055,
+      "aspectRatio": 1.1
+    },
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "place_zone",
+    "id": "west_threshing",
+    "name": "村边晒场",
+    "contentType": "exclusion",
+    "seed": 7102,
+    "maxSlopeDeg": 12,
+    "density": 0.5,
+    "frayOuter": true,
+    "relative": {
+      "anchor": [
+        1270,
+        3080
+      ],
+      "shape": "organic",
+      "areaHa": 0.14,
+      "aspectRatio": 1.3,
+      "rotationDeg": 12
+    },
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "west_grain_shed",
+    "name": "共用储粮棚",
+    "x": 1240,
+    "y": 3115,
+    "widthM": 18,
+    "depthM": 11,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": -12
+  },
+  {
+    "op": "upsert_structure",
+    "id": "west_stock_shed",
+    "name": "村边牲畜棚",
+    "x": 1350,
+    "y": 3120,
+    "widthM": 16,
+    "depthM": 10,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": -8
+  },
+  {
+    "op": "place_zone",
+    "id": "west_farm_hamlet",
+    "name": "坡脚小村",
+    "contentType": "village",
+    "seed": 7103,
+    "maxSlopeDeg": 12,
+    "density": 0.5,
+    "frayOuter": true,
+    "points": [
+      [
+        1250,
+        2960
+      ],
+      [
+        1350,
+        2930
+      ],
+      [
+        1410,
+        3000
+      ],
+      [
+        1370,
+        3140
+      ],
+      [
+        1260,
+        3150
+      ],
+      [
+        1220,
+        3050
+      ]
+    ],
+    "buildingScale": 0.95,
+    "streetWidthM": 3
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "west_farm_well",
+    "label": "村井",
+    "anchor": [
+      1270,
+      2965
+    ],
+    "glyphType": "well_shrine",
+    "sizePx": 10,
+    "showLabel": true,
+    "subtitle": "坡脚小村共用取水点，住户沿村巷通往西侧两片田地"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "creek_farm_house_n",
+    "name": "溪边农家",
+    "x": 1975,
+    "y": 3395,
+    "widthM": 25,
+    "depthM": 20,
+    "kind": "u_court",
+    "roofKind": "town",
+    "angleDeg": 165
+  },
+  {
+    "op": "upsert_structure",
+    "id": "creek_farm_house_s",
+    "name": "菜田农舍",
+    "x": 1960,
+    "y": 3480,
+    "widthM": 22,
+    "depthM": 17,
+    "kind": "l_hall",
+    "roofKind": "town",
+    "angleDeg": -8
+  },
+  {
+    "op": "upsert_structure",
+    "id": "creek_farm_store",
+    "name": "粮柴棚",
+    "x": 2000,
+    "y": 3510,
+    "widthM": 15,
+    "depthM": 10,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": -5
+  },
+  {
+    "op": "upsert_structure",
+    "id": "creek_stock_shed",
+    "name": "牲畜棚",
+    "x": 1930,
+    "y": 3525,
+    "widthM": 13,
+    "depthM": 9,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 5
+  },
+  {
+    "op": "connect_road",
+    "id": "creek_homestead_access",
+    "name": "菜田农家径",
+    "tier": "lane",
+    "widthM": 2.8,
+    "from": [
+      2130,
+      3500
+    ],
+    "to": [
+      1980,
+      3415
+    ],
+    "via": [
+      [
+        2050,
+        3495
+      ],
+      [
+        2015,
+        3465
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "creek_house_branch",
+    "name": "农舍支径",
+    "tier": "lane",
+    "widthM": 2.3,
+    "from": [
+      2015,
+      3465
+    ],
+    "to": [
+      1966,
+      3495
+    ],
+    "via": []
+  },
+  {
+    "op": "connect_road",
+    "id": "creek_well_path",
+    "name": "农家取水径",
+    "tier": "lane",
+    "widthM": 2,
+    "from": [
+      1980,
+      3415
+    ],
+    "to": [
+      1940,
+      3340
+    ],
+    "via": [
+      [
+        1950,
+        3380
+      ]
+    ]
+  },
+  {
+    "op": "place_zone",
+    "id": "creek_garden",
+    "name": "农家菜园",
+    "contentType": "farmland",
+    "seed": 7104,
+    "maxSlopeDeg": 12,
+    "density": 0.5,
+    "frayOuter": true,
+    "relative": {
+      "anchor": [
+        1950,
+        3590
+      ],
+      "shape": "organic",
+      "areaHa": 0.2,
+      "aspectRatio": 1.3,
+      "rotationDeg": -10
+    }
+  },
+  {
+    "op": "connect_road",
+    "id": "creek_garden_path",
+    "name": "菜园小径",
+    "tier": "lane",
+    "widthM": 2,
+    "from": [
+      1966,
+      3495
+    ],
+    "to": [
+      1950,
+      3560
+    ],
+    "via": [
+      [
+        1938,
+        3538
+      ]
+    ]
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "creek_house_well",
+    "label": "农家井",
+    "anchor": [
+      1940,
+      3340
+    ],
+    "glyphType": "well_shrine",
+    "sizePx": 10,
+    "showLabel": true,
+    "subtitle": "两处农家共用取水点，院场和牲畜棚向南安排"
+  },
+  {
+    "op": "connect_road",
+    "id": "east_hamlet_lane",
+    "name": "东田村道",
+    "tier": "lane",
+    "widthM": 3,
+    "from": [
+      3650,
+      3130
+    ],
+    "to": [
+      3480,
+      3720
+    ],
+    "via": [
+      [
+        3700,
+        3250
+      ],
+      [
+        3680,
+        3360
+      ],
+      [
+        3600,
+        3480
+      ],
+      [
+        3550,
+        3600
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "east_well_path",
+    "name": "东田取水径",
+    "tier": "lane",
+    "widthM": 2,
+    "from": [
+      3700,
+      3250
+    ],
+    "to": [
+      3635,
+      3225
+    ],
+    "via": [
+      [
+        3660,
+        3235
+      ]
+    ]
+  },
+  {
+    "op": "place_zone",
+    "id": "east_well_space",
+    "name": "井边空地",
+    "contentType": "exclusion",
+    "seed": 7111,
+    "maxSlopeDeg": 12,
+    "density": 0.5,
+    "frayOuter": true,
+    "relative": {
+      "anchor": [
+        3635,
+        3225
+      ],
+      "shape": "organic",
+      "areaHa": 0.06,
+      "aspectRatio": 1.1
+    },
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "place_zone",
+    "id": "east_threshing",
+    "name": "东田晒场",
+    "contentType": "exclusion",
+    "seed": 7112,
+    "maxSlopeDeg": 12,
+    "density": 0.5,
+    "frayOuter": true,
+    "relative": {
+      "anchor": [
+        3700,
+        3345
+      ],
+      "shape": "organic",
+      "areaHa": 0.18,
+      "aspectRatio": 1.25
+    },
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "east_grain_shed",
+    "name": "共用谷仓",
+    "x": 3750,
+    "y": 3355,
+    "widthM": 20,
+    "depthM": 12,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 8
+  },
+  {
+    "op": "upsert_structure",
+    "id": "east_stock_shed",
+    "name": "牲畜棚",
+    "x": 3765,
+    "y": 3390,
+    "widthM": 15,
+    "depthM": 10,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 8
+  },
+  {
+    "op": "place_zone",
+    "id": "east_farm_hamlet",
+    "name": "东田小村",
+    "contentType": "village",
+    "seed": 7113,
+    "maxSlopeDeg": 12,
+    "density": 0.5,
+    "frayOuter": true,
+    "points": [
+      [
+        3590,
+        3190
+      ],
+      [
+        3720,
+        3180
+      ],
+      [
+        3810,
+        3270
+      ],
+      [
+        3770,
+        3420
+      ],
+      [
+        3650,
+        3410
+      ],
+      [
+        3580,
+        3310
+      ]
+    ],
+    "buildingScale": 0.95,
+    "streetWidthM": 3
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "east_farm_well",
+    "label": "村井",
+    "anchor": [
+      3635,
+      3225
+    ],
+    "glyphType": "well_shrine",
+    "sizePx": 10,
+    "showLabel": true,
+    "subtitle": "村巷连接谷路和东南田径，居民耕作相邻灌田及东坡田"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "south_edge_house",
+    "name": "镇缘农舍",
+    "x": 2780,
+    "y": 3260,
+    "widthM": 24,
+    "depthM": 18,
+    "kind": "u_court",
+    "roofKind": "town",
+    "angleDeg": 180
+  },
+  {
+    "op": "upsert_structure",
+    "id": "south_edge_shed",
+    "name": "农具棚",
+    "x": 2820,
+    "y": 3263,
+    "widthM": 14,
+    "depthM": 9,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 3
+  },
+  {
+    "op": "connect_road",
+    "id": "south_edge_path",
+    "name": "镇南出田巷",
+    "tier": "lane",
+    "widthM": 2.8,
+    "from": [
+      2750,
+      3100
+    ],
+    "to": [
+      2775,
+      3245
+    ],
+    "via": [
+      [
+        2755,
+        3190
+      ]
+    ]
+  },
+  {
+    "op": "place_zone",
+    "id": "south_edge_garden",
+    "name": "镇边菜园",
+    "contentType": "farmland",
+    "seed": 7121,
+    "maxSlopeDeg": 12,
+    "density": 0.55,
+    "frayOuter": true,
+    "relative": {
+      "anchor": [
+        2865,
+        3258
+      ],
+      "shape": "rect",
+      "areaHa": 0.16,
+      "aspectRatio": 1.4,
+      "rotationDeg": -6
+    }
+  },
+  {
+    "op": "connect_road",
+    "id": "south_field_path",
+    "name": "南田小径",
+    "tier": "lane",
+    "widthM": 2.2,
+    "from": [
+      2775,
+      3245
+    ],
+    "to": [
+      2810,
+      3320
+    ],
+    "via": [
+      [
+        2800,
+        3290
+      ]
+    ]
+  }
+]

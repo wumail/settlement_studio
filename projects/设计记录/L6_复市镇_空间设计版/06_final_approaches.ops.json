@@ -1,0 +1,164 @@
+[
+  {
+    "op": "place_zone",
+    "id": "keeper_garden",
+    "name": "护渠户屋旁菜畦",
+    "contentType": "farmland",
+    "relative": {
+      "anchor": [
+        2090,
+        3145
+      ],
+      "shape": "rect",
+      "areaHa": 0.2,
+      "aspectRatio": 1.1,
+      "rotationDeg": 0
+    },
+    "seed": 6320,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "frayOuter": false
+  },
+  {
+    "op": "connect_road",
+    "id": "farmhouse_access",
+    "name": "农家短径",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      1267.8161441290429,
+      3715
+    ],
+    "to": [
+      1245,
+      3723
+    ]
+  },
+  {
+    "op": "place_zone",
+    "id": "waiting_pack_yard",
+    "name": "驮队候装坪",
+    "contentType": "exclusion",
+    "points": [
+      [
+        2740,
+        2240
+      ],
+      [
+        2930,
+        2240
+      ],
+      [
+        2960,
+        2370
+      ],
+      [
+        2760,
+        2365
+      ]
+    ],
+    "exclusionStyle": "plain",
+    "seed": 6461
+  },
+  {
+    "op": "upsert_structure",
+    "id": "weighing_shed",
+    "name": "秤货棚",
+    "x": 2890,
+    "y": 2260,
+    "widthM": 22,
+    "depthM": 14,
+    "kind": "rect",
+    "roofKind": "town"
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_access_2",
+    "name": "鱼坊院门短巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      3075.645198038437,
+      2465
+    ],
+    "to": [
+      3055,
+      2463
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_access_4",
+    "name": "鱼坊院门短巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      3092.2432776964474,
+      2545
+    ],
+    "to": [
+      3055,
+      2540
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_access_6",
+    "name": "鱼坊院门短巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      3102.8060595179372,
+      2625
+    ],
+    "to": [
+      3055,
+      2617
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_access_8",
+    "name": "鱼坊院门短巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      3110.978788811092,
+      2705
+    ],
+    "to": [
+      3055,
+      2703
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_access_10",
+    "name": "鱼坊院门短巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      3116.5497712840156,
+      2785
+    ],
+    "to": [
+      3055,
+      2780
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_access_12",
+    "name": "鱼坊院门短巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      3116.8955158697004,
+      2865
+    ],
+    "to": [
+      3055,
+      2857
+    ]
+  }
+]

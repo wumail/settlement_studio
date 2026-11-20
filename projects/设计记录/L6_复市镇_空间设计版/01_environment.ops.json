@@ -1,0 +1,533 @@
+[
+  {
+    "op": "set_meta",
+    "name": "长湖·复市镇",
+    "subtitle": "R2147 河阶商镇 · 舟驮换装与井渠生活 · 空间设计版 4.2 km",
+    "worldSizeM": 4200,
+    "geoAnchor": {
+      "lon": 35.61,
+      "lat": 28.53,
+      "elevM": 427.5357360839844,
+      "regionNote": "候选方志坐标；局部台地与河曲为设计，主湖面在下游图外"
+    }
+  },
+  {
+    "op": "set_terrain",
+    "baseElev": 427.5357360839844,
+    "slopeDirDeg": 0,
+    "slopeMagM": 20,
+    "contourStep": 2,
+    "indexEvery": 5,
+    "contourOpacity": 0.23,
+    "showContours": true,
+    "showHypsometricTint": true,
+    "showHachures": true,
+    "hachureSlopeMinDeg": 3.5,
+    "showScarpTicks": false,
+    "terrainNoiseAmpM": 0.12,
+    "terrainSeed": 261119,
+    "macroReliefAmpM": 0,
+    "valleyCarveRatio": 0,
+    "showSupplementaryContours": false
+  },
+  {
+    "op": "upsert_terrain_shape",
+    "id": "west_fan",
+    "type": "hill",
+    "cx": 150,
+    "cy": 2250,
+    "rx": 1500,
+    "ry": 2200,
+    "angleDeg": -12,
+    "deltaElev": 16,
+    "focusX": -0.12,
+    "focusY": 0.1
+  },
+  {
+    "op": "upsert_terrain_shape",
+    "id": "gravel_spur",
+    "type": "ridge",
+    "points": [
+      [
+        400,
+        0
+      ],
+      [
+        650,
+        450
+      ],
+      [
+        750,
+        1000
+      ],
+      [
+        1050,
+        1450
+      ]
+    ],
+    "deltaElev": 9,
+    "widthLeft": 360,
+    "widthRight": 460
+  },
+  {
+    "op": "upsert_river",
+    "id": "r2147",
+    "name": "R2147 · 东北下游通长湖",
+    "points": [
+      [
+        3210,
+        4250
+      ],
+      [
+        3220,
+        3700
+      ],
+      [
+        3270,
+        3200
+      ],
+      [
+        3330,
+        2700
+      ],
+      [
+        3420,
+        2200
+      ],
+      [
+        3500,
+        1750
+      ],
+      [
+        3650,
+        1200
+      ],
+      [
+        3800,
+        650
+      ],
+      [
+        3920,
+        -50
+      ]
+    ],
+    "widthStartM": 120,
+    "widthEndM": 230,
+    "carveDepthM": 3.5,
+    "rippleLines": 2
+  },
+  {
+    "op": "upsert_canal",
+    "id": "qanat_west",
+    "name": "西坡七井暗渠",
+    "style": "qanat",
+    "widthM": 2,
+    "points": [
+      [
+        1215,
+        1985
+      ],
+      [
+        1320,
+        2000
+      ],
+      [
+        1440,
+        2030
+      ],
+      [
+        1555,
+        2070
+      ]
+    ]
+  },
+  {
+    "op": "upsert_canal",
+    "id": "spring_reach",
+    "name": "井祠泉口",
+    "style": "stone_clean",
+    "widthM": 3.2,
+    "points": [
+      [
+        1555,
+        2070
+      ],
+      [
+        1600,
+        2070
+      ],
+      [
+        1670,
+        2090
+      ]
+    ]
+  },
+  {
+    "op": "upsert_canal",
+    "id": "domestic_header",
+    "name": "街坊净水支渠",
+    "style": "stone_clean",
+    "widthM": 3,
+    "points": [
+      [
+        1670,
+        2090
+      ],
+      [
+        1950,
+        2110
+      ],
+      [
+        2210,
+        2150
+      ],
+      [
+        2420,
+        2180
+      ],
+      [
+        2670,
+        2210
+      ],
+      [
+        2930,
+        2230
+      ],
+      [
+        3210,
+        2270
+      ]
+    ]
+  },
+  {
+    "op": "upsert_canal",
+    "id": "fish_water_header",
+    "name": "南支 · 鱼场轮水渠",
+    "style": "stone_clean",
+    "widthM": 2.8,
+    "points": [
+      [
+        2420,
+        2180
+      ],
+      [
+        2520,
+        2310
+      ],
+      [
+        2700,
+        2380
+      ],
+      [
+        2940,
+        2390
+      ],
+      [
+        3110,
+        2420
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "caravan_way",
+    "name": "内陆驮道—换装街",
+    "tier": "highway",
+    "widthM": 11,
+    "from": [
+      0,
+      2690
+    ],
+    "to": [
+      3320,
+      2000
+    ],
+    "via": [
+      [
+        700,
+        2630
+      ],
+      [
+        1150,
+        2590
+      ],
+      [
+        1500,
+        2500
+      ],
+      [
+        1900,
+        2350
+      ],
+      [
+        2280,
+        2200
+      ],
+      [
+        2630,
+        2070
+      ],
+      [
+        2980,
+        2050
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "east_street",
+    "name": "东街—南北商路",
+    "tier": "highway",
+    "widthM": 9,
+    "from": [
+      2620,
+      0
+    ],
+    "to": [
+      2700,
+      4200
+    ],
+    "via": [
+      [
+        2740,
+        800
+      ],
+      [
+        2810,
+        1200
+      ],
+      [
+        2830,
+        1590
+      ],
+      [
+        2910,
+        1840
+      ],
+      [
+        2980,
+        2050
+      ],
+      [
+        3020,
+        2250
+      ],
+      [
+        3100,
+        2600
+      ],
+      [
+        3100,
+        3000
+      ],
+      [
+        2910,
+        3450
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "west_old_street",
+    "name": "西坡旧街",
+    "tier": "street",
+    "widthM": 6,
+    "from": [
+      1150,
+      2590
+    ],
+    "to": [
+      1220,
+      2080
+    ],
+    "via": [
+      [
+        1250,
+        2310
+      ],
+      [
+        1280,
+        2150
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "south_cross",
+    "name": "南坊横街",
+    "tier": "street",
+    "widthM": 6.5,
+    "from": [
+      1500,
+      2500
+    ],
+    "to": [
+      3100,
+      2880
+    ],
+    "via": [
+      [
+        1900,
+        2670
+      ],
+      [
+        2250,
+        2770
+      ],
+      [
+        2640,
+        2860
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "north_cross",
+    "name": "北坊横街",
+    "tier": "street",
+    "widthM": 7,
+    "from": [
+      1700,
+      2150
+    ],
+    "to": [
+      2830,
+      1590
+    ],
+    "via": [
+      [
+        1900,
+        1920
+      ],
+      [
+        2290,
+        1720
+      ],
+      [
+        2600,
+        1640
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "central_spine",
+    "name": "中坊街",
+    "tier": "street",
+    "widthM": 6.5,
+    "from": [
+      2100,
+      1530
+    ],
+    "to": [
+      2460,
+      3250
+    ],
+    "via": [
+      [
+        2180,
+        1940
+      ],
+      [
+        2280,
+        2200
+      ],
+      [
+        2400,
+        2510
+      ],
+      [
+        2390,
+        2980
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "old_south_lane",
+    "name": "旧坊南巷",
+    "tier": "lane",
+    "widthM": 4,
+    "from": [
+      1500,
+      2500
+    ],
+    "to": [
+      1550,
+      3020
+    ],
+    "via": [
+      [
+        1530,
+        2740
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "north_wharf_approach",
+    "name": "客商码头街",
+    "tier": "street",
+    "widthM": 7,
+    "from": [
+      2830,
+      1590
+    ],
+    "to": [
+      3440,
+      1600
+    ],
+    "via": [
+      [
+        3070,
+        1690
+      ],
+      [
+        3270,
+        1690
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_wharf_approach",
+    "name": "鱼货岸坪路",
+    "tier": "street",
+    "widthM": 6,
+    "from": [
+      3100,
+      2600
+    ],
+    "to": [
+      3260,
+      2540
+    ],
+    "via": [
+      [
+        3190,
+        2580
+      ]
+    ]
+  },
+  {
+    "op": "set_palette",
+    "themeId": "arid_oasis",
+    "overrides": {
+      "roofTown": "#cbb18b",
+      "roofInner": "#d4bc95",
+      "treeFill": "#92926b",
+      "treeOutline": "#595b43",
+      "waterFill": "#7d9eaa",
+      "paperBg": "#ede2cc"
+    }
+  },
+  {
+    "op": "set_legend",
+    "visible": true,
+    "title": "复市镇 · 舟驮换装商镇",
+    "displayMode": "standard",
+    "position": "bottom-right",
+    "furnitureOpacity": 0.9,
+    "labelOpacity": 0.94
+  }
+]

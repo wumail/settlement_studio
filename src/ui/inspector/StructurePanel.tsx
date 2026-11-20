@@ -10,6 +10,7 @@ const STRUCTURE_LABELS: ReadonlyArray<{ value: StructureKind; label: string }> =
   { value: 'l_hall', label: 'L 形厅 l_hall' },
   { value: 'u_court', label: 'U 形合院 u_court' },
   { value: 'round_altar', label: '圆坛 round_altar' },
+  { value: 'courtyard', label: '合院建筑群 courtyard' },
 ];
 
 const ROOF_LABELS: ReadonlyArray<{ value: StructureRoofKind; label: string }> = [

@@ -1,0 +1,163 @@
+[
+  {
+    "op": "place_zone",
+    "id": "creek_garden",
+    "name": "南户屋旁菜园",
+    "contentType": "farmland",
+    "relative": {
+      "anchor": [
+        1925,
+        3480
+      ],
+      "shape": "rect",
+      "areaHa": 0.1,
+      "aspectRatio": 1.4,
+      "rotationDeg": -8
+    },
+    "seed": 7104,
+    "density": 0.5,
+    "maxSlopeDeg": 12,
+    "frayOuter": true
+  },
+  {
+    "op": "place_zone",
+    "id": "creek_garden_n",
+    "name": "北户屋旁菜园",
+    "contentType": "farmland",
+    "relative": {
+      "anchor": [
+        1940,
+        3400
+      ],
+      "shape": "rect",
+      "areaHa": 0.085,
+      "aspectRatio": 1.15,
+      "rotationDeg": -12
+    },
+    "seed": 7105,
+    "density": 0.5,
+    "maxSlopeDeg": 12,
+    "frayOuter": true
+  },
+  {
+    "op": "place_zone",
+    "id": "south_edge_garden",
+    "name": "镇边屋旁菜园",
+    "contentType": "farmland",
+    "relative": {
+      "anchor": [
+        2815,
+        3235
+      ],
+      "shape": "rect",
+      "areaHa": 0.08,
+      "aspectRatio": 1.3,
+      "rotationDeg": -6
+    },
+    "seed": 7121,
+    "density": 0.5,
+    "maxSlopeDeg": 12,
+    "frayOuter": true
+  },
+  {
+    "op": "connect_road",
+    "id": "creek_garden_path",
+    "name": "南户菜园小径",
+    "tier": "lane",
+    "widthM": 2,
+    "from": [
+      1966,
+      3495
+    ],
+    "via": [],
+    "to": [
+      1940,
+      3495
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "south_garden_path",
+    "name": "镇边菜园小径",
+    "tier": "lane",
+    "widthM": 2,
+    "from": [
+      2775,
+      3245
+    ],
+    "via": [],
+    "to": [
+      2798,
+      3238
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "west_upper_field_access",
+    "name": "西台出田径",
+    "tier": "lane",
+    "widthM": 2.4,
+    "from": [
+      1450,
+      2910
+    ],
+    "via": [],
+    "to": [
+      1490,
+      2825
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "west_lower_field_access",
+    "name": "坡脚入田径",
+    "tier": "lane",
+    "widthM": 2.4,
+    "from": [
+      1380,
+      3200
+    ],
+    "via": [],
+    "to": [
+      1425,
+      3120
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "east_dry_field_access",
+    "name": "东坡入田径",
+    "tier": "lane",
+    "widthM": 2.4,
+    "from": [
+      3680,
+      3360
+    ],
+    "via": [
+      [
+        3635,
+        3420
+      ]
+    ],
+    "to": [
+      3633,
+      3510
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "east_irrigated_field_access",
+    "name": "东田入田径",
+    "tier": "lane",
+    "widthM": 2.4,
+    "from": [
+      3600,
+      3480
+    ],
+    "via": [],
+    "to": [
+      3570,
+      3500
+    ]
+  }
+]

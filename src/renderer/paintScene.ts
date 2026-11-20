@@ -9,7 +9,16 @@ import { paintAuthored } from './paintAuthored';
 import { hasCustomOrder } from './drawOrder';
 import { paintBuildings, paintWalls } from './paintBuildings';
 import { paintBridges, paintCanals, paintReefsFords, paintWater } from './paintHydro';
-import { paintAprons, paintExclusion, paintFarmland, paintLanes, paintRoads, paintSaltpan, paintTrees } from './paintLand';
+import {
+  paintAprons,
+  paintExclusion,
+  paintFarmland,
+  paintLanes,
+  paintRoads,
+  paintSaltpan,
+  paintTrees,
+  paintWoodlandUnderstory,
+} from './paintLand';
 import { paintHydraulicWorks, paintStructureLabels, paintStructures } from './paintStructures';
 import { paintAnnotations, paintGuidedDirectory } from './paintAnnotations';
 import { makeContext, type PaintContext, type PaintSceneData } from './paintContext';
@@ -95,7 +104,16 @@ export function paintScene(
   const pal: ResolvedPalette = getActivePalette(project.palette);
   const frame = worldRectToScreen(vp);
   const data = scene as PaintSceneData | null;
-  const ctx = makeContext(backend, project, data, vp, pal, options.selection ?? null, options.hoverContourId ?? null);
+  const ctx = makeContext(
+    backend,
+    project,
+    data,
+    vp,
+    pal,
+    options.selection ?? null,
+    options.hoverContourId ?? null,
+    Boolean(options.isExport),
+  );
   const mode: LegendDisplayMode = options.displayMode ?? project.legend.displayMode;
   const pure = mode === 'pure';
   const withLabels = !pure;
@@ -211,6 +229,7 @@ export function paintScene(
     clip('authored', () => paintAuthored(ctx, withLabels));
   } else {
     clip('land-plots', () => {
+      paintWoodlandUnderstory(ctx);
       paintExclusion(ctx);
       paintFarmland(ctx);
       paintSaltpan(ctx);

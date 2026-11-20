@@ -1,5 +1,6 @@
 import { useStudioStore } from '../../store/useStudioStore';
 import { ZONE_CONTENT_TYPES, type ZoneContentType } from '../../schema/project.schema';
+import { ZoneExclusionStyles, type ZoneExclusionStyle } from '../../schema/entity.schema';
 
 import { FORM_BUTTON_CLASS as BTN, NumberField, PanelSection, RangeField, SelectField, TextField, ToggleField } from './FormControls';
 import { LayerOrderField } from './LayerOrderField';
@@ -16,6 +17,14 @@ const CONTENT_LABELS: Readonly<Record<ZoneContentType, string>> = {
   saltpan: '晒盐卤畦',
   woodland: '成片疏林',
   exclusion: '禁建保护区',
+};
+
+const EXCLUSION_LABELS: Readonly<Record<ZoneExclusionStyle, string>> = {
+  plague_stones: '黑石界碑',
+  meadow: '草甸',
+  marsh: '排碱湿地',
+  plain: '素地留白',
+  enclosure: '围栏场坪',
 };
 
 /** 选区属性卡：名称/类型/种子/密度/坡度/街宽/墙厚/敌台间距/锁定与重抽 */
@@ -50,6 +59,14 @@ export function ZonePanel() {
               onChange={(value) => patch((target) => { target.contentType = value; })}
             />
             <NumberField label="种子" value={zone.seed} onChange={(value) => patch((target) => { target.seed = Math.round(value); })} />
+            {zone.contentType === 'exclusion' ? (
+              <SelectField
+                label="场地样式"
+                value={zone.exclusionStyle}
+                options={ZoneExclusionStyles.map((value) => ({ value, label: EXCLUSION_LABELS[value] }))}
+                onChange={(value) => patch((target) => { target.exclusionStyle = value; })}
+              />
+            ) : null}
             <RangeField label="密度" value={zone.density} min={0.2} max={1} step={0.01} digits={2} onChange={(value) => patch((target) => { target.density = value; }, false)} />
             <RangeField label="建筑尺度" value={zone.buildingScale ?? 1} min={0.45} max={1.6} step={0.05} digits={2} suffix="×" onChange={(value) => patch((target) => { target.buildingScale = value; }, false)} />
             <RangeField label="最大坡度" value={zone.maxSlopeDeg} min={4} max={60} step={0.5} suffix="°" onChange={(value) => patch((target) => { target.maxSlopeDeg = value; }, false)} />

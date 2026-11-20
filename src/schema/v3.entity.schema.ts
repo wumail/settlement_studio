@@ -12,7 +12,7 @@ export const HYDRAULIC_KINDS = [
 ] as const;
 export type HydraulicKind = (typeof HYDRAULIC_KINDS)[number];
 
-export const STRUCTURE_KINDS = ['rect', 'l_hall', 'u_court', 'round_altar'] as const;
+export const STRUCTURE_KINDS = ['rect', 'l_hall', 'u_court', 'round_altar', 'courtyard'] as const;
 export type StructureKind = (typeof STRUCTURE_KINDS)[number];
 
 export const STRUCTURE_ROOF_KINDS = ['inner', 'town', 'citadel'] as const;

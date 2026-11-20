@@ -1,0 +1,684 @@
+[
+  {
+    "op": "upsert_structure",
+    "id": "clinic",
+    "name": "卫生所",
+    "x": 2605,
+    "y": 2820,
+    "widthM": 26,
+    "depthM": 18,
+    "kind": "l_hall",
+    "roofKind": "town",
+    "angleDeg": 18
+  },
+  {
+    "op": "connect_road",
+    "id": "clinic_access",
+    "name": "卫生所门前巷",
+    "tier": "lane",
+    "widthM": 3,
+    "from": [
+      2600,
+      2770
+    ],
+    "to": [
+      2603,
+      2804
+    ],
+    "via": []
+  },
+  {
+    "op": "upsert_structure",
+    "id": "constabulary",
+    "name": "治安所",
+    "x": 2700,
+    "y": 2670,
+    "widthM": 30,
+    "depthM": 24,
+    "kind": "u_court",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "connect_road",
+    "id": "constabulary_access",
+    "name": "治安所门前路",
+    "tier": "lane",
+    "widthM": 3.5,
+    "from": [
+      2700,
+      2710
+    ],
+    "to": [
+      2700,
+      2688
+    ],
+    "via": []
+  },
+  {
+    "op": "upsert_structure",
+    "id": "grain_store",
+    "name": "公用粮货仓",
+    "x": 3030,
+    "y": 2910,
+    "widthM": 34,
+    "depthM": 20,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": -8
+  },
+  {
+    "op": "connect_road",
+    "id": "grain_access",
+    "name": "仓前支巷",
+    "tier": "lane",
+    "widthM": 3.5,
+    "from": [
+      3040,
+      2962
+    ],
+    "to": [
+      3035,
+      2930
+    ],
+    "via": []
+  },
+  {
+    "op": "upsert_structure",
+    "id": "pack_inn",
+    "name": "驮队客舍",
+    "x": 3120,
+    "y": 2970,
+    "widthM": 34,
+    "depthM": 28,
+    "kind": "u_court",
+    "roofKind": "town",
+    "angleDeg": 14
+  },
+  {
+    "op": "connect_road",
+    "id": "inn_access",
+    "name": "客舍门前路",
+    "tier": "lane",
+    "widthM": 3.5,
+    "from": [
+      3100,
+      3000
+    ],
+    "to": [
+      3110,
+      2989
+    ],
+    "via": []
+  },
+  {
+    "op": "upsert_structure",
+    "id": "goods_shed",
+    "name": "山货处理棚",
+    "x": 2740,
+    "y": 2998,
+    "widthM": 22,
+    "depthM": 12,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 2
+  },
+  {
+    "op": "upsert_structure",
+    "id": "camp_shed",
+    "name": "猎物处理棚",
+    "x": 1080,
+    "y": 773,
+    "widthM": 14,
+    "depthM": 9,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": -8
+  },
+  {
+    "op": "upsert_structure",
+    "id": "dog_shed",
+    "name": "犬棚",
+    "x": 1150,
+    "y": 730,
+    "widthM": 9,
+    "depthM": 8,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 4
+  },
+  {
+    "op": "place_zone",
+    "id": "well_square",
+    "name": "井坪",
+    "contentType": "exclusion",
+    "seed": 20261120,
+    "density": 0.65,
+    "maxSlopeDeg": 12,
+    "streetWidthM": 4.5,
+    "frayOuter": true,
+    "buildingScale": 1,
+    "relative": {
+      "anchor": [
+        2780,
+        2778
+      ],
+      "shape": "rect",
+      "areaHa": 0.09,
+      "aspectRatio": 1.1
+    },
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "connect_road",
+    "id": "well_access",
+    "name": "井坪取水巷",
+    "tier": "lane",
+    "widthM": 3,
+    "from": [
+      2780,
+      2725
+    ],
+    "to": [
+      2780,
+      2760
+    ],
+    "via": []
+  },
+  {
+    "op": "place_zone",
+    "id": "market",
+    "name": "山货集坪",
+    "contentType": "market",
+    "seed": 20261121,
+    "density": 0.46,
+    "maxSlopeDeg": 12,
+    "streetWidthM": 4,
+    "frayOuter": true,
+    "buildingScale": 1,
+    "points": [
+      [
+        2780,
+        2870
+      ],
+      [
+        2870,
+        2840
+      ],
+      [
+        2920,
+        2870
+      ],
+      [
+        2895,
+        2935
+      ],
+      [
+        2795,
+        2935
+      ]
+    ],
+    "marketMode": "stalls"
+  },
+  {
+    "op": "place_zone",
+    "id": "pack_yard",
+    "name": "卸货拴马场",
+    "contentType": "exclusion",
+    "seed": 20261122,
+    "density": 0.65,
+    "maxSlopeDeg": 12,
+    "streetWidthM": 4.5,
+    "frayOuter": true,
+    "buildingScale": 1,
+    "points": [
+      [
+        3040,
+        2990
+      ],
+      [
+        3095,
+        2985
+      ],
+      [
+        3125,
+        3030
+      ],
+      [
+        3100,
+        3050
+      ],
+      [
+        3045,
+        3040
+      ]
+    ],
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "connect_road",
+    "id": "yard_access",
+    "name": "卸货场支路",
+    "tier": "lane",
+    "widthM": 3.5,
+    "from": [
+      3030,
+      2960
+    ],
+    "to": [
+      3060,
+      3005
+    ],
+    "via": []
+  },
+  {
+    "op": "place_zone",
+    "id": "old_west",
+    "name": "西街老坊",
+    "contentType": "town_blocks",
+    "seed": 20261129,
+    "density": 0.82,
+    "maxSlopeDeg": 12,
+    "streetWidthM": 4.5,
+    "frayOuter": true,
+    "buildingScale": 0.96,
+    "points": [
+      [
+        2510,
+        2760
+      ],
+      [
+        2620,
+        2690
+      ],
+      [
+        2730,
+        2700
+      ],
+      [
+        2775,
+        2815
+      ],
+      [
+        2740,
+        2900
+      ],
+      [
+        2610,
+        2935
+      ],
+      [
+        2520,
+        2870
+      ]
+    ]
+  },
+  {
+    "op": "place_zone",
+    "id": "old_north",
+    "name": "井坪北坊",
+    "contentType": "town_blocks",
+    "seed": 20261130,
+    "density": 0.78,
+    "maxSlopeDeg": 12,
+    "streetWidthM": 4.5,
+    "frayOuter": true,
+    "buildingScale": 0.96,
+    "points": [
+      [
+        2790,
+        2620
+      ],
+      [
+        2940,
+        2630
+      ],
+      [
+        3060,
+        2710
+      ],
+      [
+        3080,
+        2845
+      ],
+      [
+        2965,
+        2900
+      ],
+      [
+        2910,
+        2795
+      ],
+      [
+        2805,
+        2780
+      ]
+    ]
+  },
+  {
+    "op": "place_zone",
+    "id": "south_west",
+    "name": "南街住坊",
+    "contentType": "town_blocks",
+    "seed": 20261131,
+    "density": 0.7,
+    "maxSlopeDeg": 12,
+    "streetWidthM": 4.5,
+    "frayOuter": true,
+    "buildingScale": 1,
+    "points": [
+      [
+        2560,
+        2990
+      ],
+      [
+        2720,
+        2970
+      ],
+      [
+        2860,
+        3005
+      ],
+      [
+        2930,
+        3160
+      ],
+      [
+        2860,
+        3240
+      ],
+      [
+        2700,
+        3210
+      ],
+      [
+        2590,
+        3110
+      ]
+    ]
+  },
+  {
+    "op": "place_zone",
+    "id": "south_east",
+    "name": "粮货街坊",
+    "contentType": "town_blocks",
+    "seed": 20261132,
+    "density": 0.63,
+    "maxSlopeDeg": 12,
+    "streetWidthM": 4.5,
+    "frayOuter": true,
+    "buildingScale": 1,
+    "points": [
+      [
+        2945,
+        2985
+      ],
+      [
+        3100,
+        2960
+      ],
+      [
+        3215,
+        3015
+      ],
+      [
+        3275,
+        3170
+      ],
+      [
+        3190,
+        3260
+      ],
+      [
+        3030,
+        3230
+      ],
+      [
+        2955,
+        3140
+      ]
+    ]
+  },
+  {
+    "op": "place_zone",
+    "id": "north_road_houses",
+    "name": "山路客坊",
+    "contentType": "town_blocks",
+    "seed": 20261133,
+    "density": 0.48,
+    "maxSlopeDeg": 12,
+    "streetWidthM": 4.5,
+    "frayOuter": true,
+    "buildingScale": 0.96,
+    "points": [
+      [
+        2430,
+        2660
+      ],
+      [
+        2515,
+        2650
+      ],
+      [
+        2595,
+        2730
+      ],
+      [
+        2550,
+        2800
+      ],
+      [
+        2470,
+        2755
+      ]
+    ]
+  },
+  {
+    "op": "place_zone",
+    "id": "east_growth",
+    "name": "东路新坊",
+    "contentType": "town_blocks",
+    "seed": 20261134,
+    "density": 0.43,
+    "maxSlopeDeg": 12,
+    "streetWidthM": 4.5,
+    "frayOuter": true,
+    "buildingScale": 1.03,
+    "points": [
+      [
+        3240,
+        3020
+      ],
+      [
+        3390,
+        3040
+      ],
+      [
+        3480,
+        3135
+      ],
+      [
+        3380,
+        3220
+      ],
+      [
+        3270,
+        3160
+      ]
+    ]
+  },
+  {
+    "op": "place_zone",
+    "id": "camp_clear",
+    "name": "营地空地",
+    "contentType": "exclusion",
+    "seed": 20261139,
+    "density": 0.65,
+    "maxSlopeDeg": 12,
+    "streetWidthM": 4.5,
+    "frayOuter": true,
+    "buildingScale": 1,
+    "relative": {
+      "anchor": [
+        1118,
+        745
+      ],
+      "shape": "organic",
+      "areaHa": 0.055,
+      "aspectRatio": 1.1
+    },
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "place_zone",
+    "id": "camp",
+    "name": "猎人营地",
+    "contentType": "village",
+    "seed": 20261140,
+    "density": 0.5,
+    "maxSlopeDeg": 12,
+    "streetWidthM": 3,
+    "frayOuter": true,
+    "buildingScale": 0.72,
+    "relative": {
+      "anchor": [
+        1120,
+        747
+      ],
+      "shape": "organic",
+      "areaHa": 0.43,
+      "aspectRatio": 1.12,
+      "rotationDeg": -18
+    }
+  },
+  {
+    "op": "upsert_canal",
+    "id": "farm_feeder",
+    "name": "东南引水沟",
+    "style": "irrigation",
+    "widthM": 2.2,
+    "points": [
+      [
+        2448,
+        3180
+      ],
+      [
+        2680,
+        3280
+      ],
+      [
+        2990,
+        3330
+      ],
+      [
+        3290,
+        3420
+      ],
+      [
+        3540,
+        3560
+      ]
+    ]
+  },
+  {
+    "op": "snap_weir",
+    "id": "small_weir",
+    "name": "低矮分水堰",
+    "riverId": "creek",
+    "t": 0.793,
+    "sluices": 1,
+    "widthM": 3,
+    "overhangM": 2
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_camp",
+    "label": "上游猎人营地",
+    "anchor": [
+      1000,
+      660
+    ],
+    "glyphType": "market_tent",
+    "subtitle": "十五六人出猎驻营，附近有取水径与猎物处理空地",
+    "sizePx": 13,
+    "showLabel": true
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_horse",
+    "label": "惊马止步处",
+    "anchor": [
+      1440,
+      1680
+    ],
+    "glyphType": "stele",
+    "subtitle": "由此向营地约一公里山路；具体里制为本次制图折算",
+    "sizePx": 13,
+    "showLabel": true
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_ambush",
+    "label": "路旁遇袭斜坡",
+    "anchor": [
+      1610,
+      1950
+    ],
+    "glyphType": "stele",
+    "subtitle": "位于通镇山路途中，沿谷坡继续下行",
+    "sizePx": 13,
+    "showLabel": true
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_clinic",
+    "label": "卫生所",
+    "anchor": [
+      2540,
+      2790
+    ],
+    "glyphType": "well_shrine",
+    "subtitle": "设在山路入镇一侧，面向来往行旅",
+    "sizePx": 13,
+    "showLabel": true
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_civic",
+    "label": "治安所与井坪",
+    "anchor": [
+      2705,
+      2610
+    ],
+    "glyphType": "gate_arch",
+    "subtitle": "公共院落接井坪街，巡查谷路与入镇山路",
+    "sizePx": 13,
+    "showLabel": true
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_market",
+    "label": "谷口山货集坪",
+    "anchor": [
+      2860,
+      2810
+    ],
+    "glyphType": "market_tent",
+    "subtitle": "山货在山路与谷路相接的交易点卸售",
+    "sizePx": 13,
+    "showLabel": true
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_inn",
+    "label": "客舍与粮货仓",
+    "anchor": [
+      3165,
+      2915
+    ],
+    "glyphType": "market_tent",
+    "subtitle": "驮队沿谷路进入，仓院与卸货场相邻",
+    "sizePx": 13,
+    "showLabel": true
+  }
+]

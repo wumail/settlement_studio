@@ -1,7 +1,7 @@
 import { computePolygonCentroid } from '../math/polygon';
 import { insetPolygonSafe } from '../math/voronoi';
 import { type ZoneGeneratorInput, guardSafeTree } from '../obstacles/guardSafe';
-import { generateObbStreetBlocks } from './townBlocks';
+import { generateObbStreetBlocks, treeClearsBuildings } from './townBlocks';
 import { collectInnerHoles } from './zoneHoles';
 
 export { collectInnerHoles };
@@ -17,14 +17,10 @@ export function compileWalledCityZone(input: ZoneGeneratorInput): void {
   const c = computePolygonCentroid(inner);
   for (let i = 0; i < 6; i += 1) {
     const angle = (i / 6) * Math.PI * 2;
-    const tree = guardSafeTree(
-      c[0] + Math.cos(angle) * 20,
-      c[1] + Math.sin(angle) * 20,
-      5.5,
-      'plaza',
-      zone,
-      input.obstacleCtx,
-    );
+    const tx = c[0] + Math.cos(angle) * 20;
+    const ty = c[1] + Math.sin(angle) * 20;
+    if (!treeClearsBuildings(tx, ty, 5.5 + 0.6, input.obstacleCtx, zone.id)) continue;
+    const tree = guardSafeTree(tx, ty, 5.5, 'plaza', zone, input.obstacleCtx);
     if (tree) input.targetResult.trees.push(tree);
   }
 }

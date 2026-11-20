@@ -1,0 +1,21 @@
+[
+  {
+    "op": "place_zone",
+    "id": "south_edge_garden",
+    "name": "镇边屋旁菜园",
+    "contentType": "farmland",
+    "relative": {
+      "anchor": [
+        2860,
+        3268
+      ],
+      "shape": "rect",
+      "areaHa": 0.18,
+      "aspectRatio": 2,
+      "rotationDeg": 0
+    },
+    "seed": 7121,
+    "maxSlopeDeg": 12,
+    "frayOuter": false
+  }
+]

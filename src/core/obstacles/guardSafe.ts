@@ -1,4 +1,5 @@
 import type {
+  BBox,
   FarmlandPlot,
   MarketApron,
   Polygon,
@@ -123,9 +124,19 @@ function ridgeOf(poly: Polygon, centroid: Vec2): readonly [Vec2, Vec2] | null {
   ];
 }
 
+const boxCache = new WeakMap<Polyline, BBox>();
+function boxOf(pts: Polyline): BBox {
+  let b = boxCache.get(pts);
+  if (!b) { b = computePolygonBBox(pts); boxCache.set(pts, b); }
+  return b;
+}
+function disjoint(a: BBox, b: BBox, pad: number): boolean {
+  return a[2] + pad < b[0] || b[2] + pad < a[0] || a[3] + pad < b[1] || b[3] + pad < a[1];
+}
+
 /**
  * 底层通用解析复核：图幅内缩 6m、全测试点坡度、SDF 阻塞预筛、
- * 河湖 8m、禁建圈 2m 零侵入、水渠 0.5w+4m、干道 0.5w+2.5m、城垣 0.5t+3m、邻屋 0.8m 全边段精确复检。
+ * 河湖 8m、禁建圈 2m 零侵入、水渠 0.5w+4m、干道 0.5w+2.5m、城垣 0.5t+3m、邻屋 0.3m/0.8m 全边段精确复检。
  */
 export function isPolygonSafeAnalytic(
   poly: Polygon,
@@ -147,37 +158,39 @@ export function isPolygonSafeAnalytic(
     if (sampleSlopeDeg(ctx.elevationField, p[0], p[1]) > slopeLimitDeg) return false;
   }
   if (sampleSlopeDeg(ctx.elevationField, centroid[0], centroid[1]) > slopeLimitDeg) return false;
-  const near = ctx.spatialHash.queryPolygonBBox(poly, 4.0);
-  for (const other of near) {
-    // 只与同选区邻屋互斥：屋宇四角必在本选区内，选区互不重叠即天然跨区零穿模；
-    // 由此全量编译与单区重抽的布屋序列与障碍上下文彻底解耦，逐字复现。
+  const pBox = computePolygonBBox(poly);
+  const qPad = (sameZoneId !== undefined ? 0.35 : 0.85) + extraMarginM;
+  for (const other of ctx.spatialHash.queryBox(pBox[0] - qPad, pBox[1] - qPad, pBox[2] + qPad, pBox[3] + qPad)) {
     if (sameZoneId !== undefined && other.zoneId !== sameZoneId) continue;
-    if (!clearsPolygon(poly, centroid, radius, other.points, 0.8 + extraMarginM)) return false;
+    const minClear = sameZoneId !== undefined && other.zoneId === sameZoneId ? 0.30 : 0.8;
+    if (!clearsPolygon(poly, centroid, radius, other.points, minClear + extraMarginM)) return false;
   }
   if (ctx.grid && clearance > radius + 2.0 * ctx.grid.stepM + 10.0) return true;
+  const rPad = 8.0 + extraMarginM;
   for (const river of ctx.riversBuilt) {
-    if (!clearsPolygon(poly, centroid, radius, river.bankPolygon, 8.0 + extraMarginM)) return false;
+    if (!disjoint(pBox, boxOf(river.bankPolygon), rPad) && !clearsPolygon(poly, centroid, radius, river.bankPolygon, rPad)) return false;
   }
   for (const wb of ctx.waterBodiesBuilt) {
-    if (!clearsPolygon(poly, centroid, radius, wb.shorePoly, 8.0 + extraMarginM)) return false;
+    if (!disjoint(pBox, boxOf(wb.shorePoly), rPad) && !clearsPolygon(poly, centroid, radius, wb.shorePoly, rPad)) return false;
   }
+  const exPad = 2.0 + extraMarginM;
   for (const ex of ctx.exclusionPolys) {
-    if (!clearsPolygon(poly, centroid, radius, ex, 2.0 + extraMarginM)) return false;
+    if (!disjoint(pBox, boxOf(ex), exPad) && !clearsPolygon(poly, centroid, radius, ex, exPad)) return false;
   }
   for (const canal of ctx.canalsBuilt) {
-    const margin = 0.5 * canal.widthM + 4.0 + extraMarginM;
-    if (!clearsPolyline(poly, centroid, radius, canal.centerline, margin)) return false;
+    const m = 0.5 * canal.widthM + 4.0 + extraMarginM;
+    if (!disjoint(pBox, boxOf(canal.centerline), m) && !clearsPolyline(poly, centroid, radius, canal.centerline, m)) return false;
   }
   for (const road of ctx.roadsBuilt) {
-    const margin = 0.5 * road.widthM + 2.5 + extraMarginM;
-    if (!clearsPolyline(poly, centroid, radius, road.centerline, margin)) return false;
+    const m = 0.5 * road.widthM + 2.5 + extraMarginM;
+    if (!disjoint(pBox, boxOf(road.centerline), m) && !clearsPolyline(poly, centroid, radius, road.centerline, m)) return false;
   }
   for (const wall of ctx.wallsBuilt) {
-    const margin = 0.5 * wall.thicknessM + 3.0 + extraMarginM;
-    if (!clearsPolyline(poly, centroid, radius, wall.polyline, margin)) return false;
+    const m = 0.5 * wall.thicknessM + 3.0 + extraMarginM;
+    if (!disjoint(pBox, boxOf(wall.polyline), m) && !clearsPolyline(poly, centroid, radius, wall.polyline, m)) return false;
   }
   for (const rigid of ctx.rigidPolys) {
-    if (!clearsPolygon(poly, centroid, radius, rigid, 2.0 + extraMarginM)) return false;
+    if (!disjoint(pBox, boxOf(rigid), exPad) && !clearsPolygon(poly, centroid, radius, rigid, exPad)) return false;
   }
   return true;
 }
@@ -294,14 +307,7 @@ export function guardSafeTree(
       if (pointToPolylineDist(x, y, wall.polyline) < 0.5 * wall.thicknessM + 1.0 + r) return null;
     }
   }
-  const box: Polygon = [
-    [x - r, y - r],
-    [x + r, y - r],
-    [x + r, y + r],
-    [x - r, y + r],
-  ];
-  for (const b of ctx.spatialHash.queryPolygonBBox(box, 0)) {
-    // 邻屋同样限定同选区：选区互不重叠时，本区内树木不可能落入别区屋面
+  for (const b of ctx.spatialHash.queryBox(x - r, y - r, x + r, y + r)) {
     if (b.zoneId !== zone.id) continue;
     if (pointInPolygon(x, y, b.points)) return null;
   }

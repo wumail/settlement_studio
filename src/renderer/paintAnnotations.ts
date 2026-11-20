@@ -3,10 +3,21 @@ import { computePolygonCentroid } from '../core/math/polygon';
 import { estimateTextWidth } from './furnitureLayout';
 import { ellipsize } from './paintFurniture';
 import { paintLegendGlyph } from './paintLegendGlyph';
-import { SERIF_FONT, type PaintContext } from './paintContext';
+import { mixHex, SERIF_FONT, type PaintContext } from './paintContext';
 
 type Box = readonly [number, number, number, number];
 type Rect = { readonly x: number; readonly y: number; readonly w: number; readonly h: number };
+
+/** 大街区暗标适用内容类型与最小面积（1.8 ha） */
+const MAJOR_ZONE_KINDS = new Set(['walled_city', 'citadel', 'town_blocks', 'market']);
+const MIN_WATERMARK_HA = 1.8;
+const CJK_ONLY = /^[\u4e00-\u9fa5]+$/;
+
+/** 古图刻本宽字距：<= 6 字纯中文名逐字插入窄空格，拉丁/长名保持原样 */
+function districtLabel(name: string): string {
+  if (name.length > 6 || !CJK_ONLY.test(name)) return name;
+  return [...name].join('\u2009');
+}
 
 function overlaps(a: Box, b: Box, gap = 4): boolean {
   return !(a[2] + gap < b[0] || b[2] + gap < a[0] || a[3] + gap < b[1] || b[3] + gap < a[1]);
@@ -19,6 +30,44 @@ function glyphItemFor(ctx: PaintContext, key: string, glyphType: string, label: 
     key, isCustom: true, glyphType, label, color: '', colorLocked: false,
     strokeColor: '', visible: true, autoPresent: true, order: 999,
   };
+}
+
+/**
+ * 大街区宽字距暗标：最先铺底，只与其它暗标互斥；地标与具体小注后绘，自然压在暗标之上。
+ * 字号 12–14.5px 随选区跨度平滑插值，纸色淡墨 + 3.0 光晕，与 10.5px 带徽记地标拉开层级。
+ */
+function paintDistrictWatermarks(
+  ctx: PaintContext,
+  clampX: (x: number, w: number) => number,
+  clampY: (y: number) => number,
+  placed: Box[],
+  opacity: number,
+): void {
+  const { backend, pal, scene } = ctx;
+  if (!scene) return;
+  for (const zone of scene.zones) {
+    if (zone.areaHa < MIN_WATERMARK_HA || !MAJOR_ZONE_KINDS.has(zone.contentType)) continue;
+    const c = ctx.pt(computePolygonCentroid(zone.points));
+    const span = ctx.px(Math.sqrt(zone.areaHa * 10000));
+    const size = Math.max(12, Math.min(14.5, 12 + span / 160));
+    const text = districtLabel(zone.name);
+    const w = Math.max(40, estimateTextWidth(text, size));
+    const x = clampX(c[0] - w * 0.5, w);
+    const y = clampY(c[1]);
+    const box: Box = [x - 2, y - size * 0.62, x + w + 2, y + size * 0.62];
+    if (placed.some((other) => overlaps(box, other))) continue;
+    placed.push(box);
+    backend.drawText(text, x + w * 0.5, y, {
+      fontFamily: SERIF_FONT,
+      fontSizePx: size,
+      fill: mixHex(pal.inkDark, pal.paperBg, 0.32),
+      align: 'center',
+      baseline: 'middle',
+      haloColor: pal.paperBg,
+      haloWidthPx: 3.0,
+      opacity: opacity * 0.76,
+    });
+  }
 }
 
 /**
@@ -50,6 +99,11 @@ export function paintAnnotations(ctx: PaintContext, mode: LegendDisplayMode, bou
     placed.push(box);
     return true;
   };
+
+  // 暗标先于地标：作为街区衬底，地标圆标与具体小注后绘叠在其上
+  if (!pure && !guided && vp.zoom >= 0.12) {
+    paintDistrictWatermarks(ctx, clampX, clampY, placed, opacity);
+  }
 
   for (const landmark of project.landmarks) {
     const c = ctx.pt([landmark.x, landmark.y]);
@@ -95,6 +149,9 @@ export function paintAnnotations(ctx: PaintContext, mode: LegendDisplayMode, bou
 
   if (pure || guided || vp.zoom < 0.12) return;
   for (const zone of scene.zones) {
+    const meta = project.zones.find((item) => item.id === zone.id);
+    // 无痕留白选区：导出态不自动落选区名（需标注请改用 enclosure / market 或地标）
+    if (ctx.isExport && meta?.contentType === 'exclusion' && meta.exclusionStyle === 'plain') continue;
     const c = ctx.pt(computePolygonCentroid(zone.points));
     // 地标图标附近不再压选区名：同名 60px 内、或任何地标 45px 内一律让位
     const crowded = landmarkMarks.some(([lx, ly, label]) => {
@@ -102,6 +159,8 @@ export function paintAnnotations(ctx: PaintContext, mode: LegendDisplayMode, bou
       return (label === zone.name && d < 60) || d < 45;
     });
     if (crowded) continue;
+    // 大街区已由前置暗标承载，此处只补小选区名，避免同区双标
+    if (zone.areaHa >= MIN_WATERMARK_HA && MAJOR_ZONE_KINDS.has(zone.contentType)) continue;
     const w = Math.max(30, estimateTextWidth(zone.name, 10.5));
     const x = clampX(c[0] - w * 0.5, w);
     // 主位在下方 18px，被地标/河名占了就翻到上方，仍占则弃字（宁缺不叠）

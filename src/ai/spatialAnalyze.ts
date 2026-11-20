@@ -227,6 +227,14 @@ export function collectWarnings(
       if (dist < 65) warnings.push(`地标「${a.label}」与「${b.label}」相距 ${dist.toFixed(0)}m，标注拥挤`);
     }
   }
+  for (const item of project.structures) {
+    // 合院与圆坛天然多屋顶；只有超大实心单体才提示改用合院（D2-03 最大 42×30 零误报）
+    if (item.kind === 'courtyard' || item.kind === 'round_altar') continue;
+    if (Math.min(item.widthM, item.depthM) <= 32) continue;
+    warnings.push(
+      `建筑群「${item.name}」(${item.id}) ${item.widthM.toFixed(0)}×${item.depthM.toFixed(0)}m 实心单体进深过大，建议改用 kind: 'courtyard' 合院建筑群或拆分为多栋翼楼`,
+    );
+  }
   const report = scene.collisionReport;
   if (!report.passed) {
     const parts = [

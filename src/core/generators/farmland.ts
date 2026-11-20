@@ -133,34 +133,83 @@ function buildFurrows(poly: Polygon, angleDeg: number, spacingM: number): Polyli
   return runs;
 }
 
-/** 沿共享田埂成簇树篱：中段锚点 + 4.5–7.8m 密排 2–5 棵，逐棵经 guardSafeTree 守卫 */
+/** 沿单段田埂或外缘田边种下 1 棵独树或 2–5 棵紧簇融合树篱（间距 ~ 0.75×(r1+r2)） */
+function plantBundTuft(
+  a: Vec2,
+  b: Vec2,
+  count: number,
+  input: ZoneGeneratorInput,
+  anchors: Vec2[],
+): void {
+  const { zone, rng, targetResult, obstacleCtx } = input;
+  const dx = b[0] - a[0];
+  const dy = b[1] - a[1];
+  const len = Math.hypot(dx, dy);
+  if (len < 20) return;
+  const t0 = count === 1 ? 0.2 + rng() * 0.6 : 0.24 + rng() * 0.42;
+  const ax = a[0] + dx * t0;
+  const ay = a[1] + dy * t0;
+  if (anchors.some((p) => Math.hypot(ax - p[0], ay - p[1]) < 18)) return;
+  anchors.push([ax, ay]);
+
+  const ux = dx / len;
+  const uy = dy / len;
+  let distAlong = t0 * len;
+  let prevR = 0;
+  for (let i = 0; i < count; i += 1) {
+    const r = 2.6 + rng() * 2.2;
+    if (i > 0) distAlong += (0.71 + rng() * 0.08) * (prevR + r);
+    const along = distAlong / len;
+    if (along < 0.06 || along > 0.94) break;
+    const lateral = (rng() - 0.5) * 3.4;
+    const tx = a[0] + dx * along - uy * lateral;
+    const ty = a[1] + dy * along + ux * lateral;
+    const tree = guardSafeTree(tx, ty, r, 'field', zone, obstacleCtx);
+    if (tree) {
+      targetResult.trees.push(tree);
+      prevR = tree.r;
+    } else {
+      prevR = r;
+    }
+  }
+}
+
+/** 沿共享田埂与参差外缘成簇树篱：短簇 2–5 棵紧簇绿篱 + 零星独木 */
 function plantHedgerows(
   bunds: ReadonlyArray<SharedBundSegment>,
   plots: ReadonlyArray<Polygon>,
   input: ZoneGeneratorInput,
 ): void {
-  const { zone, rng, targetResult, obstacleCtx } = input;
+  const { zone, rng } = input;
+  const anchors: Vec2[] = [];
   for (const bund of bunds) {
-    const dx = bund.b[0] - bund.a[0];
-    const dy = bund.b[1] - bund.a[1];
-    const len = Math.hypot(dx, dy);
+    const len = Math.hypot(bund.b[0] - bund.a[0], bund.b[1] - bund.a[1]);
     if (len < 22) continue;
-    const nearPlot = plots.some(
-      (plot) => pointToPolylineDist((bund.a[0] + bund.b[0]) * 0.5, (bund.a[1] + bund.b[1]) * 0.5, ringOf(plot)) < 6,
-    );
-    if (!nearPlot) continue;
-    if (rng() > 0.38) continue;
-    const count = 2 + Math.floor(rng() * 4);
-    const ux = dx / len;
-    const uy = dy / len;
-    for (let i = 0; i < count; i += 1) {
-      const along = 0.5 + ((i - (count - 1) / 2) * (4.5 + rng() * 3.3)) / len;
-      if (along < 0.08 || along > 0.92) continue;
-      const lateral = (rng() - 0.5) * 3.0;
-      const tx = bund.a[0] + dx * along - uy * lateral;
-      const ty = bund.a[1] + dy * along + ux * lateral;
-      const tree = guardSafeTree(tx, ty, 3.0 + rng() * 2.0, 'field', zone, obstacleCtx);
-      if (tree) targetResult.trees.push(tree);
+    const midX = (bund.a[0] + bund.b[0]) * 0.5;
+    const midY = (bund.a[1] + bund.b[1]) * 0.5;
+    if (!plots.some((plot) => pointToPolylineDist(midX, midY, ringOf(plot)) < 6)) continue;
+    const roll = rng();
+    if (roll < 0.4) {
+      plantBundTuft(bund.a, bund.b, 2 + Math.floor(rng() * 4), input, anchors);
+    } else if (roll < 0.54) {
+      plantBundTuft(bund.a, bund.b, 1, input, anchors);
+    }
+  }
+
+  const zoneRing = ringOf(zone.points);
+  for (const plot of plots) {
+    for (let i = 0; i < plot.length; i += 1) {
+      const a = plot[i];
+      const b = plot[(i + 1) % plot.length];
+      if (!a || !b) continue;
+      if (Math.hypot(b[0] - a[0], b[1] - a[1]) < 24) continue;
+      const onOuter = pointToPolylineDist((a[0] + b[0]) * 0.5, (a[1] + b[1]) * 0.5, zoneRing) < 16;
+      const roll = rng();
+      if (roll < (onOuter ? 0.24 : 0.1)) {
+        plantBundTuft(a, b, 2 + Math.floor(rng() * 3), input, anchors);
+      } else if (roll < (onOuter ? 0.34 : 0.15)) {
+        plantBundTuft(a, b, 1, input, anchors);
+      }
     }
   }
 }

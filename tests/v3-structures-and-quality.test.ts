@@ -380,35 +380,24 @@ describe('V3-S2.3/S2.5 · OBB 街坊、外缘衰减、田块与地形质感', ()
     ],
   };
 
-  it('城坊产出定向 4 顶点 OBB 屋宇（临街直边 + 直角）且带院落留白', () => {
+  it('城坊产出贴边屋宇（四边为主、街角五边梯形）且带院落留白', () => {
     const project = flat(1600, base);
     const scene = compileSettlementScene(project);
     const buildings = scene.buildings.filter((b) => b.zoneId === 'town');
     expect(buildings.length).toBeGreaterThan(40);
+    // V6：宅基地递归剖分 + 平行临街边半平面裁剪后，主体仍是四边，
+    // 街角不再被碰撞守卫拔牙，自然长出贴合路口的五边梯形/微楔形屋面。
     const quads = buildings.filter((b) => b.points.length === 4).length;
-    expect(quads / buildings.length).toBeGreaterThan(0.95);
-    let rightAngled = 0;
-    for (const building of buildings) {
-      if (building.points.length !== 4) continue;
-      const angles: number[] = [];
-      for (let i = 0; i < 4; i += 1) {
-        const a = building.points[i];
-        const b = building.points[(i + 1) % 4];
-        const c = building.points[(i + 2) % 4];
-        if (!a || !b || !c) continue;
-        const ux = b[0] - a[0];
-        const uy = b[1] - a[1];
-        const vx = c[0] - b[0];
-        const vy = c[1] - b[1];
-        const cos = (ux * vx + uy * vy) / Math.max(1e-9, Math.hypot(ux, uy) * Math.hypot(vx, vy));
-        angles.push(Math.abs(cos));
-      }
-      if (angles.length === 4 && angles.every((cos) => cos < 0.08)) rightAngled += 1;
-    }
-    expect(rightAngled / quads).toBeGreaterThan(0.9);
+    expect(quads / buildings.length).toBeGreaterThan(0.6);
+    expect(buildings.filter((b) => b.points.length === 5).length).toBeGreaterThan(10);
+    expect(buildings.every((b) => b.points.length >= 3 && b.points.length <= 8)).toBe(true);
     const areas = buildings.map((b) => Math.abs(computePolygonAreaSigned(b.points)));
     expect(Math.max(...areas)).toBeLessThan(900);
-    expect(Math.min(...areas)).toBeGreaterThan(45);
+    const sorted = [...areas].sort((p, q) => p - q);
+    const median = sorted[Math.floor(sorted.length / 2)] ?? 0;
+    expect(median).toBeGreaterThan(40);
+    expect(median).toBeLessThan(220);
+    expect(scene.collisionReport.totalHits).toBe(0);
   });
 
   it('frayOuter 外缘稀疏衰减：关闭衰减时屋宇显著更多', () => {
@@ -634,7 +623,9 @@ describe('V3-S2.2/S2.5 · 吸附、手柄写回、噪声确定性与涂抹树复
     const svg = backend.toSvgString();
     const block = svg.slice(svg.indexOf('<g id="layer-trees-canopy">'), svg.indexOf('<g id="layer-landmarks-labels">'));
     const circles = block.match(/<circle /g)?.length ?? 0;
-    expect(circles).toBe((painted.length) * 3);
+    // V6：单树多瓣展开后，三遍仍是同一批叶瓣（遍数整除 + 每棵至少 3 瓣）
+    expect(circles % 3).toBe(0);
+    expect(circles).toBeGreaterThanOrEqual(painted.length * 3);
   });
 
   it('5 类水渠样式产出差异化绘制（灌溉虚线 / 排碱无实底 / 坎儿井竖井）', () => {

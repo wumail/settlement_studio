@@ -1,0 +1,60 @@
+{
+  "date": "2026-11-19",
+  "stats": {
+    "buildingCount": 2060,
+    "treeCount": 1281,
+    "wallCount": 2,
+    "bridgeCount": 0,
+    "collisionPassed": true,
+    "collisionHits": 0
+  },
+  "warnings": [],
+  "geoAnchor": {
+    "lon": 35.61,
+    "lat": 28.53,
+    "elevM": 427.5357360839844,
+    "regionNote": "候选方志坐标；局部台地与河曲为设计，主湖面在下游图外"
+  },
+  "householdAndPopulationNote": "约两千处自动与显式建筑轮廓含住宅、铺面、棚仓、摊场；配合二层铺宅和商旅旅宿表达逾两万常住及流动人口的商镇，不逐屋换算人口。",
+  "mapAreaKm2": 17.64,
+  "residentialZonesAreaHa": 195.2225,
+  "qanatShaftCount": 7,
+  "fishEstablishments": 12,
+  "fieldRelations": [
+    {
+      "housing": "west_farm_hamlet",
+      "fields": [
+        "west_grain_upper",
+        "west_rotation_north",
+        "south_grain"
+      ]
+    },
+    {
+      "housing": [
+        "south_farm_house_a",
+        "south_farm_house_b"
+      ],
+      "fields": [
+        "west_rotation_south",
+        "south_grain",
+        "farmhouse_garden"
+      ]
+    },
+    {
+      "housing": "canal_keeper_home",
+      "fields": [
+        "keeper_garden",
+        "gardens_south"
+      ]
+    }
+  ],
+  "independentReview": {
+    "found": "田边农家西翼与谷田农路重叠",
+    "fix": "农家向东移动12m，家巷从南侧接院外空地；已复查局部图。"
+  },
+  "exports": {
+    "png": "exports/L6_复市镇_空间设计版_标准版.png",
+    "svg": "exports/L6_复市镇_空间设计版_标准版.svg",
+    "editableProject": "projects/L6_复市镇_空间设计版.worldtown.json"
+  }
+}

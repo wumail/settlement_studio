@@ -16,6 +16,7 @@ const STRUCTURE_LABELS: Readonly<Record<StructureKind, string>> = {
   l_hall: 'L 形厅',
   u_court: 'U 形合院',
   round_altar: '圆坛',
+  courtyard: '合院建筑群',
 };
 
 /** 水工结构件：六类子型 + 闸孔数 + 岸线自动吸附 */

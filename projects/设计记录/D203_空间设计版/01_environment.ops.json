@@ -1,0 +1,559 @@
+[
+  {
+    "op": "set_meta",
+    "name": "D2-03 山谷镇与猎人营地",
+    "subtitle": "《囚禁魔》空间设计试作 · 谷口交易镇与上游猎营 · 图幅4.0km",
+    "geoAnchor": {
+      "lon": 18.99,
+      "lat": 19.53,
+      "elevM": 497.428,
+      "regionNote": "D2-03内盆山地外缘候选定位；仅DEM区域背景，局部支谷与溪流为设计"
+    }
+  },
+  {
+    "op": "set_terrain",
+    "baseElev": 497.428,
+    "slopeDirDeg": 357.183,
+    "slopeMagM": 12.898,
+    "contourStep": 10,
+    "indexEvery": 5,
+    "minContourElev": 400,
+    "maxContourElev": 1100,
+    "contourOpacity": 0.32,
+    "showContours": true,
+    "showHypsometricTint": true,
+    "showHachures": true,
+    "hachureSlopeMinDeg": 9,
+    "showScarpTicks": false,
+    "terrainNoiseAmpM": 0.65,
+    "terrainSeed": 20261119,
+    "macroReliefAmpM": 3.2,
+    "valleyCarveRatio": 0,
+    "showSupplementaryContours": true,
+    "supplementaryMaxSlopeDeg": 5
+  },
+  {
+    "op": "set_palette",
+    "themeId": "watabou_classic",
+    "overrides": {
+      "treeFill": "#6e805a",
+      "treeOutline": "#354733",
+      "farmlandFill": "#e0d9bd",
+      "waterFill": "#8da6ac",
+      "contourLine": "#a79b83"
+    }
+  },
+  {
+    "op": "set_legend",
+    "title": "山谷镇与猎营 · 空间设计版",
+    "position": "bottom-right",
+    "columns": 2,
+    "displayMode": "standard",
+    "furnitureOpacity": 0.9,
+    "labelOpacity": 0.95
+  },
+  {
+    "op": "upsert_terrain_shape",
+    "id": "upland_north",
+    "type": "hill",
+    "cx": 900,
+    "cy": -100,
+    "rx": 2350,
+    "ry": 3050,
+    "angleDeg": -8,
+    "deltaElev": 230,
+    "focusX": -0.12,
+    "focusY": -0.08
+  },
+  {
+    "op": "upsert_terrain_shape",
+    "id": "ridge_west",
+    "type": "ridge",
+    "points": [
+      [
+        150,
+        -120
+      ],
+      [
+        350,
+        500
+      ],
+      [
+        540,
+        1160
+      ],
+      [
+        680,
+        1770
+      ],
+      [
+        900,
+        2180
+      ],
+      [
+        1040,
+        2470
+      ]
+    ],
+    "deltaElev": 180,
+    "widthLeft": 440,
+    "widthRight": 420
+  },
+  {
+    "op": "upsert_terrain_shape",
+    "id": "ridge_east",
+    "type": "ridge",
+    "points": [
+      [
+        2180,
+        -120
+      ],
+      [
+        2130,
+        530
+      ],
+      [
+        2220,
+        1130
+      ],
+      [
+        2190,
+        1620
+      ],
+      [
+        2440,
+        2030
+      ]
+    ],
+    "deltaElev": 185,
+    "widthLeft": 470,
+    "widthRight": 500
+  },
+  {
+    "op": "upsert_terrain_shape",
+    "id": "spur_ambush",
+    "type": "ridge",
+    "points": [
+      [
+        610,
+        1340
+      ],
+      [
+        950,
+        1560
+      ],
+      [
+        1210,
+        1800
+      ]
+    ],
+    "deltaElev": 52,
+    "widthLeft": 220,
+    "widthRight": 180
+  },
+  {
+    "op": "upsert_terrain_shape",
+    "id": "low_west_spur",
+    "type": "hill",
+    "cx": 770,
+    "cy": 3350,
+    "rx": 900,
+    "ry": 800,
+    "angleDeg": 24,
+    "deltaElev": 65,
+    "focusX": -0.2,
+    "focusY": 0.1
+  },
+  {
+    "op": "upsert_river",
+    "id": "creek",
+    "name": "山谷溪",
+    "points": [
+      [
+        1260,
+        -20
+      ],
+      [
+        1330,
+        310
+      ],
+      [
+        1280,
+        680
+      ],
+      [
+        1390,
+        1040
+      ],
+      [
+        1520,
+        1430
+      ],
+      [
+        1630,
+        1800
+      ],
+      [
+        1880,
+        2140
+      ],
+      [
+        2110,
+        2420
+      ],
+      [
+        2250,
+        2750
+      ],
+      [
+        2410,
+        3100
+      ],
+      [
+        2560,
+        3490
+      ],
+      [
+        2790,
+        4020
+      ]
+    ],
+    "widthStartM": 6,
+    "widthEndM": 15,
+    "widthsM": [
+      6,
+      6,
+      7,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "carveDepthM": 2.4,
+    "rippleLines": 1
+  },
+  {
+    "op": "connect_road",
+    "id": "valley_road",
+    "name": "谷口驮运道",
+    "tier": "highway",
+    "widthM": 7,
+    "from": [
+      0,
+      3050
+    ],
+    "via": [
+      [
+        700,
+        2970
+      ],
+      [
+        1450,
+        2910
+      ],
+      [
+        2050,
+        2940
+      ],
+      [
+        2390,
+        2980
+      ],
+      [
+        2700,
+        2950
+      ],
+      [
+        2940,
+        2940
+      ],
+      [
+        3250,
+        3040
+      ],
+      [
+        3650,
+        3130
+      ]
+    ],
+    "to": [
+      4000,
+      3190
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "hunting_trail",
+    "name": "上游猎道",
+    "tier": "lane",
+    "widthM": 3,
+    "from": [
+      1190,
+      850
+    ],
+    "via": [
+      [
+        1280,
+        1000
+      ],
+      [
+        1190,
+        1220
+      ],
+      [
+        1350,
+        1450
+      ],
+      [
+        1440,
+        1680
+      ],
+      [
+        1610,
+        1950
+      ],
+      [
+        1790,
+        2190
+      ],
+      [
+        2040,
+        2400
+      ],
+      [
+        2240,
+        2600
+      ]
+    ],
+    "to": [
+      2440,
+      2700
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "camp_approach",
+    "name": "营地入口",
+    "tier": "lane",
+    "widthM": 2.4,
+    "from": [
+      1190,
+      850
+    ],
+    "via": [
+      [
+        1155,
+        810
+      ]
+    ],
+    "to": [
+      1120,
+      760
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "town_entry",
+    "name": "山路入镇街",
+    "tier": "street",
+    "widthM": 6,
+    "from": [
+      2440,
+      2700
+    ],
+    "via": [
+      [
+        2600,
+        2770
+      ],
+      [
+        2720,
+        2810
+      ]
+    ],
+    "to": [
+      2840,
+      2890
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "upper_street",
+    "name": "井坪街",
+    "tier": "street",
+    "widthM": 5,
+    "from": [
+      2600,
+      2770
+    ],
+    "via": [
+      [
+        2700,
+        2710
+      ],
+      [
+        2900,
+        2740
+      ],
+      [
+        3070,
+        2820
+      ]
+    ],
+    "to": [
+      3180,
+      3045
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "south_street",
+    "name": "南坊街",
+    "tier": "street",
+    "widthM": 5,
+    "from": [
+      2630,
+      2960
+    ],
+    "via": [
+      [
+        2750,
+        3100
+      ],
+      [
+        2980,
+        3170
+      ]
+    ],
+    "to": [
+      3210,
+      3220
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "east_cross",
+    "name": "粮货街",
+    "tier": "street",
+    "widthM": 4.5,
+    "from": [
+      2900,
+      2740
+    ],
+    "via": [
+      [
+        2960,
+        2890
+      ],
+      [
+        3020,
+        3030
+      ]
+    ],
+    "to": [
+      2980,
+      3170
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "west_farm_track",
+    "name": "西台地田径",
+    "tier": "lane",
+    "widthM": 3,
+    "from": [
+      1450,
+      2910
+    ],
+    "via": [
+      [
+        1380,
+        3200
+      ],
+      [
+        1270,
+        3500
+      ]
+    ],
+    "to": [
+      1080,
+      4000
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "south_farm_track",
+    "name": "东南田径",
+    "tier": "lane",
+    "widthM": 3,
+    "from": [
+      3210,
+      3220
+    ],
+    "via": [
+      [
+        3320,
+        3440
+      ],
+      [
+        3480,
+        3720
+      ]
+    ],
+    "to": [
+      3600,
+      4000
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "north_exit",
+    "name": "东坡村径",
+    "tier": "lane",
+    "widthM": 3,
+    "from": [
+      3070,
+      2820
+    ],
+    "via": [
+      [
+        3230,
+        2690
+      ],
+      [
+        3420,
+        2510
+      ]
+    ],
+    "to": [
+      4000,
+      2300
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "camp_water",
+    "name": "营地取水径",
+    "tier": "lane",
+    "widthM": 2,
+    "from": [
+      1130,
+      755
+    ],
+    "via": [
+      [
+        1180,
+        735
+      ]
+    ],
+    "to": [
+      1265,
+      720
+    ]
+  }
+]

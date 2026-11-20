@@ -1,74 +1,77 @@
 ---
 name: settlement-studio-mapper
 description: >-
-  Use this skill when authoring, editing, auditing, or exporting historical-style
-  settlement maps with Settlement Studio via its headless CLI (`npm run studio`)
-  or MCP tools (`studio_open`..`studio_save`). Covers terrain/hydro skeleton setup,
-  semantic hydraulic snapping, relative zone placement, compiler diagnostics, and
-  dual-scale multimodal visual self-audit (full map + zoomed close-up crops).
+  Design and author plausible settlement maps in Settlement Studio from detailed lore,
+  sparse geographic briefs, or requests for constrained random variation. Guides spatial
+  planning, semantic CLI/MCP operations, local generation, and lightweight map review.
 ---
 
 # Settlement Studio Mapper
 
-Author publication-grade settlement maps through Settlement Studio's headless semantic engine instead of hand-editing raw `.worldtown.json` coordinates.
+使用现有 Studio 把一个连贯的地方构想做成地图。输入可以是故事、城市资料，也可以只有地点、气候、地貌和聚落等级；没有故事时同样适用。
 
-## Core Principles
+## 先设计，再操作
 
-1. **Never guess coordinates blindly**: Always run `inspect` (Spatial Radar) first to see the 8×8 buildability grid (`prime` / `marginal` / `steep` / `water`) and river arc-length anchors (`t = 0..1`).
-2. **Use semantic snapping for hydraulics & roads**: Place weirs, docks, watermills, and cross-gate roads via `snap_weir`, `snap_dock`, `snap_watermill`, and `connect_road` so geometry aligns orthogonally/tangentially to riverbanks and city gates.
-3. **Always close the visual loop**: Never treat a map as finished from JSON alone. Render a full preview with `--grid` plus close-up `--crop-zone` / `--crop-entity` PNGs, inspect them visually (`read_file` in CLI mode, or native image block in MCP mode), and run at least 1–2 refinement passes.
-4. **Preserve protected reference files**: Never overwrite protected baseline `.worldtown.json` files unless the user explicitly asks.
+开始新图或实质重做前，阅读 [references/settlement-design.md](references/settlement-design.md)。用一份短简报明确地方身份、生计/水源/对外联系、空间骨架，以及需要保留和允许变化的选择。少量缺失信息可以自主推定，不要求用户先写完整设定。
 
-## Interface Parity (CLI vs MCP)
+抽卡分两层：先在环境与用途允许的范围内选择布局方案，再用 zone seed 变化建筑、田地、林木等细节。局部重抽时保持主方案；用户要求换方案时才改变主骨架。
 
-All commands run from the `settlement_studio/` directory. Prefer CLI when batching ops or scripting; prefer MCP when running interactive single-zone refinements inside an MCP client.
+- 普通城市不默认有城墙、中心堡寨、港口或复杂水工；这些设施应有用途依据。
+- 地形、道路、功能区的位置相互支持；先确定关系，再确定坐标和选区。
+- 生产用地与使用者的居住空间一起安排。田地可由镇边居民、邻近小村或散居农户耕作；根据距离、地形和地方生活方式选择，不给每片田机械地配一个村。明确农居主要服务哪些田片，并结合田径和高差考虑日常往返。
+- 同幅地图中的建筑、道路、营地和农田使用一致的尺度。尺寸建议是起点，不是每图必须凑齐的指标。
+- 保护既有基准工程；对照迭代使用新文件。
 
-| Step | CLI (`npm run studio -- ...`) | MCP Tool |
-| :--- | :--- | :--- |
-| Initialize / Open | `init --out <file> [--preset blank] [--world-size 2400] [--geo-file <geo.json>]` | `studio_open` |
-| Spatial Radar & Audit | `inspect <file>` | `studio_inspect` |
-| Point Elevation / Snap Query | `query <file> --x <m> --y <m>` | `studio_query_point` |
-| Apply Semantic Ops Batch | `apply <file> --ops <ops.json\|-> [--out <file>]` | `studio_apply_ops` |
-| Visual Preview (Full / Crop) | `render <file> --out <p.png> [--mode standard\|guided\|clean] [--grid] [--crop-zone <id>\|--crop-entity <id>]` | `studio_render_preview` |
-| Publication Export (No Grid) | `export <file> --out-svg <m.svg> [--out-png <m.png>] [--mode standard\|guided] [--width 2000]` | `studio_save` |
+## 工具与参考
 
-For exact JSON schemas and examples of all 21 semantic ops, read [references/ops-cheatsheet.md](./references/ops-cheatsheet.md).
-For scale heuristics, palette selection, and visual quality criteria, read [references/cartography-standards.md](./references/cartography-standards.md).
+命令在 `settlement_studio/` 运行。CLI 适合批次操作，MCP 适合会话交互。
 
-## Standard 5-Step Map Authoring Workflow
+| 用途 | CLI (`npm run studio -- ...`) | MCP |
+| --- | --- | --- |
+| 新建 | `init --out <file> [--preset blank] [--world-size 3600] [--geo-file <geo.json>]` | `studio_open` |
+| 地形/产出概览 | `inspect <file>` | `studio_inspect` |
+| 点高程/坡度/最近水线 | `query <file> --x <m> --y <m>` | `studio_query_point` |
+| 语义批次 | `apply <file> --ops <ops.json或-> [--out <file>]` | `studio_apply_ops` |
+| 预览 | `render <file> --out <p.png> [--grid] [--crop-zone <id>]` | `studio_render_preview` |
+| 成图 | `export <file> --out-svg <m.svg> [--out-png <m.png>] [--mode standard或guided]` | `studio_save` |
 
-### Step 1 — Bootstrap & Read the Spatial Radar
-1. Initialize the project file with `init` (optionally passing `--geo-file <geo.json>` when external DEM/river bootstrap data is available) and set `worldSizeM` to match the settlement tier (`1600–2200m` for villages/forts, `2400–2800m` for market towns, `3000–3600m` for walled regional capitals).
-2. Run `inspect` immediately and note:
-   - Which 8×8 cells are `prime` (flat, dry — reserve for walled cities, citadels, markets, core town blocks) vs `marginal` (gentle slopes — farmland, outer suburbs) vs `steep` (hills/ridges — woodland, scarps, vistas).
-   - Main river `t` anchors (`0.0` upstream → `1.0` downstream) and channel widths.
+参数见 [references/ops-cheatsheet.md](references/ops-cheatsheet.md)。选择尺寸和查看成图时参照 [references/cartography-standards.md](references/cartography-standards.md)，结合当前环境和用途取舍，不照抄一整套设施。
 
-### Step 2 — Macro Terrain & Hydro Skeleton (Pass 1 Ops)
-Submit an initial ops batch establishing only the physical landscape:
-- `set_meta` (title, subtitle, worldSizeM) & `set_terrain` (baseElev, slopeMagM, slopeDirDeg, contourStep, contourOpacity `0.28–0.38`, `showHypsometricTint: true`, `showHachures: true`).
-- `upsert_terrain_shape` for signature landforms (`hill`, `ridge`, `valley`, `scarp`, `basin`) placed outside the prime urban footprint.
-- `upsert_river` / `upsert_water_body` (with realistic meandering points and varying `widthsM`) and `upsert_canal` (`stone_clean`, `irrigation`, `qanat`, `drainage_dashed`, `foul_outfall`).
-- Run `render --grid` and inspect the landscape skeleton before placing buildings.
+工具边界会影响设计：
+- `inspect` 的 8×8 雷达是选址辅助；没有告警不等于空间已经合理。
+- `connect_road` 连接锚点并平滑，不会替模型选顺坡路线。需要绕行时明确给 `via`。
+- 道路穿过围墙边界才派生门；需要入口时把道路延伸到院内。`entityId` 通常指建筑中心，通路终点应留在建筑外的入口空地。
+- `snap_weir/dock/watermill` 用来贴水对齐；吸附不代替供水和用途判断，水线后改时需重新考虑位置。
+- `place_zone` 支持自定义 `points`，也支持 `relative` 的相对形状。地形限制明显时使用适合场地的轮廓，不强套规则多边形。
 
-### Step 3 — Core Fortifications, Hydraulics, Zones & Roads (Pass 2 Ops)
-Build from rigid anchors outward so every element respects the zero-collision obstacle SDF:
-1. **Hydraulics first**: `snap_weir`, `snap_dock`, `snap_watermill` anchored to exact river/waterbody/canal `t` positions.
-2. **Core settlements & ceremonial structures**: `place_zone` for `walled_city` / `citadel` (prefer `polygon_13` or `octagonal` on `prime` terrain) and `upsert_structure` (`rect`, `l_hall`, `u_court`, `round_altar`) inside citadels or key plazas.
-3. **Suburbs, markets, fields & woodland**: `place_zone` for `town_blocks`, `market` (`stalls` / `timber_yard` / `port_apron`), `farmland`, `saltpan`, `woodland`, `village`, and `exclusion` (`plague_stones` / `meadow` / `marsh`).
-4. **Road network & bridge overrides**: `connect_road` linking gates, docks, weirs, markets, and map boundaries (`edge:north|south|east|west`). Check `brief.bridges` and use `upsert_bridge_override` only where a `fortified_twin` gatehouse bridge or `ford` is narratively required.
-5. **Landmarks & finishing touches**: `upsert_landmark` (assign `badgeNum` + concise `subtitle` for `guided` mode), `scatter_trees` for natural hillside clusters, `set_palette` and `set_legend`.
+## 制作顺序
 
-### Step 4 — Compile Diagnostics & Dual-Scale Visual Self-Audit
-1. Check `brief` returned by `apply`:
-   - `stats.collisionPassed` MUST be `true` (`collisionHits === 0`).
-   - Zero `empty_warning` zones: if any zone reports `steep_slope`, raise `maxSlopeDeg` slightly or move it onto a `prime`/`marginal` cell; if `water_overlap` or `blocked_by_obstacles`, shift anchor or enlarge area.
-   - Resolve any `warnings` (overlapping non-nested zones or crowded landmarks `< 65m` apart).
-2. Render and visually inspect with `read_file` (or MCP image):
-   - **Full map** with `--grid` (`standard` and, if numbered landmarks exist, `guided`).
-   - **2–4 zoomed crops** (`--crop-zone` / `--crop-entity`) focusing on the walled city gates, main hydraulic works (weirs/docks), and densest market/label area.
-3. Verify every item on the Visual Checklist in [references/cartography-standards.md](./references/cartography-standards.md). Fix any misalignment, label crowding, awkward dock orientation, or sparse/empty corner via a targeted refinement ops batch (`apply` + `reroll_zone` if a specific block layout looks unbalanced).
+### 1. 环境与主要通路
 
-### Step 5 — Clean Publication Export
-Once diagnostics and visual inspection pass cleanly:
-1. Run `export` (which enforces `gridOverlay: false`) to produce final `.svg` and `.png` artifacts in the requested display modes (`standard` and/or `guided`).
-2. Report the output paths, key stats (`buildingCount`, `zoneCount`, `bridgeCount`, `collisionPassed`), and any remaining aesthetic trade-offs to the user.
+按简报设置图幅，初始化并 `inspect`。图幅要容纳目标距离和地方结构，不因“城镇模板”就固定跨度。
+
+用语义操作建立坡地、山谷、水源/水线和对外通路。大尺度地理引导不足以确定本地微地形，设计时保留其证据边界。对关键高差和明显可疑的路线做少量点查询；不必逐点采样全图。
+
+预览这一阶段：能否认出预期的谷口、河阶、山坡、海湾等结构？道路的目的地是否清楚？有矛盾先调整，再放聚落。
+
+### 2. 核心与功能空间
+
+从水源、路口、市场、公共院落、作坊或其他形成原因安排核心。依据用途选择 `town_blocks/village/walled_city/citadel/market` 等 primitive；primitive 的名称不是必须添加该设施的理由。
+
+先给重要公共/生产空间留位置与通路，再安排住宅、关厢和田地。对外围生产区同时安排使用者的住处、必要的院场和接近路线；让住宅边缘、菜园与田地有适当过渡。使用道路和适当留白组织街区；特别建筑用 `upsert_structure`。需要水工时用 `snap_*` 对齐。
+
+### 3. 局部生成
+
+按确定的骨架生成房屋、耕地、林带等。观察生成结果与原构想的关系，必要时改选区、主路或密度；骨架不合适时，换 seed 通常解决不了。
+
+使用 `reroll_zone` 做局部变体，满意后保持其种子。不同区块不必密度相同；留白可以是活动场地、缓坡、荒地或尚未开发区域。
+
+### 4. 按活动检查实际地图
+
+选少量典型活动，对照预览和已生成对象走一遍：居民取水/出行、货物进市、生产空间使用，以及本任务特有路线。检查是否存在显然缺少的入口、目的地或空间冲突，并做针对性修改。
+
+查看现有碰撞与空区诊断，处理实际问题；不要为了消除告警就盲目抬高坡度阈值。看全图和关键局部，至少完成一次有具体发现的复查；若初稿已符合构想，说明观察依据即可，不为了满足次数而改图。
+
+### 5. 导出与说明
+
+导出无 AI 网格的标准 PNG/SVG，按需要增加导览版。简要交代地方构想、主要设计选择、种子/变体、复查后的改动及剩余限制。不要把生成数量、零碰撞或零告警当成“真实合理”的证明。

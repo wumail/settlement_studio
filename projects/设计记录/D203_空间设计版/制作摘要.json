@@ -1,0 +1,57 @@
+{
+  "stats": {
+    "buildingCount": 400,
+    "treeCount": 4382,
+    "wallCount": 0,
+    "bridgeCount": 2,
+    "collisionPassed": true,
+    "collisionHits": 0
+  },
+  "warnings": [],
+  "distancesM": {
+    "campApproach": 114.20589366579264,
+    "huntingTrail": 2404.043161128436,
+    "townEntry": 445.6821149117665
+  },
+  "elevations": {
+    "camp": 673.5361891601563,
+    "clinic": 495.2436313964844,
+    "market": 494.67145849609375
+  },
+  "campBuildings": 8,
+  "townZonesAreaHa": 28.9375,
+  "horseToCampM": 1064.5759277097711,
+  "finalExports": {
+    "svg": "/Users/wumail/code/TERRAX/settlement_studio/exports/D203_山谷镇与猎人营地_空间设计版_标准版.svg",
+    "png": "/Users/wumail/code/TERRAX/settlement_studio/exports/D203_山谷镇与猎人营地_空间设计版_标准版.png"
+  },
+  "agriculturalResidences": {
+    "westHamletBuildings": 9,
+    "eastHamletBuildings": 8,
+    "creekHouseholds": 2,
+    "townEdgeFarmsteads": 1,
+    "notes": "村落计数为自动生成房屋，另有共用棚舍、井坪和晒场。"
+  },
+  "fieldRelationsRevision": {
+    "date": "2026-11-19",
+    "notes": "农居按主要田片分工；补四条入田短径，菜园移到屋旁。三处菜园各0.18ha，保留完整边界避免条田生成器舍弃小畦。",
+    "gardens": [
+      {
+        "id": "creek_garden",
+        "plots": 1,
+        "status": "ok"
+      },
+      {
+        "id": "south_edge_garden",
+        "plots": 1,
+        "status": "ok"
+      },
+      {
+        "id": "creek_garden_n",
+        "plots": 1,
+        "status": "ok"
+      }
+    ],
+    "review": "成图发现镇缘菜园叠到自动生成住宅，向南移40m，留在街坊外缘与灌渠之间。 最终按棚屋实际占地收窄并东移镇缘菜园，留出屋舍与大田之间的田畦边界；菜园短径从院门前接近。"
+  }
+}

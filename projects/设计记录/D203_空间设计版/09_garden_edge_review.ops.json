@@ -1,0 +1,42 @@
+[
+  {
+    "op": "place_zone",
+    "id": "south_edge_garden",
+    "name": "镇边屋旁菜园",
+    "contentType": "farmland",
+    "relative": {
+      "anchor": [
+        2845,
+        3270
+      ],
+      "shape": "rect",
+      "areaHa": 0.18,
+      "aspectRatio": 1.12,
+      "rotationDeg": 0
+    },
+    "seed": 7121,
+    "maxSlopeDeg": 12,
+    "frayOuter": false
+  },
+  {
+    "op": "connect_road",
+    "id": "south_garden_path",
+    "name": "菜园短径",
+    "tier": "lane",
+    "widthM": 2,
+    "from": [
+      2775,
+      3245
+    ],
+    "via": [
+      [
+        2800,
+        3243
+      ]
+    ],
+    "to": [
+      2820,
+      3258
+    ]
+  }
+]

@@ -63,7 +63,11 @@ export function collectRigidPolys(
   walls: ReadonlyArray<WallSegment>,
 ): Polygon[] {
   const out: Polygon[] = [...hydraulic.footprints];
-  for (const item of structures) out.push(item.polygon);
+  for (const item of structures) {
+    out.push(item.polygon);
+    // 合院整院注入刚性障碍：民房绝不长进客舍院内
+    if (item.yardPolygon) out.push(item.yardPolygon);
+  }
   for (const bridge of hydro.bridges) {
     for (const fort of bridge.forts ?? []) out.push(fort.polygon);
   }

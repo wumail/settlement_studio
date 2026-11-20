@@ -1,65 +1,54 @@
-# Cartography Standards & Visual Self-Audit Checklist
+# 尺度与成图参考
 
-## 1. Scale & Composition Heuristics
+这些范围用于初始选择，不是城市模板或历史事实。先阅读 `settlement-design.md`，根据场地、用途和图幅目标取舍。
 
-Choose `worldSizeM` and zone sizes so buildings remain readable at publication scale (`1400–2000px`) without turning into dust or giant slabs:
+## 一幅图保持同一尺度
 
-| Settlement Tier | `worldSizeM` | Core Area | River Width | Main Highway Width | Typical Contour Step |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| Gorge Outpost / Fortified Village | `1600–2200 m` | `3–10 ha` | `25–55 m` | `8–10 m` | `5–8 m` |
-| Lakeside / Crossroads Market Town | `2400–2800 m` | `15–35 ha` | `40–80 m` | `10–12 m` | `3–5 m` |
-| Walled Regional Capital | `3000–3600 m` | `30–65 ha` | `65–120 m` | `11–14 m` | `4–6 m` |
+图幅要容纳计划表现的内容和距离。村镇详图可以很紧凑，含远郊、山路和营地的地图则需要更大范围；主聚落不必占固定百分比。
 
-### Zone Sizing & Parameter Guidelines
-- **`walled_city`**: Use `polygon_13` or `octagonal` (`20–55 ha`), `wallThicknessM: 5–7`, `density: 0.72–0.85`, `streetWidthM: 7.5–9`. Avoid sharp concave spikes (`insetPolygonSafe` shrinks walls inward).
-- **`citadel`**: Nest inside or adjacent to `walled_city` (`2–8 ha`), pair with explicit `upsert_structure` (`l_hall`, `u_court`, `rect`, `round_altar`) so key ceremonial halls have clear architectural silhouettes.
-- **`town_blocks`**: Place outside city gates or along highways (`4–18 ha`), keep `frayOuter: true` for natural organic fade-out toward fields.
-- **`market`**: Use `stalls` for dense bazaar rows (`2–6 ha`), `timber_yard` for lumber/cargo depots, `port_apron` directly behind docks.
-- **`farmland`**: Group into 3–6 distinct tracts (`6–24 ha` each, never above the `35 ha` red line) with varied `seed` so strip orientation contrasts organically across tracts; furrow direction now derives from the neighbouring road / canal / contour tangent, so place fields alongside those features.
-- **`woodland` & `paintedTrees`**: Place dense `woodland` zones on protected groves or valley edges (`3–12 ha`) and use `scatter_trees` on hillsides (`25–70` trees) to frame topographic ridges without hiding contour legibility.
-- **`exclusion`**: Always give narrative empty buffers (`meadow`, `marsh`, `plague_stones`) explicit style so open spaces look intentional rather than unfinished.
+| 对象 | 可参考的起点 | 使用时判断 |
+| --- | --- | --- |
+| 十余人的营地 | 约0.25–0.8ha，`village` 的 `buildingScale` 约0.65–0.85 | 给普通活动留空地；不要为同一队人既放许多显式营舍又生成整村 |
+| 小村/桥头聚落 | 约1.5–4ha，可用 `village` 或小 `town_blocks` | 沿路线、岸地或缓坡发展，外围可以渐疏 |
+| 集镇核心 | 常可从5–25ha开始，必要时分片 | 可以开放、沿路、沿河或围墙；城墙和堡寨均按需要选择 |
+| 主要城市 | 依据功能可有数十至上百公顷及多个核心 | 图幅由主要区块与周边关系决定，不直接放大村镇模板 |
+| 田地 | 按地形、水源、接近方式划片 | 大片田地在用途、坡地或通路变化处拆分，面积不必相等 |
+| 林带 | 根据地形与植被条件选择轮廓和密度 | 山坡、谷缘和水边可以不同；避免把每片林地都做成独立椭圆 |
 
-### Palette & Tone Selection
-- `watabou_classic`: Warm parchment & terracotta — default for temperate riverine/agrarian towns.
-- `nordic_fjord`: Cool slate & pine — high-latitude, alpine gorge, or iron-mine fortresses.
-- `arid_oasis`: Warm ochre & turquoise — dry plateaus, qanat-fed oases, desert caravan posts.
-- `gazetteer_ink`: Minimal monochrome ink — formal archival/chronicle illustrations.
+房屋大小与数量结合聚落用途观察；同面积行政院落、密集民居、疏散村庄的屋顶数可以不同。不要为满足某个屋顶配额而强行加密。
 
-## 1.1 Cross-Element Real-Scale Red Lines
+河宽来自本次水系选择，不能由城市等级直接推导。山间小溪可能只有几米宽，地区干流则可能宽得多。主路、街巷和驮运小径也应有相称的宽度差异。
 
-Every settlement, field tract and camp on the same sheet must read at the **same human scale**. Check the footprint and the building output before rendering:
+## Primitive 与生成参数
 
-| Element Class | Recommended `contentType` | Footprint | `buildingScale` | Typical Output | Cartographic Notes |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| Temporary camp / forest watchpost (10–30 people) | `village` | `0.25–0.8 ha` | `0.65–0.85` | `6–14` huts | May embed a `0.08–0.25 ha` ring-stone / fire-pit `exclusion`; never inflate to multiple hectares |
-| Dispersed hamlet / bridgehead cluster | `village` or small `town_blocks` | `1.5–4.0 ha` | `0.85–1.0` | `15–55` houses | Stretch as a ribbon along a road, stream bank or contour; keep a naturally thinning outer edge |
-| Border town / gate suburb | `walled_city` + `town_blocks` | `14–25 ha` | `0.95–1.05` | `250–480` houses | Pair the walled core with a `1.5–3.5 ha` `citadel` and a `2–4 ha` `market` |
-| Regional capital / prefectural city | `walled_city` + outer `town_blocks` | `30–55 ha` | `1.0–1.1` | `500–950` houses | Requires a `3000–3600 m` sheet; keep the walled core at `15%–30%` of the sheet with generous margins |
-| Standalone field belt | `farmland` | `6–24 ha` (hard red line `> 35 ha`) | n/a | `12–55` strip plots | Split into 3–6 belts along valleys / highways, keep `frayOuter: true` |
-| Woodland belt / sacred grove | `woodland` | `3–12 ha` | n/a | `40–160` canopies | Frame ridges without hiding contour legibility |
+- `town_blocks`：开放街坊，可与道路、公共空地和显式建筑组合；不只用于城外关厢。**连片的市镇街坊应共享道路/水渠边界无缝拼接**，避免把同一座市镇碎切成十几个互不接触、中间隔着几十米死白空地的孤立圆泡泡，尤其要保证主干道与核心十字路口两侧有连续的临街界面。
+- `walled_city`：需要城垣时使用。`wallThicknessM`、塔距和边界要与地方身份相称。
+- `citadel` / `upsert_structure`：**严格区分“院落总占地”与“单栋屋顶跨度”**。普通民居面宽约 `6–15m`、进深约 `6–11m`；单栋厅堂或仓廒（`rect` / `l_hall` / `u_court`）一般不超过 `14–28m × 8–16m`。凡占地 `28–56m` 的客舍、车马店、衙署、会馆、大货栈，应使用 `kind: "courtyard"`（自动拆解为带门矮院墙 + 敞院 + 正堂与独立厢房），或在一块 `exclusionStyle: "enclosure"` 场坪内组合多栋正常尺度的厅房与库棚，切忌画成 `70m × 60m` 的单块巨无霸实心屋顶。
+- `market`：`stalls` 表示摊列，`timber_yard` 表示货物/木料场，`port_apron` 表示埠头空地；小地方不一定需要大面积常设摊列。
+- `farmland`：区块方向会参考邻近道路、水线和等高线。先把这些骨架摆好，再看实际生成结果。
+- `woodland`：选区边界比反复调整 seed 更影响整片形态；成片林地按自然坡谷轮廓勾勒，林带边缘与护田树篱、水岸院树相呼应。
+- `exclusion`：`plain` 仅作无痕空间退让（成图不画虚线框）；需要表现可见的车马候装坪、晒场、前坪或货院时使用 `enclosure`（压实土面 + 细实线矮墙），草甸与湿地用 `meadow/marsh`；`plague_stones` 会产生界碑特征，只在设定需要时使用。
 
-Ratio red lines:
-- Any `town_blocks`/`walled_city` between `14–24 ha` must yield `>= 240` roofs (mean footprint `80–260 m²`); fewer means the block network is too coarse.
-- Any `village` below `1.2 ha` with more than `45` roofs per hectare is over-packed: lower `density` or adjust `buildingScale`.
-- Any single `farmland` zone above `35 ha` should be split — one giant tract always loses furrow direction and obstacle clearance.
-- A `walled_city` below `4 ha` cannot hold a wall, a citadel and a market: use `citadel` or `village` instead.
+出现空区时先看坡度、水线、选区与刚性物体关系。阈值应反映可建地条件，不能只为消除告警而提高。
 
-## 2. Dual-Scale Visual Self-Audit Checklist
+## 色板是表现选择
 
-Run this checklist on **every** rendered full map (`--grid`) and zoomed crop (`--crop-zone` / `--crop-entity`) before final export:
+- `watabou_classic`：温暖纸本，通用聚落表达。
+- `nordic_fjord`：冷灰青山地或寒地表达。
+- `arid_oasis`：干旱地域表达。
+- `gazetteer_ink`：古志墨线表达。
 
-### A. Macro Composition (Full Map)
-- [ ] **Balanced figure-ground**: Urban core occupies ~15–30% of map area; terrain contours, rivers, fields, and open margins breathe naturally.
-- [ ] **Zero empty-zone surprises**: Every non-`exclusion` zone visibly contains expected buildings, stalls, trees, furrows, or saltpans (cross-check `brief.zones` for zero `empty_warning`).
-- [ ] **Furniture & margins clean**: Title cartouche (top-left), compass (top-right), scale bar (bottom-left), legend (bottom-right), and `guided` index box (opposite corner) do not cover the primary citadel or core river junction.
-- [ ] **Contours clean**: Contours remain subtle (`contourOpacity` `0.25–0.40`) and never bleed across rivers or lakes.
-- [ ] **Full-sheet relief**: With `macroReliefAmpM` (`12` default when `terrainNoiseAmpM > 0`) and `valleyCarveRatio` (`5.5` default) the whole sheet shows gently continuous contours — plains are never a blank sheet with isolated hills, and contours bend upstream through river valleys.
-- [ ] **Supplementary contours**: Half-interval dotted lines (`showSupplementaryContours: true`, `supplementaryMaxSlopeDeg: 6.5`) appear only on gentle slopes, never carry elevation labels, and vanish on scarps / ridges above the slope limit.
+换色板不能使一个不相容的地方设计变得合理；植被、水系和土地利用仍要由环境与用途决定。
 
-### B. Micro Craft (Zoomed Close-up Crops)
-- [ ] **Weirs span bank-to-bank**: Both ends of each weir anchor cleanly into opposite riverbanks, orthogonal to flow.
-- [ ] **Docks face water**: Slipway ramps / wooden piers point into the river/lake channel (never reversed inland).
-- [ ] **Watermills hug banks**: Mill footprint sits dry on the bank parallel to the channel, wheel side facing water.
-- [ ] **Road-gate continuity**: Highways entering a `walled_city` cut clean gates through the wall and extend out to map edges or destinations without abrupt dead-ends inside empty terrain.
-- [ ] **Zero label collisions**: In `standard` mode, zone and landmark labels do not stack on top of each other; if dense (`> 8` rich annotations), switch primary presentation to `guided` mode with numbered badges (`badgeNum: 1..N`) and concise `subtitle` descriptions.
-- [ ] **Zero collisions**: `brief.stats.collisionPassed === true` (`collisionHits === 0`).
+## 全图与关键局部观察
+
+看全图判断地形、主要通路、聚落核心和周边土地是否共同表达了设计简报。看少量关键局部判断院落入口、交叉口、岸边设施与重要活动场地是否成立。
+
+- 地图重要内容位于图框内，标题、比例尺和图例不压住需要观察的地点。
+- 标注在预定交付尺寸可读；地标密集时减少重复标注或采用导览版，不必为每张图凑固定数量的编号。
+- 等高线和晕滃支持地形阅读，避免遮住聚落。通常可从 `contourOpacity:0.25–0.40` 开始。
+- 堰、码头和水磨贴合岸线，方向适合用途；使用已有 `snap_*` 后仍观察实际产物。
+- 沿典型活动看出入口和目的地；未绘制内部街坊边界不直接等于无法通行。
+- 查看已有碰撞与空区诊断，解决真正影响地图的问题。零碰撞/零告警是辅助结果。
+
+导出无AI网格的标准版，按需要交付导览版；检查最终文件，不能只看生成前的JSON。

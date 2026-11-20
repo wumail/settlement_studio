@@ -1,0 +1,123 @@
+[
+  {
+    "op": "connect_road",
+    "id": "kiln_lane",
+    "name": "砖窑小径",
+    "tier": "lane",
+    "widthM": 2.6,
+    "from": [
+      1900,
+      1920
+    ],
+    "to": [
+      1760,
+      1951
+    ],
+    "via": [
+      [
+        1850,
+        1960
+      ],
+      [
+        1790,
+        1970
+      ]
+    ]
+  },
+  {
+    "op": "snap_dock",
+    "id": "wharf_cargo",
+    "name": "货舟换装埠",
+    "targetId": "r2147",
+    "targetKind": "river",
+    "t": 0.52,
+    "bank": "right",
+    "kind": "wooden_pier",
+    "slips": 3,
+    "spacingM": 24,
+    "lengthM": 42,
+    "widthM": 9,
+    "insetM": 10
+  },
+  {
+    "op": "snap_dock",
+    "id": "wharf_guest",
+    "name": "客舟与夜市埠",
+    "targetId": "r2147",
+    "targetKind": "river",
+    "t": 0.61,
+    "bank": "right",
+    "kind": "wooden_pier",
+    "slips": 2,
+    "spacingM": 22,
+    "lengthM": 30,
+    "widthM": 8,
+    "insetM": 9
+  },
+  {
+    "op": "snap_dock",
+    "id": "wharf_fish",
+    "name": "浅舟鱼货埠",
+    "targetId": "r2147",
+    "targetKind": "river",
+    "t": 0.36,
+    "bank": "right",
+    "kind": "slipway",
+    "slips": 3,
+    "spacingM": 18,
+    "lengthM": 36,
+    "widthM": 8,
+    "insetM": 10
+  },
+  {
+    "op": "connect_road",
+    "id": "cargo_dock_lane",
+    "name": "货栈至舟埠",
+    "tier": "street",
+    "widthM": 6,
+    "from": [
+      3320,
+      2000
+    ],
+    "to": {
+      "riverId": "r2147",
+      "t": 0.52,
+      "bank": "right",
+      "offsetM": 5
+    }
+  },
+  {
+    "op": "connect_road",
+    "id": "guest_dock_lane",
+    "name": "客舟岸路",
+    "tier": "street",
+    "widthM": 5,
+    "from": [
+      3270,
+      1690
+    ],
+    "to": {
+      "riverId": "r2147",
+      "t": 0.61,
+      "bank": "right",
+      "offsetM": 6
+    }
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_dock_lane",
+    "name": "鱼货上岸路",
+    "tier": "street",
+    "widthM": 5,
+    "from": [
+      3190,
+      2580
+    ],
+    "to": {
+      "riverId": "r2147",
+      "t": 0.36,
+      "bank": "right",
+      "offsetM": 6
+    }
+  }
+]

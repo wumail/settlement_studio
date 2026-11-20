@@ -1,0 +1,159 @@
+[
+  {
+    "op": "connect_road",
+    "id": "camp_water",
+    "name": "营地取水径",
+    "tier": "lane",
+    "widthM": 2,
+    "from": [
+      1130,
+      755
+    ],
+    "via": [
+      [
+        1180,
+        735
+      ]
+    ],
+    "to": [
+      1280,
+      720
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "inn_access",
+    "name": "客舍门前路",
+    "tier": "lane",
+    "widthM": 3.5,
+    "from": [
+      3103.51,
+      2990.693
+    ],
+    "to": [
+      3110,
+      2989
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "grain_access",
+    "name": "仓前支巷",
+    "tier": "lane",
+    "widthM": 3.5,
+    "from": [
+      3038.334,
+      2966.787
+    ],
+    "to": [
+      3035,
+      2930
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "yard_access",
+    "name": "卸货场支路",
+    "tier": "lane",
+    "widthM": 3.5,
+    "from": [
+      3028.803,
+      2963.502
+    ],
+    "to": [
+      3060,
+      3005
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "goods_access",
+    "name": "山货棚前径",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      2739.588,
+      2946.322
+    ],
+    "to": [
+      2740,
+      2988
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "south_house_lane",
+    "name": "南坊小巷",
+    "tier": "lane",
+    "widthM": 3,
+    "from": [
+      2700,
+      2950
+    ],
+    "via": [
+      [
+        2710,
+        3030
+      ]
+    ],
+    "to": [
+      2750,
+      3100
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "east_house_lane",
+    "name": "东坊小巷",
+    "tier": "lane",
+    "widthM": 3,
+    "from": [
+      3180,
+      3045
+    ],
+    "via": [
+      [
+        3150,
+        3120
+      ]
+    ],
+    "to": [
+      3098.562,
+      3196.986
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "north_house_lane",
+    "name": "井坪后巷",
+    "tier": "lane",
+    "widthM": 3,
+    "from": [
+      2900,
+      2740
+    ],
+    "via": [
+      [
+        2920,
+        2685
+      ]
+    ],
+    "to": [
+      3000,
+      2700
+    ]
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_well",
+    "label": "公井",
+    "anchor": [
+      2780,
+      2778
+    ],
+    "glyphType": "well_shrine",
+    "showLabel": true,
+    "sizePx": 11,
+    "subtitle": "井坪上的公共取水点；本次聚落设计补充"
+  }
+]

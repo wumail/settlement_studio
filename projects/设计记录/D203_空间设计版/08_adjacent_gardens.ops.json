@@ -1,0 +1,77 @@
+[
+  {
+    "op": "place_zone",
+    "id": "creek_garden_n",
+    "name": "北户屋旁菜园",
+    "contentType": "farmland",
+    "relative": {
+      "anchor": [
+        1930,
+        3400
+      ],
+      "shape": "rect",
+      "areaHa": 0.18,
+      "aspectRatio": 1.12,
+      "rotationDeg": 0
+    },
+    "density": 0.5,
+    "seed": 7105,
+    "maxSlopeDeg": 12,
+    "frayOuter": false
+  },
+  {
+    "op": "place_zone",
+    "id": "creek_garden",
+    "name": "南户屋旁菜园",
+    "contentType": "farmland",
+    "relative": {
+      "anchor": [
+        1917,
+        3478
+      ],
+      "shape": "rect",
+      "areaHa": 0.18,
+      "aspectRatio": 1.12,
+      "rotationDeg": 0
+    },
+    "density": 0.5,
+    "seed": 7104,
+    "maxSlopeDeg": 12,
+    "frayOuter": false
+  },
+  {
+    "op": "place_zone",
+    "id": "south_edge_garden",
+    "name": "镇边屋旁菜园",
+    "contentType": "farmland",
+    "relative": {
+      "anchor": [
+        2845,
+        3230
+      ],
+      "shape": "rect",
+      "areaHa": 0.18,
+      "aspectRatio": 1.12,
+      "rotationDeg": 0
+    },
+    "density": 0.5,
+    "seed": 7121,
+    "maxSlopeDeg": 12,
+    "frayOuter": false
+  },
+  {
+    "op": "connect_road",
+    "id": "south_garden_path",
+    "name": "菜园短径",
+    "tier": "lane",
+    "widthM": 2,
+    "from": [
+      2775,
+      3245
+    ],
+    "to": [
+      2820,
+      3238
+    ]
+  }
+]

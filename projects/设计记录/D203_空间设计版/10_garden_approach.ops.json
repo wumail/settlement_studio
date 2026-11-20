@@ -1,0 +1,17 @@
+[
+  {
+    "op": "connect_road",
+    "id": "south_garden_path",
+    "name": "菜园短径",
+    "tier": "lane",
+    "widthM": 2,
+    "from": [
+      2775,
+      3245
+    ],
+    "to": [
+      2818,
+      3248
+    ]
+  }
+]

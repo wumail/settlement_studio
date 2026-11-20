@@ -9,6 +9,7 @@ import {
   paintRoads,
   paintSaltpan,
   paintTrees,
+  paintWoodlandUnderstory,
 } from './paintLand';
 import { paintBridges, paintCanals, paintReefsFords, paintWater } from './paintHydro';
 import { paintHydraulicWorks, paintStructures } from './paintStructures';
@@ -36,9 +37,13 @@ function pushGroupedRoads(
     }
     ids.add(road.id);
   }
-  for (const [z, ids] of byZ) {
-    push(z, () => paintRoads(ctx, ids));
+  if (byZ.size === 0) {
+    push(Z_BASE.road, () => paintRoads(ctx, undefined));
+    return;
   }
+  // 次级巷网随最低 z 组同批两遍绘制：全路缘仍严格先于全路面
+  const groups = [...byZ.entries()].sort((a, b) => a[0] - b[0]);
+  groups.forEach(([z, ids], index) => push(z, () => paintRoads(ctx, ids, index === 0)));
 }
 
 /** 为自动生成的桥位匹配 35m 内的桥梁覆写，读取其自定义 zIndex */
@@ -73,6 +78,7 @@ export function paintAuthored(ctx: PaintContext, withLabels: boolean): void {
     for (const zone of project.zones) {
       const id = zone.id;
       push(zOf(Z_BASE.land, zone.zIndex), () => {
+        paintWoodlandUnderstory(ctx, id);
         paintExclusion(ctx, id);
         paintFarmland(ctx, id);
         paintSaltpan(ctx, id);
@@ -89,6 +95,7 @@ export function paintAuthored(ctx: PaintContext, withLabels: boolean): void {
   for (const zone of project.zones) {
     const id = zone.id;
     push(zOf(Z_BASE.land, zone.zIndex), () => {
+      paintWoodlandUnderstory(ctx, id);
       paintExclusion(ctx, id);
       paintFarmland(ctx, id);
       paintSaltpan(ctx, id);

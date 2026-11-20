@@ -1,0 +1,45 @@
+{
+  "note": "规划关系，不代表逐户产权；距离按实际田径和耕作位置作粗略判断，不设统一上限。",
+  "groups": [
+    {
+      "residence": "west_farm_hamlet",
+      "fields": [
+        "farm_west_upper",
+        "farm_west_lower"
+      ],
+      "route": "村巷接谷路、西侧田径及两处短入田径"
+    },
+    {
+      "residence": "east_farm_hamlet",
+      "fields": [
+        "farm_southeast",
+        "farm_outer_east"
+      ],
+      "route": "东田村道及灌田、旱田各自的短入田径"
+    },
+    {
+      "residence": "creek_farm_house_n",
+      "fields": [
+        "creek_garden_n",
+        "farm_riverside"
+      ],
+      "route": "屋旁菜园直接相邻，主要菜田经农家径接溪边田径"
+    },
+    {
+      "residence": "creek_farm_house_s",
+      "fields": [
+        "creek_garden",
+        "farm_riverside"
+      ],
+      "route": "屋旁菜园与农家径相连，主要田地共用溪边田径"
+    },
+    {
+      "residence": "south_edge_house",
+      "fields": [
+        "south_edge_garden",
+        "farm_south"
+      ],
+      "route": "屋旁菜园与南田小径；镇南田也由镇边住户耕作"
+    }
+  ]
+}

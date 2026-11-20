@@ -1,0 +1,899 @@
+[
+  {
+    "op": "place_zone",
+    "id": "plague_boundary",
+    "name": "黑石疫界 · 旧市封墟",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        1420,
+        1820
+      ],
+      "shape": "organic",
+      "areaHa": 7,
+      "aspectRatio": 1.3,
+      "rotationDeg": -12
+    },
+    "exclusionStyle": "plague_stones",
+    "seed": 5061
+  },
+  {
+    "op": "place_zone",
+    "id": "well_shrine",
+    "name": "井母祠院",
+    "contentType": "citadel",
+    "points": [
+      [
+        1535,
+        2005
+      ],
+      [
+        1695,
+        2005
+      ],
+      [
+        1710,
+        2130
+      ],
+      [
+        1540,
+        2130
+      ]
+    ],
+    "seed": 5062,
+    "density": 0.2,
+    "maxSlopeDeg": 12,
+    "wallThicknessM": 2,
+    "towerIntervalM": 100,
+    "buildingScale": 1.05
+  },
+  {
+    "op": "upsert_structure",
+    "id": "shrine_hall",
+    "name": "井母祠",
+    "x": 1607,
+    "y": 2040,
+    "widthM": 58,
+    "depthM": 38,
+    "angleDeg": 0,
+    "kind": "u_court",
+    "roofKind": "town"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "spring_keeper",
+    "name": "水钥值房",
+    "x": 1670,
+    "y": 2035,
+    "widthM": 18,
+    "depthM": 14,
+    "angleDeg": 0,
+    "kind": "rect",
+    "roofKind": "town"
+  },
+  {
+    "op": "connect_road",
+    "id": "shrine_access",
+    "name": "井祠入口",
+    "tier": "lane",
+    "widthM": 4,
+    "from": [
+      1700,
+      2150
+    ],
+    "to": [
+      1630,
+      2085
+    ],
+    "via": [
+      [
+        1665,
+        2110
+      ]
+    ]
+  },
+  {
+    "op": "place_zone",
+    "id": "kiln_yard",
+    "name": "旧砖窑与硝皮院",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        1755,
+        1910
+      ],
+      "shape": "rect",
+      "areaHa": 0.9,
+      "aspectRatio": 1.5,
+      "rotationDeg": 0
+    },
+    "seed": 20261119,
+    "density": 0.65,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_water_body",
+    "id": "bitter_pool",
+    "name": "苦水浅洼",
+    "kind": "lake",
+    "points": [
+      [
+        1800,
+        1920
+      ],
+      [
+        1823,
+        1914
+      ],
+      [
+        1835,
+        1932
+      ],
+      [
+        1818,
+        1947
+      ],
+      [
+        1803,
+        1941
+      ]
+    ],
+    "rippleLines": 0
+  },
+  {
+    "op": "upsert_structure",
+    "id": "old_kiln_a",
+    "name": "废砖窑",
+    "x": 1720,
+    "y": 1880,
+    "widthM": 22,
+    "depthM": 16,
+    "angleDeg": 0,
+    "kind": "rect",
+    "roofKind": "town"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "old_kiln_b",
+    "name": "废砖窑",
+    "x": 1765,
+    "y": 1880,
+    "widthM": 20,
+    "depthM": 15,
+    "angleDeg": 0,
+    "kind": "rect",
+    "roofKind": "town"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "kiln_house_1",
+    "name": "窑边贫户",
+    "x": 1700,
+    "y": 1920,
+    "widthM": 12,
+    "depthM": 10,
+    "angleDeg": 0,
+    "kind": "rect",
+    "roofKind": "town"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "kiln_house_2",
+    "name": "窑边贫户",
+    "x": 1730,
+    "y": 1938,
+    "widthM": 12,
+    "depthM": 10,
+    "angleDeg": 8,
+    "kind": "rect",
+    "roofKind": "town"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "kiln_house_3",
+    "name": "窑边贫户",
+    "x": 1760,
+    "y": 1940,
+    "widthM": 12,
+    "depthM": 10,
+    "angleDeg": 0,
+    "kind": "rect",
+    "roofKind": "town"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "kiln_house_4",
+    "name": "窑边贫户",
+    "x": 1790,
+    "y": 1900,
+    "widthM": 12,
+    "depthM": 10,
+    "angleDeg": 8,
+    "kind": "rect",
+    "roofKind": "town"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "kiln_house_5",
+    "name": "窑边贫户",
+    "x": 1745,
+    "y": 1975,
+    "widthM": 12,
+    "depthM": 10,
+    "angleDeg": 0,
+    "kind": "rect",
+    "roofKind": "town"
+  },
+  {
+    "op": "connect_road",
+    "id": "kiln_lane",
+    "name": "砖窑小径",
+    "tier": "lane",
+    "widthM": 2.6,
+    "from": [
+      1900,
+      1920
+    ],
+    "to": [
+      1760,
+      1940
+    ],
+    "via": [
+      [
+        1850,
+        1960
+      ],
+      [
+        1790,
+        1970
+      ]
+    ]
+  },
+  {
+    "op": "place_zone",
+    "id": "main_market",
+    "name": "路口大市",
+    "contentType": "market",
+    "relative": {
+      "anchor": [
+        2630,
+        2070
+      ],
+      "shape": "rect",
+      "areaHa": 2.4,
+      "aspectRatio": 1.5,
+      "rotationDeg": 0
+    },
+    "seed": 5070,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "marketMode": "stalls"
+  },
+  {
+    "op": "place_zone",
+    "id": "night_market",
+    "name": "北街夜市",
+    "contentType": "market",
+    "relative": {
+      "anchor": [
+        2930,
+        1650
+      ],
+      "shape": "rect",
+      "areaHa": 0.75,
+      "aspectRatio": 1.6,
+      "rotationDeg": 0
+    },
+    "seed": 5071,
+    "density": 0.72,
+    "maxSlopeDeg": 12,
+    "marketMode": "stalls"
+  },
+  {
+    "op": "place_zone",
+    "id": "cargo_apron",
+    "name": "换装岸坪",
+    "contentType": "market",
+    "points": [
+      [
+        3220,
+        1800
+      ],
+      [
+        3325,
+        1780
+      ],
+      [
+        3370,
+        1920
+      ],
+      [
+        3310,
+        2050
+      ],
+      [
+        3200,
+        2070
+      ]
+    ],
+    "seed": 5072,
+    "density": 0.55,
+    "maxSlopeDeg": 12,
+    "marketMode": "port_apron"
+  },
+  {
+    "op": "place_zone",
+    "id": "fish_apron",
+    "name": "鱼货泊船坪",
+    "contentType": "market",
+    "points": [
+      [
+        3150,
+        2490
+      ],
+      [
+        3240,
+        2460
+      ],
+      [
+        3260,
+        2600
+      ],
+      [
+        3190,
+        2690
+      ],
+      [
+        3135,
+        2635
+      ]
+    ],
+    "seed": 5073,
+    "density": 0.45,
+    "maxSlopeDeg": 12,
+    "marketMode": "port_apron"
+  },
+  {
+    "op": "snap_dock",
+    "id": "wharf_cargo",
+    "name": "货舟换装埠",
+    "targetId": "r2147",
+    "targetKind": "river",
+    "t": 0.52,
+    "bank": "left",
+    "kind": "wooden_pier",
+    "slips": 3,
+    "spacingM": 24,
+    "lengthM": 42,
+    "widthM": 9,
+    "insetM": 10
+  },
+  {
+    "op": "snap_dock",
+    "id": "wharf_guest",
+    "name": "客舟与夜市埠",
+    "targetId": "r2147",
+    "targetKind": "river",
+    "t": 0.61,
+    "bank": "left",
+    "kind": "wooden_pier",
+    "slips": 2,
+    "spacingM": 22,
+    "lengthM": 30,
+    "widthM": 8,
+    "insetM": 9
+  },
+  {
+    "op": "snap_dock",
+    "id": "wharf_fish",
+    "name": "浅舟鱼货埠",
+    "targetId": "r2147",
+    "targetKind": "river",
+    "t": 0.36,
+    "bank": "left",
+    "kind": "slipway",
+    "slips": 3,
+    "spacingM": 18,
+    "lengthM": 36,
+    "widthM": 8,
+    "insetM": 10
+  },
+  {
+    "op": "place_zone",
+    "id": "north_inn_court",
+    "name": "北客舍院场",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        2985,
+        1490
+      ],
+      "shape": "rect",
+      "areaHa": 1.5,
+      "aspectRatio": 1.25,
+      "rotationDeg": 0
+    },
+    "seed": 20261119,
+    "density": 0.65,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "north_inn",
+    "name": "北街大客舍",
+    "x": 2985,
+    "y": 1490,
+    "widthM": 92,
+    "depthM": 72,
+    "angleDeg": 180,
+    "kind": "u_court",
+    "roofKind": "town"
+  },
+  {
+    "op": "place_zone",
+    "id": "barge_inn_court",
+    "name": "舟商客院",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        3170,
+        1820
+      ],
+      "shape": "rect",
+      "areaHa": 1.1,
+      "aspectRatio": 1.2,
+      "rotationDeg": 0
+    },
+    "seed": 20261119,
+    "density": 0.65,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "barge_inn",
+    "name": "舟商客舍",
+    "x": 3170,
+    "y": 1820,
+    "widthM": 76,
+    "depthM": 60,
+    "angleDeg": 180,
+    "kind": "u_court",
+    "roofKind": "town"
+  },
+  {
+    "op": "place_zone",
+    "id": "caravan_inn_court",
+    "name": "驮队客院",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        2570,
+        2300
+      ],
+      "shape": "rect",
+      "areaHa": 1.35,
+      "aspectRatio": 1.2,
+      "rotationDeg": 0
+    },
+    "seed": 20261119,
+    "density": 0.65,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "caravan_inn",
+    "name": "内陆驮队客舍",
+    "x": 2570,
+    "y": 2300,
+    "widthM": 86,
+    "depthM": 68,
+    "angleDeg": 180,
+    "kind": "u_court",
+    "roofKind": "town"
+  },
+  {
+    "op": "place_zone",
+    "id": "pack_yard",
+    "name": "驮畜与整装坪",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        2610,
+        2400
+      ],
+      "shape": "rect",
+      "areaHa": 0.9,
+      "aspectRatio": 1.6,
+      "rotationDeg": 0
+    },
+    "seed": 20261119,
+    "density": 0.65,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "pack_feed_store",
+    "name": "草料棚",
+    "x": 2650,
+    "y": 2405,
+    "widthM": 28,
+    "depthM": 16,
+    "angleDeg": 0,
+    "kind": "rect",
+    "roofKind": "town"
+  },
+  {
+    "op": "place_zone",
+    "id": "contract_court",
+    "name": "契约公院",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        3040,
+        1940
+      ],
+      "shape": "rect",
+      "areaHa": 0.65,
+      "aspectRatio": 1.1,
+      "rotationDeg": 0
+    },
+    "seed": 20261119,
+    "density": 0.65,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "contract_hall",
+    "name": "契约仲裁所",
+    "x": 3040,
+    "y": 1940,
+    "widthM": 50,
+    "depthM": 38,
+    "angleDeg": 0,
+    "kind": "u_court",
+    "roofKind": "town"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "bulk_store",
+    "name": "粮货大栈",
+    "x": 3270,
+    "y": 1900,
+    "widthM": 60,
+    "depthM": 36,
+    "angleDeg": 10,
+    "kind": "rect",
+    "roofKind": "town"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_salt_store",
+    "name": "鱼盐货栈",
+    "x": 3160,
+    "y": 2370,
+    "widthM": 44,
+    "depthM": 32,
+    "angleDeg": 0,
+    "kind": "rect",
+    "roofKind": "town"
+  },
+  {
+    "op": "connect_road",
+    "id": "north_inn_access",
+    "name": "客舍入口",
+    "tier": "lane",
+    "widthM": 4.5,
+    "from": [
+      2810,
+      1200
+    ],
+    "to": [
+      2985,
+      1440
+    ],
+    "via": [
+      [
+        2925,
+        1350
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "barge_inn_access",
+    "name": "舟商院入口",
+    "tier": "lane",
+    "widthM": 4,
+    "from": [
+      3070,
+      1690
+    ],
+    "to": [
+      3170,
+      1775
+    ],
+    "via": [
+      [
+        3140,
+        1735
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "caravan_inn_access",
+    "name": "驮队院入口",
+    "tier": "lane",
+    "widthM": 5,
+    "from": [
+      2630,
+      2070
+    ],
+    "to": [
+      2570,
+      2250
+    ],
+    "via": [
+      [
+        2630,
+        2200
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "contract_access",
+    "name": "仲裁院入口",
+    "tier": "lane",
+    "widthM": 3.5,
+    "from": [
+      2980,
+      2050
+    ],
+    "to": [
+      3035,
+      1967
+    ],
+    "via": [
+      [
+        3000,
+        2000
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "cargo_dock_lane",
+    "name": "货栈至舟埠",
+    "tier": "street",
+    "widthM": 6,
+    "from": [
+      3320,
+      2000
+    ],
+    "to": {
+      "riverId": "r2147",
+      "t": 0.52,
+      "bank": "left",
+      "offsetM": 5
+    }
+  },
+  {
+    "op": "connect_road",
+    "id": "guest_dock_lane",
+    "name": "客舟岸路",
+    "tier": "street",
+    "widthM": 5,
+    "from": [
+      3270,
+      1690
+    ],
+    "to": {
+      "riverId": "r2147",
+      "t": 0.61,
+      "bank": "left",
+      "offsetM": 6
+    }
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_dock_lane",
+    "name": "鱼货上岸路",
+    "tier": "street",
+    "widthM": 5,
+    "from": [
+      3190,
+      2580
+    ],
+    "to": {
+      "riverId": "r2147",
+      "t": 0.36,
+      "bank": "left",
+      "offsetM": 6
+    }
+  },
+  {
+    "op": "upsert_canal",
+    "id": "north_water",
+    "name": "北坊净水支渠",
+    "style": "stone_clean",
+    "widthM": 2.2,
+    "points": [
+      [
+        2210,
+        2150
+      ],
+      [
+        2260,
+        1950
+      ],
+      [
+        2490,
+        1840
+      ],
+      [
+        2780,
+        1810
+      ],
+      [
+        3020,
+        1780
+      ],
+      [
+        3210,
+        1765
+      ]
+    ]
+  },
+  {
+    "op": "upsert_canal",
+    "id": "inn_water",
+    "name": "客舍取水支渠",
+    "style": "stone_clean",
+    "widthM": 1.5,
+    "points": [
+      [
+        2780,
+        1810
+      ],
+      [
+        2840,
+        1600
+      ],
+      [
+        3010,
+        1545
+      ]
+    ]
+  },
+  {
+    "op": "upsert_canal",
+    "id": "west_water",
+    "name": "西坊取水支渠",
+    "style": "stone_clean",
+    "widthM": 2,
+    "points": [
+      [
+        1670,
+        2090
+      ],
+      [
+        1695,
+        2270
+      ],
+      [
+        1730,
+        2490
+      ]
+    ]
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_shrine",
+    "label": "井母祠 · 清泉口",
+    "anchor": [
+      1555,
+      2070
+    ],
+    "glyphType": "well_shrine",
+    "sizePx": 12,
+    "subtitle": "淡水先供居民与洗鱼；祠院管理水份",
+    "showLabel": true
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_plague",
+    "label": "旧市疫界",
+    "anchor": [
+      1420,
+      1820
+    ],
+    "glyphType": "stele",
+    "sizePx": 12,
+    "subtitle": "封墟与墓地；禁建、禁牧、禁掘",
+    "showLabel": true
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_market",
+    "label": "路口大市",
+    "anchor": [
+      2630,
+      2070
+    ],
+    "glyphType": "market_tent",
+    "sizePx": 12,
+    "subtitle": "舟驮货物在此交易转运",
+    "showLabel": true
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_contract",
+    "label": "契约仲裁所",
+    "anchor": [
+      3040,
+      1940
+    ],
+    "glyphType": "stele",
+    "sizePx": 12,
+    "subtitle": "北街旅商的账契与争讼",
+    "showLabel": true
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_cargo",
+    "label": "货舟换装埠",
+    "anchor": {
+      "entityId": "wharf_cargo"
+    },
+    "glyphType": "ferry_anchor",
+    "sizePx": 12,
+    "subtitle": "长湖来货在岸坪与驮队换装",
+    "showLabel": true
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_north_inn",
+    "label": "北街客舍",
+    "anchor": [
+      2985,
+      1490
+    ],
+    "glyphType": "gate_arch",
+    "sizePx": 12,
+    "subtitle": "临夜市、客舟埠",
+    "showLabel": true
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_caravan_inn",
+    "label": "驮队客舍",
+    "anchor": [
+      2570,
+      2300
+    ],
+    "glyphType": "gate_arch",
+    "sizePx": 12,
+    "subtitle": "客院与牲畜整装坪分开",
+    "showLabel": true
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_crying_well",
+    "label": "第三井 · 哭井",
+    "anchor": [
+      1435.3705519997884,
+      2028.6451109835032
+    ],
+    "glyphType": "well_shrine",
+    "sizePx": 12,
+    "subtitle": "由祠院向西数第三座检修井",
+    "showLabel": true
+  }
+]

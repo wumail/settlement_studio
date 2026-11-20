@@ -1,0 +1,2306 @@
+[
+  {
+    "op": "place_zone",
+    "id": "old_west",
+    "name": "西坡伊克旧坊",
+    "contentType": "town_blocks",
+    "points": [
+      [
+        1170,
+        2210
+      ],
+      [
+        1330,
+        2110
+      ],
+      [
+        1530,
+        2170
+      ],
+      [
+        1670,
+        2310
+      ],
+      [
+        1690,
+        2580
+      ],
+      [
+        1500,
+        2670
+      ],
+      [
+        1250,
+        2580
+      ],
+      [
+        1150,
+        2430
+      ]
+    ],
+    "seed": 6111,
+    "density": 0.96,
+    "maxSlopeDeg": 12,
+    "buildingScale": 1
+  },
+  {
+    "op": "place_zone",
+    "id": "old_south",
+    "name": "旧坊南街",
+    "contentType": "town_blocks",
+    "points": [
+      [
+        1370,
+        2710
+      ],
+      [
+        1600,
+        2670
+      ],
+      [
+        1830,
+        2760
+      ],
+      [
+        1910,
+        2920
+      ],
+      [
+        1760,
+        3110
+      ],
+      [
+        1450,
+        3060
+      ],
+      [
+        1290,
+        2900
+      ]
+    ],
+    "seed": 6112,
+    "density": 0.92,
+    "maxSlopeDeg": 12,
+    "buildingScale": 1
+  },
+  {
+    "op": "place_zone",
+    "id": "central_west",
+    "name": "净渠街坊",
+    "contentType": "town_blocks",
+    "points": [
+      [
+        1780,
+        2140
+      ],
+      [
+        1960,
+        1980
+      ],
+      [
+        2160,
+        1980
+      ],
+      [
+        2230,
+        2160
+      ],
+      [
+        2340,
+        2360
+      ],
+      [
+        2200,
+        2510
+      ],
+      [
+        1940,
+        2495
+      ],
+      [
+        1760,
+        2350
+      ]
+    ],
+    "seed": 6113,
+    "density": 1,
+    "maxSlopeDeg": 12,
+    "buildingScale": 1
+  },
+  {
+    "op": "place_zone",
+    "id": "northwest",
+    "name": "北坊商住街",
+    "contentType": "town_blocks",
+    "points": [
+      [
+        2090,
+        1450
+      ],
+      [
+        2440,
+        1420
+      ],
+      [
+        2630,
+        1500
+      ],
+      [
+        2660,
+        1770
+      ],
+      [
+        2490,
+        1850
+      ],
+      [
+        2250,
+        1960
+      ],
+      [
+        2050,
+        1870
+      ]
+    ],
+    "seed": 6114,
+    "density": 0.97,
+    "maxSlopeDeg": 12,
+    "buildingScale": 1
+  },
+  {
+    "op": "place_zone",
+    "id": "north_inn_ward",
+    "name": "客舍街坊",
+    "contentType": "town_blocks",
+    "points": [
+      [
+        2640,
+        1240
+      ],
+      [
+        2900,
+        1230
+      ],
+      [
+        3050,
+        1330
+      ],
+      [
+        3090,
+        1570
+      ],
+      [
+        2935,
+        1710
+      ],
+      [
+        2710,
+        1660
+      ],
+      [
+        2600,
+        1490
+      ]
+    ],
+    "seed": 6115,
+    "density": 0.95,
+    "maxSlopeDeg": 12,
+    "buildingScale": 1
+  },
+  {
+    "op": "place_zone",
+    "id": "northeast",
+    "name": "北埠货商里",
+    "contentType": "town_blocks",
+    "points": [
+      [
+        3090,
+        1390
+      ],
+      [
+        3280,
+        1420
+      ],
+      [
+        3390,
+        1590
+      ],
+      [
+        3340,
+        1790
+      ],
+      [
+        3230,
+        1815
+      ],
+      [
+        3110,
+        1700
+      ]
+    ],
+    "seed": 6116,
+    "density": 0.88,
+    "maxSlopeDeg": 12,
+    "buildingScale": 1
+  },
+  {
+    "op": "place_zone",
+    "id": "market_east",
+    "name": "东街铺宅",
+    "contentType": "town_blocks",
+    "points": [
+      [
+        2750,
+        1880
+      ],
+      [
+        2930,
+        1810
+      ],
+      [
+        2970,
+        1900
+      ],
+      [
+        2950,
+        2070
+      ],
+      [
+        3000,
+        2175
+      ],
+      [
+        2740,
+        2180
+      ]
+    ],
+    "seed": 6117,
+    "density": 1,
+    "maxSlopeDeg": 12,
+    "buildingScale": 1
+  },
+  {
+    "op": "place_zone",
+    "id": "south_middle",
+    "name": "南坊民居",
+    "contentType": "town_blocks",
+    "points": [
+      [
+        1930,
+        2550
+      ],
+      [
+        2140,
+        2560
+      ],
+      [
+        2300,
+        2680
+      ],
+      [
+        2325,
+        2950
+      ],
+      [
+        2190,
+        3090
+      ],
+      [
+        1990,
+        3020
+      ],
+      [
+        1890,
+        2800
+      ]
+    ],
+    "seed": 6118,
+    "density": 0.95,
+    "maxSlopeDeg": 12,
+    "buildingScale": 1
+  },
+  {
+    "op": "place_zone",
+    "id": "south_east",
+    "name": "南街修造里",
+    "contentType": "town_blocks",
+    "points": [
+      [
+        2440,
+        2500
+      ],
+      [
+        2660,
+        2480
+      ],
+      [
+        2740,
+        2600
+      ],
+      [
+        2730,
+        2910
+      ],
+      [
+        2590,
+        3100
+      ],
+      [
+        2420,
+        3030
+      ],
+      [
+        2450,
+        2800
+      ]
+    ],
+    "seed": 6119,
+    "density": 0.9,
+    "maxSlopeDeg": 12,
+    "buildingScale": 1
+  },
+  {
+    "op": "place_zone",
+    "id": "upper_west",
+    "name": "北道新坊",
+    "contentType": "town_blocks",
+    "points": [
+      [
+        2200,
+        1020
+      ],
+      [
+        2450,
+        960
+      ],
+      [
+        2660,
+        1080
+      ],
+      [
+        2680,
+        1330
+      ],
+      [
+        2520,
+        1430
+      ],
+      [
+        2250,
+        1370
+      ],
+      [
+        2110,
+        1200
+      ]
+    ],
+    "seed": 6120,
+    "density": 0.78,
+    "maxSlopeDeg": 12,
+    "buildingScale": 1
+  },
+  {
+    "op": "place_zone",
+    "id": "upper_east",
+    "name": "北道外街",
+    "contentType": "town_blocks",
+    "points": [
+      [
+        2870,
+        930
+      ],
+      [
+        3110,
+        960
+      ],
+      [
+        3260,
+        1090
+      ],
+      [
+        3240,
+        1300
+      ],
+      [
+        3070,
+        1350
+      ],
+      [
+        2910,
+        1230
+      ],
+      [
+        2840,
+        1090
+      ]
+    ],
+    "seed": 6121,
+    "density": 0.74,
+    "maxSlopeDeg": 12,
+    "buildingScale": 1
+  },
+  {
+    "op": "connect_road",
+    "id": "north_inner_lane",
+    "name": "北坊内街",
+    "tier": "street",
+    "widthM": 5,
+    "from": [
+      2100,
+      1530
+    ],
+    "to": [
+      2810,
+      1200
+    ],
+    "via": [
+      [
+        2290,
+        1375
+      ],
+      [
+        2520,
+        1380
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "upper_cross",
+    "name": "北道横巷",
+    "tier": "lane",
+    "widthM": 5,
+    "from": [
+      2350,
+      1000
+    ],
+    "to": [
+      3060,
+      1110
+    ],
+    "via": [
+      [
+        2540,
+        1080
+      ],
+      [
+        2770,
+        1090
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "old_west_lane",
+    "name": "旧坊里巷",
+    "tier": "lane",
+    "widthM": 4,
+    "from": [
+      1250,
+      2310
+    ],
+    "to": [
+      1500,
+      2500
+    ],
+    "via": [
+      [
+        1380,
+        2335
+      ],
+      [
+        1450,
+        2450
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "old_lower_street",
+    "name": "南旧坊巷",
+    "tier": "lane",
+    "widthM": 4.5,
+    "from": [
+      1530,
+      2740
+    ],
+    "to": [
+      2390,
+      2980
+    ],
+    "via": [
+      [
+        1700,
+        2820
+      ],
+      [
+        1800,
+        2920
+      ],
+      [
+        2050,
+        3020
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "market_back_street",
+    "name": "北市后街",
+    "tier": "street",
+    "widthM": 5.5,
+    "from": [
+      2180,
+      1940
+    ],
+    "to": [
+      2910,
+      1840
+    ],
+    "via": [
+      [
+        2380,
+        1940
+      ],
+      [
+        2530,
+        1880
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "warehouse_street",
+    "name": "货栈后街",
+    "tier": "street",
+    "widthM": 5,
+    "from": [
+      3020,
+      2250
+    ],
+    "to": [
+      3070,
+      1690
+    ],
+    "via": [
+      [
+        3110,
+        2130
+      ],
+      [
+        3150,
+        1990
+      ],
+      [
+        3130,
+        1830
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_west_lane",
+    "name": "西鱼坊巷",
+    "tier": "lane",
+    "widthM": 4,
+    "from": [
+      2770,
+      2390
+    ],
+    "to": [
+      2770,
+      2930
+    ],
+    "via": []
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_middle_lane",
+    "name": "鱼坊中巷",
+    "tier": "lane",
+    "widthM": 4,
+    "from": [
+      2950,
+      2420
+    ],
+    "to": [
+      2950,
+      2950
+    ],
+    "via": []
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_cross",
+    "name": "鱼坊横巷",
+    "tier": "lane",
+    "widthM": 4,
+    "from": [
+      2770,
+      2665
+    ],
+    "to": [
+      3100,
+      2665
+    ],
+    "via": [
+      [
+        2950,
+        2665
+      ]
+    ]
+  },
+  {
+    "op": "upsert_canal",
+    "id": "fish_west_supply",
+    "name": "西排鱼坊净水",
+    "style": "stone_clean",
+    "points": [
+      [
+        2700,
+        2380
+      ],
+      [
+        2750,
+        2400
+      ],
+      [
+        2750,
+        2920
+      ]
+    ],
+    "widthM": 1.5
+  },
+  {
+    "op": "upsert_canal",
+    "id": "fish_east_supply",
+    "name": "东排鱼坊净水",
+    "style": "stone_clean",
+    "points": [
+      [
+        2940,
+        2390
+      ],
+      [
+        2920,
+        2430
+      ],
+      [
+        2920,
+        2920
+      ]
+    ],
+    "widthM": 1.5
+  },
+  {
+    "op": "upsert_canal",
+    "id": "fish_west_drain",
+    "name": "西排鱼坊退水",
+    "style": "drainage_dashed",
+    "points": [
+      [
+        2890,
+        2450
+      ],
+      [
+        2890,
+        2940
+      ]
+    ],
+    "widthM": 1.5
+  },
+  {
+    "op": "upsert_canal",
+    "id": "fish_east_drain",
+    "name": "东排鱼坊退水",
+    "style": "drainage_dashed",
+    "points": [
+      [
+        3080,
+        2450
+      ],
+      [
+        3080,
+        2940
+      ]
+    ],
+    "widthM": 1.5
+  },
+  {
+    "op": "upsert_canal",
+    "id": "fish_outfall",
+    "name": "鱼坊独立退水沟",
+    "style": "foul_outfall",
+    "points": [
+      [
+        2890,
+        2940
+      ],
+      [
+        3100,
+        2940
+      ],
+      [
+        3180,
+        2880
+      ],
+      [
+        3200,
+        2720
+      ],
+      [
+        3250,
+        2510
+      ],
+      [
+        3345,
+        2380
+      ]
+    ],
+    "widthM": 2
+  },
+  {
+    "op": "place_zone",
+    "id": "fish_yard_1",
+    "name": "十二户洗晒鱼院",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        2830,
+        2465
+      ],
+      "shape": "rect",
+      "areaHa": 0.52,
+      "aspectRatio": 1.2,
+      "rotationDeg": 0
+    },
+    "seed": 6201,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_house_1",
+    "name": "前铺后院",
+    "x": 2830,
+    "y": 2448,
+    "widthM": 42,
+    "depthM": 24,
+    "kind": "u_court",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_shed_1",
+    "name": "干鱼与器具棚",
+    "x": 2851,
+    "y": 2485,
+    "widthM": 12,
+    "depthM": 10,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_access_1",
+    "name": "鱼坊院门短巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      2770,
+      2479
+    ],
+    "to": [
+      2824,
+      2479
+    ],
+    "via": []
+  },
+  {
+    "op": "upsert_canal",
+    "id": "fish_wash_branch_1",
+    "name": "院前取水支口",
+    "style": "stone_clean",
+    "points": [
+      [
+        2750,
+        2462
+      ],
+      [
+        2791,
+        2462
+      ]
+    ],
+    "widthM": 1.2
+  },
+  {
+    "op": "place_zone",
+    "id": "fish_yard_2",
+    "name": "鱼业院场",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        3020,
+        2465
+      ],
+      "shape": "rect",
+      "areaHa": 0.52,
+      "aspectRatio": 1.2,
+      "rotationDeg": 0
+    },
+    "seed": 6202,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_house_2",
+    "name": "前铺后院",
+    "x": 3020,
+    "y": 2448,
+    "widthM": 42,
+    "depthM": 24,
+    "kind": "u_court",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_shed_2",
+    "name": "干鱼与器具棚",
+    "x": 3041,
+    "y": 2485,
+    "widthM": 12,
+    "depthM": 10,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_access_2",
+    "name": "鱼坊院门短巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      2950,
+      2479
+    ],
+    "to": [
+      3014,
+      2479
+    ],
+    "via": []
+  },
+  {
+    "op": "upsert_canal",
+    "id": "fish_wash_branch_2",
+    "name": "院前取水支口",
+    "style": "stone_clean",
+    "points": [
+      [
+        2920,
+        2462
+      ],
+      [
+        2981,
+        2462
+      ]
+    ],
+    "widthM": 1.2
+  },
+  {
+    "op": "place_zone",
+    "id": "fish_yard_3",
+    "name": "鱼业院场",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        2830,
+        2545
+      ],
+      "shape": "rect",
+      "areaHa": 0.52,
+      "aspectRatio": 1.2,
+      "rotationDeg": 0
+    },
+    "seed": 6203,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_house_3",
+    "name": "前铺后院",
+    "x": 2830,
+    "y": 2528,
+    "widthM": 42,
+    "depthM": 24,
+    "kind": "u_court",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_shed_3",
+    "name": "干鱼与器具棚",
+    "x": 2851,
+    "y": 2565,
+    "widthM": 12,
+    "depthM": 10,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_access_3",
+    "name": "鱼坊院门短巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      2770,
+      2559
+    ],
+    "to": [
+      2824,
+      2559
+    ],
+    "via": []
+  },
+  {
+    "op": "upsert_canal",
+    "id": "fish_wash_branch_3",
+    "name": "院前取水支口",
+    "style": "stone_clean",
+    "points": [
+      [
+        2750,
+        2542
+      ],
+      [
+        2791,
+        2542
+      ]
+    ],
+    "widthM": 1.2
+  },
+  {
+    "op": "place_zone",
+    "id": "fish_yard_4",
+    "name": "鱼业院场",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        3020,
+        2545
+      ],
+      "shape": "rect",
+      "areaHa": 0.52,
+      "aspectRatio": 1.2,
+      "rotationDeg": 0
+    },
+    "seed": 6204,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_house_4",
+    "name": "前铺后院",
+    "x": 3020,
+    "y": 2528,
+    "widthM": 42,
+    "depthM": 24,
+    "kind": "u_court",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_shed_4",
+    "name": "干鱼与器具棚",
+    "x": 3041,
+    "y": 2565,
+    "widthM": 12,
+    "depthM": 10,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_access_4",
+    "name": "鱼坊院门短巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      2950,
+      2559
+    ],
+    "to": [
+      3014,
+      2559
+    ],
+    "via": []
+  },
+  {
+    "op": "upsert_canal",
+    "id": "fish_wash_branch_4",
+    "name": "院前取水支口",
+    "style": "stone_clean",
+    "points": [
+      [
+        2920,
+        2542
+      ],
+      [
+        2981,
+        2542
+      ]
+    ],
+    "widthM": 1.2
+  },
+  {
+    "op": "place_zone",
+    "id": "fish_yard_5",
+    "name": "鱼业院场",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        2830,
+        2625
+      ],
+      "shape": "rect",
+      "areaHa": 0.52,
+      "aspectRatio": 1.2,
+      "rotationDeg": 0
+    },
+    "seed": 6205,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_house_5",
+    "name": "前铺后院",
+    "x": 2830,
+    "y": 2608,
+    "widthM": 42,
+    "depthM": 24,
+    "kind": "u_court",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_shed_5",
+    "name": "干鱼与器具棚",
+    "x": 2851,
+    "y": 2645,
+    "widthM": 12,
+    "depthM": 10,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_access_5",
+    "name": "鱼坊院门短巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      2770,
+      2639
+    ],
+    "to": [
+      2824,
+      2639
+    ],
+    "via": []
+  },
+  {
+    "op": "upsert_canal",
+    "id": "fish_wash_branch_5",
+    "name": "院前取水支口",
+    "style": "stone_clean",
+    "points": [
+      [
+        2750,
+        2622
+      ],
+      [
+        2791,
+        2622
+      ]
+    ],
+    "widthM": 1.2
+  },
+  {
+    "op": "place_zone",
+    "id": "fish_yard_6",
+    "name": "鱼业院场",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        3020,
+        2625
+      ],
+      "shape": "rect",
+      "areaHa": 0.52,
+      "aspectRatio": 1.2,
+      "rotationDeg": 0
+    },
+    "seed": 6206,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_house_6",
+    "name": "前铺后院",
+    "x": 3020,
+    "y": 2608,
+    "widthM": 42,
+    "depthM": 24,
+    "kind": "u_court",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_shed_6",
+    "name": "干鱼与器具棚",
+    "x": 3041,
+    "y": 2645,
+    "widthM": 12,
+    "depthM": 10,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_access_6",
+    "name": "鱼坊院门短巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      2950,
+      2639
+    ],
+    "to": [
+      3014,
+      2639
+    ],
+    "via": []
+  },
+  {
+    "op": "upsert_canal",
+    "id": "fish_wash_branch_6",
+    "name": "院前取水支口",
+    "style": "stone_clean",
+    "points": [
+      [
+        2920,
+        2622
+      ],
+      [
+        2981,
+        2622
+      ]
+    ],
+    "widthM": 1.2
+  },
+  {
+    "op": "place_zone",
+    "id": "fish_yard_7",
+    "name": "鱼业院场",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        2830,
+        2705
+      ],
+      "shape": "rect",
+      "areaHa": 0.52,
+      "aspectRatio": 1.2,
+      "rotationDeg": 0
+    },
+    "seed": 6207,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_house_7",
+    "name": "前铺后院",
+    "x": 2830,
+    "y": 2688,
+    "widthM": 42,
+    "depthM": 24,
+    "kind": "u_court",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_shed_7",
+    "name": "干鱼与器具棚",
+    "x": 2851,
+    "y": 2725,
+    "widthM": 12,
+    "depthM": 10,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_access_7",
+    "name": "鱼坊院门短巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      2770,
+      2719
+    ],
+    "to": [
+      2824,
+      2719
+    ],
+    "via": []
+  },
+  {
+    "op": "upsert_canal",
+    "id": "fish_wash_branch_7",
+    "name": "院前取水支口",
+    "style": "stone_clean",
+    "points": [
+      [
+        2750,
+        2702
+      ],
+      [
+        2791,
+        2702
+      ]
+    ],
+    "widthM": 1.2
+  },
+  {
+    "op": "place_zone",
+    "id": "fish_yard_8",
+    "name": "鱼业院场",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        3020,
+        2705
+      ],
+      "shape": "rect",
+      "areaHa": 0.52,
+      "aspectRatio": 1.2,
+      "rotationDeg": 0
+    },
+    "seed": 6208,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_house_8",
+    "name": "前铺后院",
+    "x": 3020,
+    "y": 2688,
+    "widthM": 42,
+    "depthM": 24,
+    "kind": "u_court",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_shed_8",
+    "name": "干鱼与器具棚",
+    "x": 3041,
+    "y": 2725,
+    "widthM": 12,
+    "depthM": 10,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_access_8",
+    "name": "鱼坊院门短巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      2950,
+      2719
+    ],
+    "to": [
+      3014,
+      2719
+    ],
+    "via": []
+  },
+  {
+    "op": "upsert_canal",
+    "id": "fish_wash_branch_8",
+    "name": "院前取水支口",
+    "style": "stone_clean",
+    "points": [
+      [
+        2920,
+        2702
+      ],
+      [
+        2981,
+        2702
+      ]
+    ],
+    "widthM": 1.2
+  },
+  {
+    "op": "place_zone",
+    "id": "fish_yard_9",
+    "name": "鱼业院场",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        2830,
+        2785
+      ],
+      "shape": "rect",
+      "areaHa": 0.52,
+      "aspectRatio": 1.2,
+      "rotationDeg": 0
+    },
+    "seed": 6209,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_house_9",
+    "name": "前铺后院",
+    "x": 2830,
+    "y": 2768,
+    "widthM": 42,
+    "depthM": 24,
+    "kind": "u_court",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_shed_9",
+    "name": "干鱼与器具棚",
+    "x": 2851,
+    "y": 2805,
+    "widthM": 12,
+    "depthM": 10,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_access_9",
+    "name": "鱼坊院门短巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      2770,
+      2799
+    ],
+    "to": [
+      2824,
+      2799
+    ],
+    "via": []
+  },
+  {
+    "op": "upsert_canal",
+    "id": "fish_wash_branch_9",
+    "name": "院前取水支口",
+    "style": "stone_clean",
+    "points": [
+      [
+        2750,
+        2782
+      ],
+      [
+        2791,
+        2782
+      ]
+    ],
+    "widthM": 1.2
+  },
+  {
+    "op": "place_zone",
+    "id": "fish_yard_10",
+    "name": "鱼业院场",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        3020,
+        2785
+      ],
+      "shape": "rect",
+      "areaHa": 0.52,
+      "aspectRatio": 1.2,
+      "rotationDeg": 0
+    },
+    "seed": 6210,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_house_10",
+    "name": "前铺后院",
+    "x": 3020,
+    "y": 2768,
+    "widthM": 42,
+    "depthM": 24,
+    "kind": "u_court",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_shed_10",
+    "name": "干鱼与器具棚",
+    "x": 3041,
+    "y": 2805,
+    "widthM": 12,
+    "depthM": 10,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_access_10",
+    "name": "鱼坊院门短巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      2950,
+      2799
+    ],
+    "to": [
+      3014,
+      2799
+    ],
+    "via": []
+  },
+  {
+    "op": "upsert_canal",
+    "id": "fish_wash_branch_10",
+    "name": "院前取水支口",
+    "style": "stone_clean",
+    "points": [
+      [
+        2920,
+        2782
+      ],
+      [
+        2981,
+        2782
+      ]
+    ],
+    "widthM": 1.2
+  },
+  {
+    "op": "place_zone",
+    "id": "fish_yard_11",
+    "name": "鱼业院场",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        2830,
+        2865
+      ],
+      "shape": "rect",
+      "areaHa": 0.52,
+      "aspectRatio": 1.2,
+      "rotationDeg": 0
+    },
+    "seed": 6211,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_house_11",
+    "name": "前铺后院",
+    "x": 2830,
+    "y": 2848,
+    "widthM": 42,
+    "depthM": 24,
+    "kind": "u_court",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_shed_11",
+    "name": "干鱼与器具棚",
+    "x": 2851,
+    "y": 2885,
+    "widthM": 12,
+    "depthM": 10,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_access_11",
+    "name": "鱼坊院门短巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      2770,
+      2879
+    ],
+    "to": [
+      2824,
+      2879
+    ],
+    "via": []
+  },
+  {
+    "op": "upsert_canal",
+    "id": "fish_wash_branch_11",
+    "name": "院前取水支口",
+    "style": "stone_clean",
+    "points": [
+      [
+        2750,
+        2862
+      ],
+      [
+        2791,
+        2862
+      ]
+    ],
+    "widthM": 1.2
+  },
+  {
+    "op": "place_zone",
+    "id": "fish_yard_12",
+    "name": "鱼业院场",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        3020,
+        2865
+      ],
+      "shape": "rect",
+      "areaHa": 0.52,
+      "aspectRatio": 1.2,
+      "rotationDeg": 0
+    },
+    "seed": 6212,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_house_12",
+    "name": "前铺后院",
+    "x": 3020,
+    "y": 2848,
+    "widthM": 42,
+    "depthM": 24,
+    "kind": "u_court",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "upsert_structure",
+    "id": "fish_shed_12",
+    "name": "干鱼与器具棚",
+    "x": 3041,
+    "y": 2885,
+    "widthM": 12,
+    "depthM": 10,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "connect_road",
+    "id": "fish_yard_access_12",
+    "name": "鱼坊院门短巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      2950,
+      2879
+    ],
+    "to": [
+      3014,
+      2879
+    ],
+    "via": []
+  },
+  {
+    "op": "upsert_canal",
+    "id": "fish_wash_branch_12",
+    "name": "院前取水支口",
+    "style": "stone_clean",
+    "points": [
+      [
+        2920,
+        2862
+      ],
+      [
+        2981,
+        2862
+      ]
+    ],
+    "widthM": 1.2
+  },
+  {
+    "op": "place_zone",
+    "id": "west_grain_upper",
+    "name": "西坡谷豆田",
+    "contentType": "farmland",
+    "points": [
+      [
+        240,
+        3040
+      ],
+      [
+        630,
+        2940
+      ],
+      [
+        1100,
+        3020
+      ],
+      [
+        1170,
+        3290
+      ],
+      [
+        900,
+        3420
+      ],
+      [
+        420,
+        3380
+      ]
+    ],
+    "seed": 6301,
+    "density": 0.5,
+    "maxSlopeDeg": 12,
+    "buildingScale": 1,
+    "frayOuter": true
+  },
+  {
+    "op": "place_zone",
+    "id": "west_grain_lower",
+    "name": "西南轮作田",
+    "contentType": "farmland",
+    "points": [
+      [
+        320,
+        3520
+      ],
+      [
+        770,
+        3470
+      ],
+      [
+        1180,
+        3530
+      ],
+      [
+        1230,
+        3910
+      ],
+      [
+        780,
+        4050
+      ],
+      [
+        360,
+        3920
+      ]
+    ],
+    "seed": 6302,
+    "density": 0.5,
+    "maxSlopeDeg": 12,
+    "buildingScale": 1,
+    "frayOuter": true
+  },
+  {
+    "op": "place_zone",
+    "id": "south_grain",
+    "name": "南扇谷豆田",
+    "contentType": "farmland",
+    "points": [
+      [
+        1360,
+        3410
+      ],
+      [
+        1640,
+        3390
+      ],
+      [
+        1910,
+        3470
+      ],
+      [
+        1940,
+        3830
+      ],
+      [
+        1620,
+        3990
+      ],
+      [
+        1340,
+        3850
+      ]
+    ],
+    "seed": 6303,
+    "density": 0.5,
+    "maxSlopeDeg": 12,
+    "buildingScale": 1,
+    "frayOuter": true
+  },
+  {
+    "op": "place_zone",
+    "id": "gardens_south",
+    "name": "护渠灌园",
+    "contentType": "farmland",
+    "points": [
+      [
+        2190,
+        3320
+      ],
+      [
+        2320,
+        3280
+      ],
+      [
+        2490,
+        3360
+      ],
+      [
+        2500,
+        3500
+      ],
+      [
+        2350,
+        3570
+      ],
+      [
+        2160,
+        3480
+      ]
+    ],
+    "seed": 6304,
+    "density": 0.6,
+    "maxSlopeDeg": 12,
+    "buildingScale": 1,
+    "frayOuter": true
+  },
+  {
+    "op": "place_zone",
+    "id": "west_farm_hamlet",
+    "name": "谷田小村",
+    "contentType": "village",
+    "points": [
+      [
+        1210,
+        3190
+      ],
+      [
+        1340,
+        3210
+      ],
+      [
+        1380,
+        3370
+      ],
+      [
+        1310,
+        3450
+      ],
+      [
+        1190,
+        3400
+      ],
+      [
+        1180,
+        3260
+      ]
+    ],
+    "seed": 6310,
+    "density": 1,
+    "maxSlopeDeg": 12,
+    "buildingScale": 1
+  },
+  {
+    "op": "connect_road",
+    "id": "southwest_farm_track",
+    "name": "谷田农路",
+    "tier": "lane",
+    "widthM": 4,
+    "from": [
+      1150,
+      2590
+    ],
+    "to": [
+      1230,
+      4200
+    ],
+    "via": [
+      [
+        1170,
+        2940
+      ],
+      [
+        1200,
+        3150
+      ],
+      [
+        1270,
+        3300
+      ],
+      [
+        1300,
+        3540
+      ],
+      [
+        1260,
+        3770
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "upper_field_access",
+    "name": "上田短径",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      1200,
+      3150
+    ],
+    "to": [
+      1120,
+      3130
+    ],
+    "via": []
+  },
+  {
+    "op": "connect_road",
+    "id": "lower_field_access",
+    "name": "下田短径",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      1300,
+      3540
+    ],
+    "to": [
+      1200,
+      3600
+    ],
+    "via": []
+  },
+  {
+    "op": "connect_road",
+    "id": "south_field_access",
+    "name": "南田短径",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      1300,
+      3540
+    ],
+    "to": [
+      1400,
+      3530
+    ],
+    "via": []
+  },
+  {
+    "op": "upsert_structure",
+    "id": "grain_village_store",
+    "name": "共用粮棚",
+    "x": 1365,
+    "y": 3330,
+    "widthM": 24,
+    "depthM": 16,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "upsert_structure",
+    "id": "south_farm_house_a",
+    "name": "田边农舍",
+    "x": 1245,
+    "y": 3740,
+    "widthM": 24,
+    "depthM": 18,
+    "kind": "u_court",
+    "roofKind": "town",
+    "angleDeg": 180
+  },
+  {
+    "op": "upsert_structure",
+    "id": "south_farm_house_b",
+    "name": "田边农家",
+    "x": 1265,
+    "y": 3820,
+    "widthM": 22,
+    "depthM": 16,
+    "kind": "l_hall",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "upsert_structure",
+    "id": "south_farm_shed",
+    "name": "农具粮柴棚",
+    "x": 1305,
+    "y": 3760,
+    "widthM": 20,
+    "depthM": 13,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "place_zone",
+    "id": "farmhouse_garden",
+    "name": "屋旁豆菜畦",
+    "contentType": "farmland",
+    "relative": {
+      "anchor": [
+        1290,
+        3710
+      ],
+      "shape": "rect",
+      "areaHa": 0.2,
+      "aspectRatio": 1.2,
+      "rotationDeg": 0
+    },
+    "seed": 6311,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "frayOuter": false
+  },
+  {
+    "op": "connect_road",
+    "id": "farmhouse_access",
+    "name": "农家短径",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      1260,
+      3770
+    ],
+    "to": [
+      1245,
+      3723
+    ],
+    "via": []
+  },
+  {
+    "op": "connect_road",
+    "id": "farmhouse_lower_access",
+    "name": "田边家巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      1260,
+      3770
+    ],
+    "to": [
+      1270,
+      3835
+    ],
+    "via": [
+      [
+        1290,
+        3800
+      ]
+    ]
+  },
+  {
+    "op": "upsert_structure",
+    "id": "canal_keeper_home",
+    "name": "护渠人家",
+    "x": 2135,
+    "y": 3195,
+    "widthM": 26,
+    "depthM": 20,
+    "kind": "u_court",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "upsert_structure",
+    "id": "canal_keeper_shed",
+    "name": "储粮与农具棚",
+    "x": 2175,
+    "y": 3200,
+    "widthM": 18,
+    "depthM": 12,
+    "kind": "rect",
+    "roofKind": "town",
+    "angleDeg": 0
+  },
+  {
+    "op": "place_zone",
+    "id": "keeper_garden",
+    "name": "护渠户屋旁菜畦",
+    "contentType": "farmland",
+    "relative": {
+      "anchor": [
+        2085,
+        3210
+      ],
+      "shape": "rect",
+      "areaHa": 0.2,
+      "aspectRatio": 1.1,
+      "rotationDeg": 0
+    },
+    "seed": 6320,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "frayOuter": false
+  },
+  {
+    "op": "connect_road",
+    "id": "keeper_lane",
+    "name": "护渠户出田路",
+    "tier": "lane",
+    "widthM": 2.8,
+    "from": [
+      2390,
+      2980
+    ],
+    "to": [
+      2135,
+      3210
+    ],
+    "via": [
+      [
+        2310,
+        3150
+      ],
+      [
+        2160,
+        3220
+      ]
+    ]
+  },
+  {
+    "op": "connect_road",
+    "id": "keeper_field_access",
+    "name": "灌园短径",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      2160,
+      3220
+    ],
+    "to": [
+      2220,
+      3330
+    ],
+    "via": []
+  },
+  {
+    "op": "upsert_canal",
+    "id": "garden_surplus",
+    "name": "余水轮灌支渠",
+    "style": "irrigation",
+    "points": [
+      [
+        1730,
+        2490
+      ],
+      [
+        1850,
+        2700
+      ],
+      [
+        1980,
+        3000
+      ],
+      [
+        2060,
+        3190
+      ],
+      [
+        2240,
+        3290
+      ],
+      [
+        2460,
+        3390
+      ]
+    ],
+    "widthM": 1.8
+  },
+  {
+    "op": "place_zone",
+    "id": "old_water_space",
+    "name": "西坊取水坪",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        1730,
+        2490
+      ],
+      "shape": "rect",
+      "areaHa": 0.18,
+      "aspectRatio": 1,
+      "rotationDeg": 0
+    },
+    "seed": 6330,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "place_zone",
+    "id": "north_water_space",
+    "name": "北坊取水坪",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        2780,
+        1810
+      ],
+      "shape": "rect",
+      "areaHa": 0.18,
+      "aspectRatio": 1,
+      "rotationDeg": 0
+    },
+    "seed": 6331,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "place_zone",
+    "id": "east_water_space",
+    "name": "东坊取水坪",
+    "contentType": "exclusion",
+    "relative": {
+      "anchor": [
+        2670,
+        2210
+      ],
+      "shape": "rect",
+      "areaHa": 0.18,
+      "aspectRatio": 1,
+      "rotationDeg": 0
+    },
+    "seed": 6332,
+    "density": 0.8,
+    "maxSlopeDeg": 12,
+    "exclusionStyle": "plain"
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_west_water",
+    "label": "西坊取水坪",
+    "anchor": [
+      1730,
+      2490
+    ],
+    "glyphType": "well_shrine",
+    "sizePx": 10
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_north_water",
+    "label": "北坊取水坪",
+    "anchor": [
+      2780,
+      1810
+    ],
+    "glyphType": "well_shrine",
+    "sizePx": 10
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_east_water",
+    "label": "东坊取水坪",
+    "anchor": [
+      2670,
+      2210
+    ],
+    "glyphType": "well_shrine",
+    "sizePx": 10
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_fish",
+    "label": "十二户洗晒鱼坊",
+    "anchor": [
+      2830,
+      2465
+    ],
+    "glyphType": "market_tent",
+    "sizePx": 12,
+    "subtitle": "前铺、洗鱼院与干鱼棚；淡水取用与退水分开"
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_hamlet",
+    "label": "谷田小村",
+    "anchor": [
+      1270,
+      3300
+    ],
+    "glyphType": "well_shrine",
+    "sizePx": 10,
+    "subtitle": "联系西坡、轮作田和南扇田"
+  },
+  {
+    "op": "upsert_landmark",
+    "id": "lm_keeper",
+    "label": "护渠农居",
+    "anchor": [
+      2135,
+      3195
+    ],
+    "glyphType": "gate_arch",
+    "sizePx": 10
+  }
+]

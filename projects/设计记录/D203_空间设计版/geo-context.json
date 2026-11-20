@@ -1,0 +1,12 @@
+{
+  "elevM": 497.428,
+  "slopeDirDeg": 357.183,
+  "slopeMagM": 12.898,
+  "query": {
+    "lon": 18.99,
+    "lat": 19.53,
+    "spanM": 4000
+  },
+  "regionNote": "D2-03内盆山地外缘候选定位；仅DEM区域背景，局部支谷与溪流为设计",
+  "suggestedRivers": []
+}

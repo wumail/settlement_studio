@@ -1,8 +1,10 @@
 import type { Polygon, Polyline, Vec2 } from '../schema/geometry.types';
 import type { ZoneExclusionStyle } from '../schema/entity.schema';
+import { computePolygonBBox } from '../core/math/polygon';
 import { mixHex, type PaintContext } from './paintContext';
 import type { ResolvedPalette } from '../schema/palette.schema';
 import { PAINTED_TREE_ZONE } from '../core/obstacles/guardSafe';
+import { canopyLobes, canopyPass } from './canopyLobes';
 
 function ringOf(poly: Polygon): Polyline {
   const first = poly[0];
@@ -31,6 +33,31 @@ export function paintExclusion(ctx: PaintContext, zoneId?: string): void {
     const style: ZoneExclusionStyle = zone?.exclusionStyle ?? 'plague_stones';
     const pts = poly;
     const ring = ringOf(pts).map(ctx.pt);
+    // 素地留白：导出态彻底无痕（纯空间留白），编辑态仅极淡辅助虚线
+    if (style === 'plain') {
+      if (ctx.isExport) continue;
+      backend.drawPolyline(ring, {
+        stroke: pal.inkMuted,
+        lineWidth: 0.6,
+        dash: [7, 6],
+        opacity: 0.28,
+      });
+      continue;
+    }
+    // 围栏场坪：淡暖土压实铺地 + 细实线矮墙边（车马候装坪 / 晒场 / 货栈院）
+    if (style === 'enclosure') {
+      backend.drawPolygon(pts.map(ctx.pt), {
+        fill: mixHex(pal.roadFill, pal.farmlandFill, 0.45),
+        fillOpacity: 0.55,
+      });
+      backend.drawPolyline(ring, {
+        stroke: pal.inkDark,
+        lineWidth: ctx.px(1.0),
+        opacity: 0.68,
+        lineJoin: 'round',
+      });
+      continue;
+    }
     if (style === 'plague_stones') {
       // 封墟土色微晕：圈内凄荒苍白灰黄，与圈外田畴拉开一层极淡底
       backend.drawPolygon(pts.map(ctx.pt), {
@@ -49,16 +76,7 @@ export function paintExclusion(ctx: PaintContext, zoneId?: string): void {
         fillOpacity: 0.6,
       });
       const dashes: Array<readonly [Vec2, Vec2]> = [];
-      let minX = Number.POSITIVE_INFINITY;
-      let minY = Number.POSITIVE_INFINITY;
-      let maxX = Number.NEGATIVE_INFINITY;
-      let maxY = Number.NEGATIVE_INFINITY;
-      for (const p of pts) {
-        minX = Math.min(minX, p[0]);
-        minY = Math.min(minY, p[1]);
-        maxX = Math.max(maxX, p[0]);
-        maxY = Math.max(maxY, p[1]);
-      }
+      const [minX, minY, maxX, maxY] = computePolygonBBox(pts);
       for (let y = minY + 5; y < maxY; y += 9) {
         for (let x = minX + 5; x < maxX; x += 14) {
           dashes.push([ctx.pt([x, y]), ctx.pt([x + 5, y])]);
@@ -159,7 +177,34 @@ export function paintAprons(ctx: PaintContext, zoneId?: string): void {
   }
 }
 
-/** 村径 / 内部巷道：浅米白路面 + 虚线中轴（V2 漏绘修复） */
+/** 次级巷网：若存在残留路径，仅以极浅窄径细笔轻描，不抢街廓负空间 */
+export function paintInternalStreets(ctx: PaintContext, pass: 'casing' | 'surface'): void {
+  const { backend, pal, scene } = ctx;
+  if (!scene || scene.internalStreets.length === 0) return;
+  if (pass === 'casing') {
+    for (const street of scene.internalStreets) {
+      if (street.length < 2) continue;
+      backend.drawPolyline(street.map(ctx.pt), {
+        stroke: mixHex(pal.roadCasing, pal.paperBg, 0.68),
+        lineWidth: ctx.px(3.2),
+        lineCap: 'round',
+        lineJoin: 'round',
+      });
+    }
+    return;
+  }
+  for (const street of scene.internalStreets) {
+    if (street.length < 2) continue;
+    backend.drawPolyline(street.map(ctx.pt), {
+      stroke: mixHex(pal.roadFill, pal.paperBg, 0.35),
+      lineWidth: ctx.px(2.2),
+      lineCap: 'round',
+      lineJoin: 'round',
+    });
+  }
+}
+
+/** 村径：浅米白路面 + 虚线中轴（V2 漏绘修复；次级巷网归 paintRoads 两遍绘制） */
 export function paintLanes(ctx: PaintContext): void {
   const { backend, pal, scene } = ctx;
   if (!scene) return;
@@ -183,8 +228,12 @@ export function paintLanes(ctx: PaintContext): void {
   }
 }
 
-/** 三级道路：全部路缘先于全部路面（零黑叉），lane 再叠虚线中轴 */
-export function paintRoads(ctx: PaintContext, onlyIds?: string | ReadonlySet<string>): void {
+/** 三级道路：全部路缘先于全部路面（零黑叉），lane 再叠虚线中轴；次级巷网同批两遍 */
+export function paintRoads(
+  ctx: PaintContext,
+  onlyIds?: string | ReadonlySet<string>,
+  withStreets = onlyIds === undefined,
+): void {
   const { backend, pal, scene } = ctx;
   if (!scene) return;
   const roads = onlyIds === undefined
@@ -192,7 +241,7 @@ export function paintRoads(ctx: PaintContext, onlyIds?: string | ReadonlySet<str
     : typeof onlyIds === 'string'
       ? scene.hydro.roads.filter((r) => r.id === onlyIds)
       : scene.hydro.roads.filter((r) => onlyIds.has(r.id));
-  if (roads.length === 0) return;
+  if (withStreets) paintInternalStreets(ctx, 'casing');
   for (const road of roads) {
     backend.drawPolyline(road.centerline.map(ctx.pt), {
       stroke: '#5b4a38',
@@ -200,6 +249,7 @@ export function paintRoads(ctx: PaintContext, onlyIds?: string | ReadonlySet<str
       lineJoin: 'round',
     });
   }
+  if (withStreets) paintInternalStreets(ctx, 'surface');
   for (const road of roads) {
     backend.drawPolyline(road.centerline.map(ctx.pt), {
       stroke: pal.roadFill,
@@ -218,7 +268,7 @@ export function paintRoads(ctx: PaintContext, onlyIds?: string | ReadonlySet<str
   }
 }
 
-/** 三步融合树冠：投影 → 轮廓 → 树冠，区树与涂抹树合并同批绘制；支持按 zoneId 独立叠层 */
+/** 多瓣融合云朵树冠：叶瓣展开 → 投影 → 轮廓 → 树冠三遍，区树与涂抹树合并同批绘制 */
 export function paintTrees(ctx: PaintContext, zoneId?: string): void {
   const { backend, pal, scene, project } = ctx;
   if (!scene) return;
@@ -235,25 +285,26 @@ export function paintTrees(ctx: PaintContext, zoneId?: string): void {
     : [];
   const trees = [...zoneTrees, ...painted];
   if (trees.length === 0) return;
+  // 单树展开为微偏心核 + 非对称扇贝瓣，紧邻叶瓣在合并批次里自动布尔融合成团并保留利落细墨线
+  const lobes = trees.flatMap((tree) => canopyLobes(tree));
+  const screen = (x: number, y: number): readonly [number, number] => ctx.pt([x, y]);
   backend.drawCirclesMergedPass(
-    trees.map((t) => {
-      const c = ctx.pt([t.x + 2.2, t.y + 2.2]);
-      return { cx: c[0], cy: c[1], r: ctx.px(t.r + 1.0) };
-    }),
+    canopyPass(lobes, 0.35, screen, ctx.px, 1.5, 1.5),
     'rgba(43, 37, 32, 0.15)',
   );
-  backend.drawCirclesMergedPass(
-    trees.map((t) => {
-      const c = ctx.pt([t.x, t.y]);
-      return { cx: c[0], cy: c[1], r: ctx.px(t.r + 1.8) };
-    }),
-    pal.treeOutline,
-  );
-  backend.drawCirclesMergedPass(
-    trees.map((t) => {
-      const c = ctx.pt([t.x, t.y]);
-      return { cx: c[0], cy: c[1], r: ctx.px(t.r) };
-    }),
-    pal.treeFill,
-  );
+  backend.drawCirclesMergedPass(canopyPass(lobes, 0.72, screen, ctx.px), pal.treeOutline);
+  backend.drawCirclesMergedPass(canopyPass(lobes, 0, screen, ctx.px), pal.treeFill);
+}
+
+/** 林下草甸底色：成片疏林选区先铺一层柔和浅苔绿，衬托云朵林冠与林间草地空隙（无描边） */
+export function paintWoodlandUnderstory(ctx: PaintContext, zoneId?: string): void {
+  const { backend, pal, project } = ctx;
+  for (const zone of project.zones) {
+    if (zone.contentType !== 'woodland') continue;
+    if (zoneId !== undefined && zone.id !== zoneId) continue;
+    backend.drawPolygon(zone.points.map(ctx.pt), {
+      fill: mixHex(pal.treeFill, pal.paperBg, 0.72),
+      fillOpacity: 0.3,
+    });
+  }
 }

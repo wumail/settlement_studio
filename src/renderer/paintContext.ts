@@ -28,6 +28,8 @@ export interface PaintContext {
   readonly furnitureOpacity: number;
   /** 图面文字统一透明度（0 = 隐去） */
   readonly labelOpacity: number;
+  /** 成图导出态：禁建留白等辅助标记彻底无痕 */
+  readonly isExport: boolean;
   readonly pt: (v: Vec2) => Vec2;
   readonly px: (m: number) => number;
 }
@@ -46,6 +48,7 @@ export function makeContext(
   pal: ResolvedPalette,
   selection: SelectionTarget | null,
   hoverContourId: string | null,
+  isExport = false,
 ): PaintContext {
   return {
     backend,
@@ -57,6 +60,7 @@ export function makeContext(
     hoverContourId,
     furnitureOpacity: project.legend.furnitureOpacity,
     labelOpacity: project.legend.labelOpacity,
+    isExport,
     pt: (v: Vec2) => worldToScreen(v[0], v[1], vp),
     px: (m: number) => Math.max(0.35, m * vp.zoom),
   };

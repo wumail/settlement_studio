@@ -432,7 +432,7 @@ describe('M3 · 9 类选区微模块产出', () => {
 
     const blocks = byType.get('town_blocks');
     expect(blocks?.buildings.length).toBeGreaterThan(10);
-    expect(blocks?.internalStreets.length).toBeGreaterThan(0);
+    expect(blocks?.internalStreets).toEqual([]);
 
     const village = byType.get('village');
     expect(village?.buildings.length).toBeGreaterThan(0);

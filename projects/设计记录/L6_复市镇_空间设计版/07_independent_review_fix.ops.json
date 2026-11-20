@@ -1,0 +1,35 @@
+[
+  {
+    "op": "upsert_structure",
+    "id": "south_farm_house_b",
+    "name": "田边农家",
+    "x": 1277,
+    "y": 3820,
+    "widthM": 22,
+    "depthM": 16,
+    "angleDeg": 0,
+    "kind": "l_hall",
+    "roofKind": "town"
+  },
+  {
+    "op": "connect_road",
+    "id": "farmhouse_lower_access",
+    "name": "田边家巷",
+    "tier": "lane",
+    "widthM": 2.5,
+    "from": [
+      1252.8280832332543,
+      3850
+    ],
+    "via": [
+      [
+        1265,
+        3843
+      ]
+    ],
+    "to": [
+      1283,
+      3835
+    ]
+  }
+]

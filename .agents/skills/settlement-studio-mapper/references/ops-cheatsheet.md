@@ -174,12 +174,12 @@ V5 terrain fields (all optional, fully backward compatible):
   },
   {
     "op": "upsert_structure",
-    "id": "st_hall",
-    "name": "Council Hall",
+    "id": "st_inn_compound",
+    "name": "Caravan Courtyard Inn",
     "anchor": { "zoneId": "zone_inner", "side": "east", "offsetM": -140 },
-    "widthM": 54,
-    "depthM": 38,
-    "kind": "l_hall",
+    "widthM": 38,
+    "depthM": 32,
+    "kind": "courtyard",
     "roofKind": "citadel",
     "zoneId": "zone_inner"
   },
@@ -205,8 +205,8 @@ V5 terrain fields (all optional, fully backward compatible):
 - `contentType`: `"walled_city" | "town_blocks" | "village" | "citadel" | "market" | "farmland" | "saltpan" | "woodland" | "exclusion"`.
 - `buildingScale`: `0.45–1.6` (default `1.0`) — scales house width/depth and block density together. Keep `0.95–1.05` for towns and `1.0–1.1` for capitals; use `0.70–0.80` for `village` camps and watchposts (`areaHa < 1.5` or `buildingScale < 0.85` switches the hamlet into compact hut mode with ring-lane layout).
 - `marketMode`: `"stalls" | "timber_yard" | "port_apron"`.
-- `exclusionStyle`: `"plague_stones" | "meadow" | "marsh" | "plain"`.
-- `structure.kind`: `"rect" | "l_hall" | "u_court" | "round_altar"`; `roofKind`: `"inner" | "town" | "citadel"`.
+- `exclusionStyle`: `"plague_stones" | "meadow" | "marsh" | "plain" | "enclosure"` (`"plain"` is an invisible spatial keep-out on exported maps; use `"enclosure"` for visible walled/fenced staging yards, drying grounds, and forecourts).
+- `structure.kind`: `"rect" | "l_hall" | "u_court" | "round_altar" | "courtyard"`; `roofKind`: `"inner" | "town" | "citadel"`. Keep single-roof buildings (`rect`, `l_hall`, `u_court`) to realistic timber/masonry spans (`12–28m` wide, `8–16m` deep); for large inns, yamen, guildhalls, or depots (`28–56m` across), use `"courtyard"` (multi-wing walled compound) or compose several smaller `rect`/`l_hall` structures around an `"enclosure"` yard instead of one giant roof slab.
 - `bridge.style`: `"stone_arch" | "timber" | "fortified_twin" | "ford"`.
 
 ### 4. Landmarks, Trees, Reroll, Palette, Legend & Cleanup

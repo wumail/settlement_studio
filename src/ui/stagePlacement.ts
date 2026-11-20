@@ -5,8 +5,17 @@ import type { CompiledSceneBase, Vec2 } from '../schema/geometry.types';
 import { CUSTOM_GLYPH_TYPES, type CustomGlyphType } from '../schema/legend.schema';
 import type { TownProject } from '../schema/project.schema';
 import type { HydraulicPreset, StructurePreset } from '../store/studioTypes';
+import type { StructureKind } from '../schema/v3.entity.schema';
 import { useStudioStore } from '../store/useStudioStore';
 import { nextId } from './stageBrush';
+
+/** 落位默认名：合院建筑群用于客舍/驿馆/衙署/会馆/大货栈 */
+const STRUCTURE_DEFAULT_NAMES: Readonly<Partial<Record<StructureKind, string>>> = {
+  round_altar: '官坛',
+  u_court: '客舍合院',
+  courtyard: '客舍大院',
+  l_hall: '议事厅',
+};
 
 interface FlowHit {
   readonly point: Vec2;
@@ -135,7 +144,7 @@ export function placeStructure(world: Vec2, preset: StructurePreset): string {
     draft.structures.push({
       zIndex: 0,
       id,
-      name: preset.kind === 'round_altar' ? '官坛' : preset.kind === 'u_court' ? '客舍合院' : '核心建筑',
+      name: STRUCTURE_DEFAULT_NAMES[preset.kind] ?? '核心建筑',
       x: world[0],
       y: world[1],
       angleDeg: 0,

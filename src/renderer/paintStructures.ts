@@ -83,17 +83,34 @@ export function structureRoofColor(kind: BuiltStructure['roofKind'], pal: PaintC
   return mixHex(pal.roofInner, '#b58e4a', 0.45);
 }
 
-/** 核心建筑群：阴影 + 实形 + 圆坛内环台基 + 屋脊 + 名号（受 pure 模式控制） */
+/** 核心建筑群：院坪铺地 + 实线矮院墙 + 阴影 + 实形 + 圆坛内环台基 + 屋脊 + 名号（受 pure 模式控制） */
 export function paintStructures(ctx: PaintContext, withLabels: boolean, onlyId?: string): void {
   const all = ctx.scene?.structures;
   if (!all || all.length === 0) return;
   const structures = onlyId === undefined ? all : all.filter((item) => item.id === onlyId);
   if (structures.length === 0) return;
   const { backend, pal } = ctx;
-  backend.drawBatchPolygons(
-    structures.map((item) => item.shadow.map(ctx.pt)),
-    { fill: 'rgba(43, 37, 32, 0.16)' },
-  );
+  for (const item of structures) {
+    if (!item.yardPolygon) continue;
+    backend.drawPolygon(item.yardPolygon.map(ctx.pt), {
+      fill: mixHex(pal.roadFill, pal.farmlandFill, 0.38),
+      fillOpacity: 0.78,
+    });
+  }
+  for (const item of structures) {
+    for (const wall of item.wallPolylines ?? []) {
+      backend.drawPolyline(wall.map(ctx.pt), {
+        stroke: pal.wallStroke,
+        lineWidth: ctx.px(1.3),
+        lineJoin: 'round',
+      });
+    }
+  }
+  const shadows = structures.flatMap((item) => [
+    item.shadow.map(ctx.pt),
+    ...(item.extraPolygons ?? []).map((extra) => extra.shadow.map(ctx.pt)),
+  ]);
+  backend.drawBatchPolygons(shadows, { fill: 'rgba(43, 37, 32, 0.16)' });
   for (const item of structures) {
     const fill = structureRoofColor(item.roofKind, pal);
     backend.drawPolygon(item.polygon.map(ctx.pt), {
@@ -113,6 +130,18 @@ export function paintStructures(ctx: PaintContext, withLabels: boolean, onlyId?:
       backend.drawSegments(
         [[ctx.pt(item.ridge[0]), ctx.pt(item.ridge[1])]],
         { stroke: pal.inkDark, lineWidth: ctx.px(0.8), opacity: 0.65 },
+      );
+    }
+    for (const extra of item.extraPolygons ?? []) {
+      backend.drawPolygon(extra.polygon.map(ctx.pt), {
+        fill,
+        stroke: pal.inkDark,
+        lineWidth: ctx.px(1.1),
+      });
+      if (!extra.ridge) continue;
+      backend.drawSegments(
+        [[ctx.pt(extra.ridge[0]), ctx.pt(extra.ridge[1])]],
+        { stroke: pal.inkDark, lineWidth: ctx.px(0.7), opacity: 0.6 },
       );
     }
     if (!withLabels) continue;

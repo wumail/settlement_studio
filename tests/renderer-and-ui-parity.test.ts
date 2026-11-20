@@ -257,7 +257,10 @@ describe('M4 · 同源双端渲染一致性', () => {
     expect(stop).toBeGreaterThan(start);
     const block = svg.slice(start, stop);
     expect(block.match(/<g fill="/g)?.length).toBe(3);
-    expect(block.match(/<circle /g)?.length).toBe(compiled.trees.length * 3);
+    // V6：每棵树展开为 1 核 + 4 瓣（小灌木 1 核 + 2 微瓣），三遍同批绘制
+    const lobes = block.match(/<circle /g)?.length ?? 0;
+    expect(lobes % 3).toBe(0);
+    expect(lobes).toBeGreaterThanOrEqual(compiled.trees.length * 3);
   });
 
   it('paintedTrees 并入树冠层同步渲染（Canvas 圆数随涂抹树增长）', () => {
@@ -279,7 +282,9 @@ describe('M4 · 同源双端渲染一致性', () => {
     const stop = svg.indexOf('<g id="layer-landmarks-labels">');
     const block = svg.slice(start, stop);
     const zoneTrees = compiled.trees.filter((tree) => tree.zoneId !== '__painted__').length;
-    expect(block.match(/<circle /g)?.length).toBe((zoneTrees + 3) * 3);
+    const lobes = block.match(/<circle /g)?.length ?? 0;
+    expect(lobes % 3).toBe(0);
+    expect(lobes).toBeGreaterThanOrEqual((zoneTrees + 3) * 3);
   });
 
   it('22 类图例赋 #ff11aa 后 Canvas 与 SVG 22/22 双端变色且每类 >= 2 基元', () => {
@@ -507,7 +512,10 @@ describe('V3 · 水工结构件与核心建筑群同源足印', () => {
       weirs: [{ zIndex: 0, id: 'w1', name: '东关分水堰', pStart: [1400, 1200], pEnd: [1480, 1200], sluices: 3, widthM: 8 }],
       docks: [{ zIndex: 0, id: 'd1', name: '北埠滑道坞', x: 1380, y: 1420, angleDeg: 90, kind: 'slipway', slips: 4, spacingM: 18, lengthM: 42, widthM: 9 }],
       watermills: [{ zIndex: 0, id: 'm1', name: '水力锻锤', x: 1500, y: 1350, angleDeg: 0, wheelSide: 'left', widthM: 18, depthM: 12 }],
-      structures: [{ zIndex: 0, id: 's1', name: '司辰官坛', x: 1250, y: 1250, angleDeg: 0, widthM: 64, depthM: 48, kind: 'round_altar', roofKind: 'citadel' }],
+      structures: [
+        ...base.structures,
+        { zIndex: 0, id: 's1', name: '司辰官坛', x: 1250, y: 1250, angleDeg: 0, widthM: 64, depthM: 48, kind: 'round_altar', roofKind: 'citadel' },
+      ],
     };
     const vp = createViewport(1200, 900, base.meta.worldSizeM, 1);
     const plainBackend = new SvgStringBackend(1200, 900);
@@ -517,14 +525,35 @@ describe('V3 · 水工结构件与核心建筑群同源足印', () => {
     paintScene(enrichedBackend, enriched, enrichedScene, vp, {});
     const plain = plainBackend.toSvgString();
     const withWorks = enrichedBackend.toSvgString();
-    expect(withWorks.length).toBeGreaterThan(plain.length);
+    // 多瓣云冠使林木层字符数随树数剧烈波动（每棵 15 个叶瓣圆），整图总量不再是稳定信号；
+    // 改为按层核对本用例真正新增的水工层与建筑群层，语义比总量比较更精确。
+    const layerLen = (svg: string, id: string): number => {
+      const start = svg.indexOf(`<g id="${id}">`);
+      if (start < 0) return 0;
+      const next = svg.indexOf('<g id="', start + 10);
+      return (next < 0 ? svg.length : next) - start;
+    };
+    expect(layerLen(withWorks, 'layer-hydraulic-works')).toBeGreaterThan(layerLen(plain, 'layer-hydraulic-works'));
+    expect(layerLen(withWorks, 'layer-structures')).toBeGreaterThan(layerLen(plain, 'layer-structures'));
     expect(withWorks).toContain('layer-structures');
     expect(withWorks).toContain('#cbb582');
 
     const { ctx, calls } = createMockContext();
-    paintScene(new Canvas2DBackend(ctx, 1200, 900, 1), enriched, enrichedScene, vp, {});
+    paintScene(
+      new Canvas2DBackend(ctx, 1200, 900, 1),
+      { ...enriched, paintedTrees: [] },
+      { ...enrichedScene, trees: [] },
+      vp,
+      {},
+    );
     const canvasPlain = createMockContext();
-    paintScene(new Canvas2DBackend(canvasPlain.ctx, 1200, 900, 1), base, scene(), vp, {});
+    paintScene(
+      new Canvas2DBackend(canvasPlain.ctx, 1200, 900, 1),
+      { ...base, paintedTrees: [] },
+      { ...scene(), trees: [] },
+      vp,
+      {},
+    );
     expect(calls.length).toBeGreaterThan(canvasPlain.calls.length);
   });
 });

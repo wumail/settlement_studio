@@ -8,6 +8,7 @@ import {
   guardSafeTree,
 } from '../obstacles/guardSafe';
 import { clearsPolygon, pointToPolylineDist, polygonRadiusOf } from '../obstacles/collisionAudit';
+import type { RngFn } from '../math/rng';
 import { roadSkeletonLines } from './streetSkeleton';
 
 const MAX_HOUSES = 150;
@@ -83,6 +84,18 @@ function treeClearsBuildings(x: number, y: number, r: number, input: ZoneGenerat
   return true;
 }
 
+/** 普通村落正房三档：小柴棚/附舍、普通农舍、大户农家（面宽×进深，米，均乘建筑尺度） */
+const FARMHOUSE_TIERS: ReadonlyArray<readonly [number, number]> = [
+  [7.2, 4.8],
+  [10.5, 6.4],
+  [13.2, 7.4],
+];
+
+function farmhouseSize(rng: RngFn): readonly [number, number] {
+  const r = rng();
+  return FARMHOUSE_TIERS[r < 0.32 ? 0 : r < 0.78 ? 1 : 2] ?? FARMHOUSE_TIERS[1]!;
+}
+
 /** 沿骨架（ribbonSpine / 穿区干道 / 紧凑环径）排布农舍、曲尺厢房、菜畦篱院与院果 */
 function placeHousesAlong(input: ZoneGeneratorInput, spine: Polyline, layout: VillageLayout): void {
   const { zone, rng, targetResult, obstacleCtx } = input;
@@ -118,9 +131,12 @@ function placeHousesAlong(input: ZoneGeneratorInput, spine: Polyline, layout: Vi
       const cx = hx + nrmX * side * offset;
       const cy = hy + nrmY * side * offset;
       // 迷你营地直接响应 buildingScale ∈ [0.45, 1.0]，消除 [0.45, 0.90) 死区
-      const lengthM = compact ? (8.8 + rng() * 4.2) * scale : (10.5 + rng() * 3.5) * scale;
-      const widthM = compact ? (6.2 + rng() * 2.6) * scale : (6.0 + rng() * 1.6) * scale;
-      const houseRect = rectPoly(cx, cy, angle, lengthM, widthM);
+      const spec = compact ? null : farmhouseSize(rng);
+      const lengthM = compact ? (8.8 + rng() * 4.2) * scale : (spec?.[0] ?? 10.5) * scale;
+      const widthM = compact ? (6.2 + rng() * 2.6) * scale : (spec?.[1] ?? 6.4) * scale;
+      // 普通村落随路微摆 ±4°，消除兵营式呆板感（紧凑营地保持正对骨架）
+      const heading = compact ? angle : angle + (rng() - 0.5) * 0.14;
+      const houseRect = rectPoly(cx, cy, heading, lengthM, widthM);
       const house = clearOfForeign(houseRect, input)
         ? guardSafeBuilding(
             houseRect,
@@ -182,10 +198,7 @@ function placeHousesAlong(input: ZoneGeneratorInput, spine: Polyline, layout: Vi
 
 /** 折线贴合判定：任一骨架顶点距既有道路中心线 < 阈值即视为同走廊 */
 function polylineNear(line: Polyline, road: Polyline, distM: number): boolean {
-  for (const p of line) {
-    if (pointToPolylineDist(p[0], p[1], road) < distM) return true;
-  }
-  return false;
+  return line.some((p) => pointToPolylineDist(p[0], p[1], road) < distM);
 }
 
 /** 无路可依时按等高线切线生成 3–4 条平行村径（现状回退，保证任意地形可成村） */
@@ -193,16 +206,9 @@ function contourFallbackLanes(input: ZoneGeneratorInput, compact: boolean): Poly
   const { zone, rng, elevationField } = input;
   const c = computePolygonCentroid(zone.points);
   const g = sampleGradient(elevationField, c[0], c[1]);
-  let dirX = -g.dzdy;
-  let dirY = g.dzdx;
-  const mag = Math.hypot(dirX, dirY);
-  if (mag < 1e-9) {
-    dirX = 1;
-    dirY = 0;
-  } else {
-    dirX /= mag;
-    dirY /= mag;
-  }
+  const mag = Math.hypot(g.dzdy, g.dzdx);
+  const dirX = mag < 1e-9 ? 1 : -g.dzdy / mag;
+  const dirY = mag < 1e-9 ? 0 : g.dzdx / mag;
   const nrmX = -dirY;
   const nrmY = dirX;
   let halfLen = 0;
@@ -287,12 +293,9 @@ export function compileVillageZone(input: ZoneGeneratorInput): void {
     if (targetResult.buildings.length >= 4) return;
     targetResult.lanes.length = laneStart;
   }
-  const spines: Polyline[] = [];
-  if (zone.ribbonSpine.length >= 2) {
-    spines.push(zone.ribbonSpine.map((p) => [p[0], p[1]] as Vec2));
-  } else {
-    for (const road of roadSkeletonLines(zone.points, input.obstacleCtx.roadsBuilt)) spines.push(road);
-  }
+  const spines: Polyline[] = zone.ribbonSpine.length >= 2
+    ? [zone.ribbonSpine.map((p) => [p[0], p[1]] as Vec2)]
+    : roadSkeletonLines(zone.points, input.obstacleCtx.roadsBuilt);
   if (spines.length === 0) {
     for (const lane of contourFallbackLanes(input, compact)) {
       pushLane(lane);

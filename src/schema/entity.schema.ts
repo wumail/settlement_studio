@@ -31,7 +31,7 @@ export type CanalStyle = (typeof CANAL_STYLES)[number];
 export const ZoneMarketModes = ['stalls', 'timber_yard', 'port_apron'] as const;
 export type ZoneMarketMode = (typeof ZoneMarketModes)[number];
 
-export const ZoneExclusionStyles = ['plague_stones', 'meadow', 'marsh', 'plain'] as const;
+export const ZoneExclusionStyles = ['plague_stones', 'meadow', 'marsh', 'plain', 'enclosure'] as const;
 export type ZoneExclusionStyle = (typeof ZoneExclusionStyles)[number];
 
 export const MetaSchema = z.object({
